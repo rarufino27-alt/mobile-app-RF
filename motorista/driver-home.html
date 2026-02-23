@@ -2,328 +2,225 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>RF Driver</title>
+<title>RF Motorista</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/mobile-app-RF/core/supabase.js"></script>
+
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-}
-
 body{
-  background:#000;
+  margin:0;
+  background:#111;
+  font-family:system-ui;
   color:#fff;
-  height:100vh;
-  overflow:hidden;
 }
 
-/* ================= HEADER ================= */
-
-.header{
-  height:70px;
+/* TOPO */
+.top{
+  position:absolute;
+  top:20px;
+  left:20px;
+  right:20px;
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  padding:0 20px;
-  position:relative;
-}
-
-.toggle{
-  width:120px;
-  height:35px;
-  background:#222;
-  border-radius:30px;
-  position:relative;
-  cursor:pointer;
-  display:flex;
   align-items:center;
-  padding:5px;
+  z-index:10;
 }
 
-.toggle span{
+.saldo{
+  background:#2b2b2b;
+  padding:10px 15px;
+  border-radius:20px;
+  font-weight:bold;
+}
+
+.menu{
+  font-size:22px;
+}
+
+/* MAPA FAKE */
+.map{
+  height:100vh;
+  background:radial-gradient(circle at center,#1f2937,#0f172a);
+}
+
+/* BOTÃO CONECTAR */
+.footer{
   position:absolute;
-  width:50%;
+  bottom:20px;
+  left:20px;
+  right:20px;
   text-align:center;
-  font-size:.8rem;
-  font-weight:700;
 }
 
-.toggle .offline-text{
-  left:0;
-  color:#f87171;
+.btn-online{
+  background:#facc15;
+  color:#000;
+  font-weight:bold;
+  padding:18px;
+  border-radius:40px;
+  border:none;
+  width:100%;
+  font-size:18px;
 }
 
-.toggle .online-text{
-  right:0;
-  color:#22c55e;
-}
-
-.bola{
-  width:30px;
-  height:30px;
-  background:#f87171;
-  border-radius:50%;
-  transition:.3s;
-}
-
-.toggle.ativo .bola{
-  transform:translateX(85px);
-  background:#22c55e;
-}
-
-/* ================= RADAR ================= */
-
-.radar-container{
-  position:absolute;
-  top:70px;
-  bottom:90px;
-  left:0;
-  right:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-}
-
-.radar{
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  border:2px solid rgba(250,204,21,.3);
-  position:relative;
-  animation:rotar 4s linear infinite;
-}
-
-.radar::before,
-.radar::after{
-  content:"";
-  position:absolute;
-  border-radius:50%;
-  border:2px solid rgba(250,204,21,.3);
-}
-
-.radar::before{
-  width:150px;
-  height:150px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-}
-
-.radar::after{
-  width:80px;
-  height:80px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-}
-
-@keyframes rotar{
-  from{ transform:rotate(0deg); }
-  to{ transform:rotate(360deg); }
-}
-
-.texto-status{
-  margin-top:25px;
-  font-size:1.2rem;
-  font-weight:600;
-  color:#aaa;
-}
-
-/* ================= BOTTOM NAV ================= */
-
-.bottom-nav{
+/* CARD CORRIDA */
+.card-corrida{
   position:absolute;
   bottom:0;
-  width:100%;
-  height:70px;
-  background:#111;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  border-top:1px solid #222;
-}
-
-.bottom-nav div{
-  text-align:center;
-  font-size:.75rem;
-  color:#aaa;
-}
-
-/* ================= OVERLAY CORRIDA ================= */
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:none;
-  flex-direction:column;
-  z-index:2000;
-}
-
-.mapa-topo{
-  height:40%;
-  background:linear-gradient(#1a1a1a,#000);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#facc15;
-  font-weight:700;
-}
-
-.card{
-  flex:1;
-  background:#111;
-  padding:25px;
+  left:0;
+  right:0;
+  background:#1c1c1c;
+  padding:20px;
   border-top-left-radius:25px;
   border-top-right-radius:25px;
+  display:none;
+  animation:slideUp .3s ease;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(100%);}
+  to{transform:translateY(0);}
 }
 
 .valor{
-  font-size:2rem;
-  font-weight:900;
-  margin-bottom:15px;
-}
-
-.rota div{
+  font-size:28px;
+  font-weight:bold;
   margin-bottom:10px;
-  font-size:1rem;
 }
 
-.btn{
-  width:100%;
-  padding:15px;
-  margin-top:20px;
+.info{
+  font-size:14px;
+  margin-bottom:6px;
+}
+
+.btn-aceitar{
+  background:#22c55e;
   border:none;
-  border-radius:30px;
-  background:#facc15;
-  color:#000;
-  font-weight:900;
-  font-size:1rem;
-  cursor:pointer;
+  padding:15px;
+  border-radius:20px;
+  width:100%;
+  font-weight:bold;
+  margin-top:10px;
 }
 
-.contador{
-  text-align:center;
-  margin-top:15px;
-  color:#888;
+.btn-oferta{
+  background:#333;
+  border:none;
+  padding:15px;
+  border-radius:20px;
+  width:100%;
+  margin-top:8px;
+  color:#fff;
 }
 </style>
 </head>
-
 <body>
 
-<div class="header">
-  <div>☰</div>
+<div class="map"></div>
 
-  <div class="toggle" id="toggleStatus" onclick="alternarStatus()">
-    <div class="bola"></div>
-    <span class="offline-text">Offline</span>
-    <span class="online-text">Online</span>
-  </div>
-
-  <div>⚙</div>
+<div class="top">
+  <div class="menu">☰</div>
+  <div class="saldo">R$ 0,00</div>
 </div>
 
-<div class="radar-container">
-  <div class="radar"></div>
-  <div class="texto-status" id="textoStatus">
-    Você está offline
-  </div>
+<div class="footer">
+  <button class="btn-online" onclick="toggleOnline()" id="btnOnline">
+    Conectar
+  </button>
 </div>
 
-<div class="bottom-nav">
-  <div>Pedidos</div>
-  <div>Demanda</div>
-  <div>Desempenho</div>
-</div>
+<div class="card-corrida" id="cardCorrida">
+  <div class="valor" id="valorCorrida"></div>
+  <div class="info" id="origem"></div>
+  <div class="info" id="destino"></div>
 
-<!-- OVERLAY CORRIDA -->
+  <button class="btn-aceitar" onclick="aceitarCorrida()">
+    Aceitar
+  </button>
 
-<div class="overlay" id="overlayCorrida">
-  <div class="mapa-topo">
-    1.4 km • 6 min
-  </div>
-
-  <div class="card">
-    <div class="valor">
-      R$ <span id="valorCorrida">30</span>
-    </div>
-
-    <div class="rota">
-      <div><strong>A</strong> Centro do Cabo</div>
-      <div><strong>B</strong> Shopping Costa Dourada</div>
-    </div>
-
-    <button class="btn" onclick="aceitarCorrida()">
-      ACEITAR POR R$ <span id="valorBtn">30</span>
-    </button>
-
-    <div class="contador">
-      Tempo restante: <span id="tempo">15</span>s
-    </div>
-  </div>
+  <button class="btn-oferta" onclick="ofertar()">
+    Oferecer outro valor
+  </button>
 </div>
 
 <script>
 
 let online = false;
-let timer;
-let tempoRestante = 15;
+let currentRide = null;
 
-function alternarStatus(){
-  const toggle = document.getElementById("toggleStatus");
+function toggleOnline(){
+
   online = !online;
 
+  const btn = document.getElementById("btnOnline");
+
   if(online){
-    toggle.classList.add("ativo");
-    document.getElementById("textoStatus").innerText = "Procurando pedidos perto...";
-    setTimeout(simularCorrida, 5000);
-  } else {
-    toggle.classList.remove("ativo");
-    document.getElementById("textoStatus").innerText = "Você está offline";
+    btn.innerText = "Online";
+    btn.style.background = "#22c55e";
+    escutarCorridas();
+  }else{
+    btn.innerText = "Conectar";
+    btn.style.background = "#facc15";
   }
 }
 
-function simularCorrida(){
-  if(!online) return;
+function escutarCorridas(){
 
-  document.getElementById("overlayCorrida").style.display = "flex";
-  tocarSom();
-  iniciarContador();
+  supabaseClient
+    .channel("rides-channel")
+    .on("postgres_changes",{
+      event:"INSERT",
+      schema:"public",
+      table:"rides"
+    }, payload => {
+
+      if(!online) return;
+
+      const ride = payload.new;
+
+      if(ride.status === "procurando"){
+        mostrarCorrida(ride);
+      }
+
+    })
+    .subscribe();
 }
 
-function iniciarContador(){
-  tempoRestante = 15;
-  document.getElementById("tempo").innerText = tempoRestante;
+function mostrarCorrida(ride){
 
-  timer = setInterval(()=>{
-    tempoRestante--;
-    document.getElementById("tempo").innerText = tempoRestante;
+  currentRide = ride;
 
-    if(tempoRestante <= 0){
-      clearInterval(timer);
-      fecharCorrida();
-    }
-  },1000);
+  document.getElementById("valorCorrida").innerText =
+    "R$ " + Number(ride.valor_total).toFixed(2);
+
+  document.getElementById("origem").innerText =
+    "Origem: " + ride.origem;
+
+  document.getElementById("destino").innerText =
+    "Destino: " + ride.destino;
+
+  document.getElementById("cardCorrida").style.display = "block";
 }
 
-function fecharCorrida(){
-  document.getElementById("overlayCorrida").style.display = "none";
+async function aceitarCorrida(){
+
+  if(!currentRide) return;
+
+  await supabaseClient
+    .from("rides")
+    .update({ status:"aceita" })
+    .eq("id", currentRide.id);
+
+  window.location.href = "motorista-caminho.html";
 }
 
-function aceitarCorrida(){
-  clearInterval(timer);
-  alert("Corrida aceita 🚕");
-  fecharCorrida();
-}
+function ofertar(){
+  const novoValor = prompt("Digite sua oferta:");
+  if(!novoValor) return;
 
-function tocarSom(){
-  const audio = new Audio("sounds/notificacao.mp3");
-  audio.play();
+  alert("Oferta enviada (simulação)");
 }
 
 </script>
