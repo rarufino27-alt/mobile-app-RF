@@ -164,62 +164,83 @@ input{
 
 let online=false;
 let currentRide=null;
-let timerInterval;
+let timerInterval=null;
 let tempo=20;
+let rideChannel=null;
 
 const audio=new Audio("../assets/sounds/notificacao.mp3");
 
 function toggleOnline(){
+
   online=!online;
+
   const badge=document.getElementById("statusBadge");
   const btn=document.getElementById("btnOnline");
 
   if(online){
+
     badge.innerText="Online";
     badge.classList.add("online");
     btn.innerText="Online";
     btn.style.background="#22c55e";
+
     escutarCorridas();
+
   }else{
+
     badge.innerText="Offline";
     badge.classList.remove("online");
     btn.innerText="Ficar Online";
     btn.style.background="#facc15";
+
+    if(rideChannel){
+      supabaseClient.removeChannel(rideChannel);
+      rideChannel=null;
+      console.log("🛑 Realtime encerrado.");
+    }
+
   }
 }
 
 function escutarCorridas(){
 
-  console.log("🎧 Escutando corridas...");
+  if(rideChannel){
+    console.log("⚠ Já existe canal ativo.");
+    return;
+  }
 
-  supabaseClient
+  console.log("🎧 Iniciando escuta...");
+
+  rideChannel = supabaseClient
     .channel("public:rides")
     .on(
       "postgres_changes",
       {
-        event: "INSERT",
-        schema: "public",
-        table: "rides"
+        event:"INSERT",
+        schema:"public",
+        table:"rides"
       },
-      (payload) => {
+      (payload)=>{
 
-        console.log("🚨 Nova corrida recebida:", payload.new);
+        console.log("🚨 Nova corrida:", payload.new);
 
         if(!online) return;
 
-        if(payload.new.status === "procurando"){
+        if(currentRide) return; // evita duplicar card
+
+        if(payload.new.status==="procurando"){
           mostrarCorrida(payload.new);
         }
 
       }
     )
-    .subscribe((status) => {
-      console.log("📡 Status realtime:", status);
+    .subscribe((status)=>{
+      console.log("📡 Status realtime:",status);
     });
-
 }
 
 function mostrarCorrida(ride){
+
   currentRide=ride;
 
   document.getElementById("rideValue").innerText=
@@ -236,11 +257,15 @@ function mostrarCorrida(ride){
 }
 
 function iniciarTimer(){
+
   tempo=20;
+
   clearInterval(timerInterval);
 
   timerInterval=setInterval(()=>{
+
     tempo--;
+
     document.getElementById("rideTimer").innerText=
       "Tempo restante: "+tempo+"s";
 
@@ -248,21 +273,25 @@ function iniciarTimer(){
       clearInterval(timerInterval);
       fecharCard();
     }
+
   },1000);
 }
 
 function fecharCard(){
   document.getElementById("rideCard").style.display="none";
   currentRide=null;
+  clearInterval(timerInterval);
 }
 
 async function enviarProposta(){
+
   if(!currentRide) return;
 
   const valor=document.getElementById("offerInput").value;
+
   if(!valor) return alert("Digite um valor.");
 
-  await supabaseClient
+  const { error } = await supabaseClient
     .from("propostas")
     .insert([
       {
@@ -272,6 +301,12 @@ async function enviarProposta(){
       }
     ]);
 
+  if(error){
+    console.error("Erro ao enviar proposta:",error);
+    alert("Erro ao enviar proposta.");
+    return;
+  }
+
   alert("Proposta enviada!");
   fecharCard();
 }
@@ -280,4 +315,3 @@ async function enviarProposta(){
 
 </body>
 </html>
-
