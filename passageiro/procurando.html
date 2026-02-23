@@ -250,19 +250,19 @@ async function criarCorrida(){
   const { data, error } = await supabaseClient
     .from("rides")
     .insert([{
-      origem,
-      parada,
-      destino,
-      categoria,
-      valor_total: totalFinal,
+      origem: origem,
+      parada: parada,
+      destino: destino,
+      categoria: categoria,
+      valor: totalFinal, // ← CORRIGIDO AQUI
       status: "procurando"
     }])
     .select()
     .single();
 
   if(error){
-    console.error("❌ ERRO SUPABASE:", error);
-    alert("Erro ao criar corrida.");
+    console.error("❌ ERRO SUPABASE COMPLETO:", error);
+    alert(error.message);
     return;
   }
 
@@ -272,7 +272,6 @@ async function criarCorrida(){
 
   escutarAceite(data.id);
 }
-
 // ============================
 // ESCUTAR ACEITE
 // ============================
