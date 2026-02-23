@@ -17,7 +17,6 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
-/* LOGO */
 .logo{
   text-align:center;
   animation:fadeIn 1s ease forwards;
@@ -28,7 +27,6 @@ body{
   max-width:80%;
 }
 
-/* LOADING */
 .loader{
   margin-top:30px;
   display:flex;
@@ -61,18 +59,24 @@ body{
 <body>
 
 <div class="logo">
-  <img src="assets/logo-rf.png" alt="RF Driver">
+  <!-- CAMINHO CORRETO BASEADO NA SUA ESTRUTURA -->
+  <img src="assets/icons/logo-1024.png" alt="RF Driver">
+
   <div class="loader">
-    <span></span><span></span><span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
 </div>
 
 <script>
+
+// Aguarda 2 segundos e redireciona para motorista
 setTimeout(()=>{
-  window.location.href="driver-home.html";
+  window.location.href="motorista/home.html";
 },2000);
+
 </script>
 
 </body>
 </html>
-
