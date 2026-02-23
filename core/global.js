@@ -4,6 +4,8 @@
 ========================================================= */
 
 (function () {
+
+  const BASE_PATH = "/mobile-app-RF/";
   const STORAGE_KEY = "rf_driver_app_state";
 
   const defaultState = {
@@ -20,6 +22,7 @@
   };
 
   const App = {
+
     state: JSON.parse(JSON.stringify(defaultState)),
 
     init() {
@@ -53,11 +56,20 @@
     },
 
     go(page) {
-      window.location.href = page;
+
+      // Se já for caminho absoluto, mantém
+      if (page.startsWith("/")) {
+        window.location.href = page;
+        return;
+      }
+
+      // Caso contrário, usa base do projeto
+      window.location.href = BASE_PATH + page;
     }
+
   };
 
   window.App = App;
   App.init();
-})();
 
+})();
