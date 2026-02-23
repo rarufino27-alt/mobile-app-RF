@@ -9,69 +9,102 @@
 <script src="../core/supabase.js"></script>
 
 <style>
-body{
+*{
   margin:0;
-  background:#0f172a;
-  font-family:system-ui;
-  color:#fff;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
+body{
+  background:#0b1220;
+  color:#fff;
+  overflow:hidden;
+}
+
+/* MAPA */
+.map{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at center,#1f2937,#0b1220 70%);
+}
+
+/* HEADER */
 .header{
   position:absolute;
-  top:20px;
-  left:20px;
-  right:20px;
+  top:0;
+  left:0;
+  right:0;
+  padding:20px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  backdrop-filter:blur(10px);
+  background:rgba(10,15,30,0.6);
+  border-bottom:1px solid rgba(255,255,255,0.05);
   z-index:10;
 }
 
+.logo{
+  font-weight:800;
+  font-size:16px;
+  letter-spacing:1px;
+  opacity:.9;
+}
+
 .status{
-  background:#1e293b;
-  padding:10px 18px;
+  padding:8px 18px;
   border-radius:30px;
-  font-weight:bold;
+  font-size:13px;
+  font-weight:600;
+  background:#1e293b;
+  transition:.3s;
 }
 
 .online{
-  background:#22c55e;
+  background:#16a34a;
+  box-shadow:0 0 12px rgba(22,163,74,.7);
 }
 
-.map{
-  height:100vh;
-  background:radial-gradient(circle at center,#1f2937,#0f172a);
-}
-
+/* BOTÃO ONLINE */
 .footer{
   position:absolute;
-  bottom:25px;
+  bottom:35px;
   left:20px;
   right:20px;
+  z-index:10;
 }
 
 .btn-online{
   background:#facc15;
   color:#000;
-  font-weight:bold;
-  padding:20px;
+  font-weight:700;
+  padding:18px;
   border-radius:50px;
   border:none;
   width:100%;
-  font-size:18px;
+  font-size:16px;
+  transition:.3s;
+  box-shadow:0 10px 25px rgba(0,0,0,.4);
 }
 
+.btn-online:active{
+  transform:scale(.98);
+}
+
+/* CARD */
 .card{
   position:absolute;
   bottom:0;
   left:0;
   right:0;
-  background:#111827;
-  padding:25px;
+  background:linear-gradient(180deg,#111827,#0b1220);
+  padding:28px;
   border-top-left-radius:30px;
   border-top-right-radius:30px;
   display:none;
-  animation:slideUp .3s ease;
+  animation:slideUp .35s ease;
+  box-shadow:0 -10px 40px rgba(0,0,0,.6);
 }
 
 @keyframes slideUp{
@@ -80,50 +113,69 @@ body{
 }
 
 .valor{
-  font-size:32px;
-  font-weight:800;
+  font-size:36px;
+  font-weight:900;
   color:#facc15;
+  margin-bottom:6px;
 }
 
 .rota{
-  margin-top:10px;
   font-size:14px;
-  opacity:.8;
+  opacity:.75;
+  margin-bottom:12px;
 }
 
+/* TIMER */
 .timer{
-  margin-top:8px;
   font-size:12px;
   color:#ef4444;
+  margin-bottom:6px;
 }
 
+.timer-bar{
+  height:4px;
+  background:#ef4444;
+  width:100%;
+  border-radius:10px;
+  transition:width 1s linear;
+  margin-bottom:15px;
+}
+
+/* INPUT */
 input{
   width:100%;
   padding:15px;
-  border-radius:20px;
-  border:none;
-  margin-top:15px;
-  font-size:16px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.08);
+  background:#0f172a;
+  color:#fff;
+  margin-bottom:10px;
+  font-size:15px;
 }
 
+/* BOTÕES */
 .btn-proposta{
-  background:#22c55e;
+  background:#16a34a;
   border:none;
   padding:15px;
-  border-radius:25px;
+  border-radius:20px;
   width:100%;
-  margin-top:10px;
-  font-weight:bold;
+  font-weight:700;
+  margin-bottom:8px;
+  transition:.3s;
+}
+
+.btn-proposta:active{
+  transform:scale(.98);
 }
 
 .btn-recusar{
-  background:#333;
+  background:#1f2937;
   border:none;
-  padding:12px;
-  border-radius:20px;
+  padding:13px;
+  border-radius:18px;
   width:100%;
-  margin-top:8px;
-  color:#fff;
+  color:#ccc;
 }
 </style>
 </head>
@@ -132,6 +184,7 @@ input{
 <div class="map"></div>
 
 <div class="header">
+  <div class="logo">RF DRIVER</div>
   <div id="statusBadge" class="status">Offline</div>
 </div>
 
@@ -144,7 +197,9 @@ input{
 <div class="card" id="rideCard">
   <div class="valor" id="rideValue"></div>
   <div class="rota" id="rideRoute"></div>
+
   <div class="timer" id="rideTimer"></div>
+  <div class="timer-bar" id="timerBar"></div>
 
   <input type="number" id="offerInput" placeholder="Enviar proposta (R$)">
 
@@ -158,7 +213,6 @@ input{
 </div>
 
 <script>
-
 let online=false;
 let currentRide=null;
 let timerInterval=null;
@@ -175,13 +229,10 @@ function iniciarAudio(){
 
 function desbloquearAudio(){
   if(audio){
-    audio.play()
-      .then(()=>{
-        audio.pause();
-        audio.currentTime=0;
-        console.log("🔓 Áudio desbloqueado");
-      })
-      .catch(()=>{});
+    audio.play().then(()=>{
+      audio.pause();
+      audio.currentTime=0;
+    }).catch(()=>{});
   }
 }
 
@@ -197,11 +248,10 @@ function toggleOnline(){
     badge.innerText="Online";
     badge.classList.add("online");
     btn.innerText="Online";
-    btn.style.background="#22c55e";
+    btn.style.background="#16a34a";
 
     iniciarAudio();
     desbloquearAudio();
-
     escutarCorridas();
 
   }else{
@@ -214,7 +264,6 @@ function toggleOnline(){
     if(rideChannel){
       supabaseClient.removeChannel(rideChannel);
       rideChannel=null;
-      console.log("🛑 Realtime encerrado.");
     }
 
   }
@@ -222,25 +271,13 @@ function toggleOnline(){
 
 function escutarCorridas(){
 
-  if(rideChannel){
-    console.log("⚠ Já existe canal ativo.");
-    return;
-  }
-
-  console.log("🎧 Iniciando escuta...");
+  if(rideChannel) return;
 
   rideChannel = supabaseClient
     .channel("public:rides")
-    .on(
-      "postgres_changes",
-      {
-        event:"INSERT",
-        schema:"public",
-        table:"rides"
-      },
+    .on("postgres_changes",
+      { event:"INSERT", schema:"public", table:"rides" },
       (payload)=>{
-
-        console.log("🚨 Nova corrida:", payload.new);
 
         if(!online) return;
         if(currentRide) return;
@@ -251,9 +288,7 @@ function escutarCorridas(){
 
       }
     )
-    .subscribe((status)=>{
-      console.log("📡 Status realtime:",status);
-    });
+    .subscribe();
 }
 
 function mostrarCorrida(ride){
@@ -281,12 +316,17 @@ function iniciarTimer(){
   tempo=20;
   clearInterval(timerInterval);
 
+  const bar=document.getElementById("timerBar");
+  bar.style.width="100%";
+
   timerInterval=setInterval(()=>{
 
     tempo--;
 
     document.getElementById("rideTimer").innerText=
       "Tempo restante: "+tempo+"s";
+
+    bar.style.width=(tempo/20*100)+"%";
 
     if(tempo<=0){
       clearInterval(timerInterval);
@@ -307,7 +347,6 @@ async function enviarProposta(){
   if(!currentRide) return;
 
   const valor=document.getElementById("offerInput").value;
-
   if(!valor) return alert("Digite um valor.");
 
   const { error } = await supabaseClient
@@ -321,7 +360,6 @@ async function enviarProposta(){
     ]);
 
   if(error){
-    console.error("Erro ao enviar proposta:",error);
     alert("Erro ao enviar proposta.");
     return;
   }
@@ -329,7 +367,6 @@ async function enviarProposta(){
   alert("Proposta enviada!");
   fecharCard();
 }
-
 </script>
 
 </body>
