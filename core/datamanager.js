@@ -1,7 +1,7 @@
 const DataManager = {
   rotas: [],
 
-  arquivos: arquivos: [
+  arquivos: [
   "/data/condominio-porto-do-cabo.json",
   "/data/gaibu.json",
   "/data/enseadas.json",
@@ -87,6 +87,7 @@ const DataManager = {
     return trecho1 + trecho2;
   }
 };
+
 
 
 
