@@ -247,23 +247,28 @@ function escutarAceite(rideId){
 
   supabaseClient
     .channel("ride-" + rideId)
-    .on("postgres_changes", {
-      event: "UPDATE",
-      schema: "public",
-      table: "rides",
-      filter: "id=eq." + rideId
-    }, (payload) => {
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "rides",
+        filter: "id=eq." + rideId
+      },
+      (payload) => {
 
-      if(payload.new.status === "aceita"){
-        document.getElementById("statusText").innerText =
-          "Motorista encontrado! 🚗";
+        if(payload.new.status === "aceita"){
 
-        setTimeout(()=>{
-          App.go("motorista-caminho.html");
-        },1500);
+          document.getElementById("statusText").innerText =
+            "Motorista encontrado! 🚗";
+
+          setTimeout(()=>{
+            window.location.href = "motorista-caminho.html";
+          },1200);
+        }
+
       }
-
-    })
+    )
     .subscribe();
 }
 
