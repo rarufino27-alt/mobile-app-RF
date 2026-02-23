@@ -254,7 +254,7 @@ async function criarCorrida(){
       parada: parada,
       destino: destino,
       categoria: categoria,
-      valor: totalFinal, // ← CORRIGIDO AQUI
+      valor_total: totalFinal, // ← CORRIGIDO AQUI
       status: "procurando"
     }])
     .select()
@@ -279,16 +279,15 @@ async function criarCorrida(){
 function escutarAceite(rideId){
 
   supabaseClient
-    .channel("ride-" + rideId)
-    .on(
-      "postgres_changes",
+    .channel("ride-"+rideId)
+    .on("postgres_changes",
       {
         event: "UPDATE",
         schema: "public",
         table: "rides",
-        filter: "id=eq." + rideId
+        filter: "id=eq."+rideId
       },
-      (payload) => {
+      (payload)=>{
 
         console.log("📡 Atualização recebida:", payload);
 
