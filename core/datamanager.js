@@ -1,30 +1,30 @@
 const DataManager = {
   rotas: [],
 
-  arquivos: [
-    "./data/condominio-porto-do-cabo.json",
-    "./data/gaibu.json",
-    "./data/enseadas.json",
-    "./data/setor-4.json",
-    "./data/xareu.json",
-    "./data/itapuama.json",
-    "./data/calhetas.json",
-    "./data/lote-garapu2-lote-dona-amara.json",
-    "./data/cohab.json",
-    "./data/centro-do-cabo.json",
-    "./data/shopping-costa-dourada.json",
-    "./data/aguia-american-club-br-101.json",
-    "./data/empresas.json",
-    "./data/engenhos.json",
-    "./data/hospitais-clinicas.json",
-    "./data/interurbanas.json",
-    "./data/interestaduais.json",
-    "./data/lazer-festa.json",
-    "./data/locais.json",
-    "./data/longas-locais.json",
-    "./data/praias.json",
-    "./data/bairro-sao-francisco-baixo.json"
-  ],
+  arquivos: arquivos: [
+  "/data/condominio-porto-do-cabo.json",
+  "/data/gaibu.json",
+  "/data/enseadas.json",
+  "/data/setor-4.json",
+  "/data/xareu.json",
+  "/data/itapuama.json",
+  "/data/calhetas.json",
+  "/data/lote-garapu2-lote-dona-amara.json",
+  "/data/cohab.json",
+  "/data/centro-do-cabo.json",
+  "/data/shopping-costa-dourada.json",
+  "/data/aguia-american-club-br-101.json",
+  "/data/empresas.json",
+  "/data/engenhos.json",
+  "/data/hospitais-clinicas.json",
+  "/data/interurbanas.json",
+  "/data/interestaduais.json",
+  "/data/lazer-festa.json",
+  "/data/locais.json",
+  "/data/longas-locais.json",
+  "/data/praias.json",
+  "/data/bairro-sao-francisco-baixo.json"
+],
 
   async carregar() {
     try {
@@ -87,6 +87,7 @@ const DataManager = {
     return trecho1 + trecho2;
   }
 };
+
 
 
 
