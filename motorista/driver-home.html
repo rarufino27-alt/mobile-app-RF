@@ -149,6 +149,11 @@ body{
 
 let online = false;
 let currentRide = null;
+let timerInterval = null;
+let tempoRestante = 15;
+
+// AUDIO
+const audioNotificacao = new Audio("../assets/sounds/notificacao.mp3");
 
 function toggleOnline(){
 
@@ -202,11 +207,47 @@ function mostrarCorrida(ride){
     "Destino: " + ride.destino;
 
   document.getElementById("cardCorrida").style.display = "block";
+
+  // 🔊 TOCAR SOM
+  audioNotificacao.play().catch(()=>{});
+
+  iniciarTimer();
+}
+
+function iniciarTimer(){
+
+  tempoRestante = 15;
+
+  const card = document.getElementById("cardCorrida");
+
+  if(timerInterval) clearInterval(timerInterval);
+
+  timerInterval = setInterval(()=>{
+
+    tempoRestante--;
+
+    document.getElementById("valorCorrida").innerText =
+      "R$ " + Number(currentRide.valor_total).toFixed(2)
+      + " • " + tempoRestante + "s";
+
+    if(tempoRestante <= 0){
+      clearInterval(timerInterval);
+      esconderCorrida();
+    }
+
+  },1000);
+}
+
+function esconderCorrida(){
+  document.getElementById("cardCorrida").style.display = "none";
+  currentRide = null;
 }
 
 async function aceitarCorrida(){
 
   if(!currentRide) return;
+
+  clearInterval(timerInterval);
 
   await supabaseClient
     .from("rides")
@@ -227,3 +268,4 @@ function ofertar(){
 
 </body>
 </html>
+
