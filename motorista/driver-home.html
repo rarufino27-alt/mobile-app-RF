@@ -179,7 +179,7 @@ input{
 
 <script>
 
-/* ==== SUA LÓGICA ORIGINAL MANTIDA ==== */
+document.addEventListener("DOMContentLoaded", function(){
 
 let online=false;
 let currentRide=null;
@@ -204,7 +204,7 @@ function desbloquearAudio(){
   }
 }
 
-function toggleOnline(){
+window.toggleOnline = function(){
 
   online=!online;
 
@@ -235,7 +235,7 @@ function toggleOnline(){
     }
 
   }
-}
+};
 
 function escutarCorridas(){
 
@@ -263,11 +263,11 @@ function mostrarCorrida(ride){
 
   currentRide=ride;
 
-  document.getElementById("rideValue").innerText=
-    "R$ "+Number(ride.valor_total || ride.valor).toFixed(2);
+  document.getElementById("rideValue").innerText =
+    "R$ " + Number(ride.valor_total || ride.valor).toFixed(2);
 
-  document.getElementById("rideRoute").innerText=
-    ride.origem+" → "+ride.destino;
+  document.getElementById("rideRoute").innerText =
+    ride.origem + " → " + ride.destino;
 
   document.getElementById("rideCard").style.display="block";
 
@@ -283,7 +283,7 @@ function iniciarTimer(){
 
     tempo--;
 
-    document.getElementById("rideTimer").innerText=
+    document.getElementById("rideTimer").innerText =
       "Tempo restante: "+tempo+"s";
 
     if(tempo<=0){
@@ -300,14 +300,15 @@ function fecharCard(){
   clearInterval(timerInterval);
 }
 
-async function enviarProposta(){
+window.enviarProposta = async function(){
 
   if(!currentRide) return;
 
   const valor=document.getElementById("offerInput").value;
   if(!valor) return alert("Digite um valor.");
 
-  const motoristaId = localStorage.getItem("motorista_id") || "teste";
+  const motoristaId =
+    localStorage.getItem("motorista_id") || "teste";
 
   const { error } = await supabaseClient
     .from("rides")
@@ -319,23 +320,15 @@ async function enviarProposta(){
     .eq("id", currentRide.id);
 
   if(error){
-    console.error(error);
     alert("Erro ao aceitar corrida.");
     return;
   }
 
   alert("Corrida aceita!");
   fecharCard();
-}
+};
 
-  if(error){
-    alert("Erro ao enviar proposta.");
-    return;
-  }
-
-  alert("Proposta enviada!");
-  fecharCard();
-}
+});
 
 </script>
 
