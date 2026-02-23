@@ -85,7 +85,7 @@ function calcularValorFinal({
   let noturnoAtivo = false;
 
   if (inicioMin > fimMin) {
-    // faixa atravessa meia-noite
+    // atravessa meia-noite
     noturnoAtivo = horarioAtual >= inicioMin || horarioAtual <= fimMin;
   } else {
     noturnoAtivo = horarioAtual >= inicioMin && horarioAtual <= fimMin;
@@ -114,3 +114,11 @@ function calcularValorFinal({
 
   return Number(total.toFixed(2));
 }
+
+
+/* =========================================================
+   GARANTIR ESCOPO GLOBAL
+   ========================================================= */
+
+window.Taxas = Taxas;
+window.calcularValorFinal = calcularValorFinal;
