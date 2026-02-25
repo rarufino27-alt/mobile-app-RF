@@ -16,12 +16,13 @@
 
 body{
   margin:0;
+  background:var(--preto);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#000;
   overflow:hidden;
+  color:#fff;
 }
 
-/* TOPO BRANCO */
+/* TOPO */
 .top{
   position:absolute;
   top:0;
@@ -31,44 +32,53 @@ body{
   padding:20px;
   border-bottom-left-radius:30px;
   border-bottom-right-radius:30px;
-  z-index:20;
-}
-
-.top h2{
-  margin:0;
-  font-size:16px;
   color:#000;
+  z-index:10;
+  text-align:center;
 }
 
-.top span{
-  color:#facc15;
-  font-weight:700;
+.top small{
+  display:block;
+  font-size:12px;
+  opacity:.6;
+}
+
+.destino{
+  font-size:22px;
+  font-weight:900;
+  margin-top:5px;
+  line-height:1.3;
+  word-break:break-word;
 }
 
 /* MAPA */
 #map{
   position:absolute;
-  top:70px;
+  top:120px;
   left:0;
-  width:100%;
-  bottom:0;
+  right:0;
+  bottom:140px;
   background:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:.6;
 }
 
-/* BOTTOM SHEET */
+/* BOTTOM BAR */
 .bottom{
   position:absolute;
   bottom:0;
   left:0;
-  width:100%;
-  background:var(--preto);
+  right:0;
+  background:#0f0f0f;
   padding:20px;
   border-top-left-radius:25px;
   border-top-right-radius:25px;
   box-shadow:0 -10px 30px rgba(0,0,0,.6);
 }
 
-.rota{
+.info-viagem{
   font-size:14px;
   opacity:.7;
   margin-bottom:15px;
@@ -78,8 +88,8 @@ body{
   width:100%;
   padding:16px;
   border:none;
-  border-radius:18px;
-  font-weight:700;
+  border-radius:20px;
+  font-weight:800;
   font-size:16px;
   margin-top:10px;
   cursor:pointer;
@@ -87,31 +97,35 @@ body{
 
 .btn-waze{
   background:#1c1c1c;
-  color:#fff;
   border:1px solid #333;
+  color:#fff;
 }
 
 .btn-finalizar{
   background:var(--vermelho);
   color:#fff;
 }
+
 </style>
 </head>
 <body>
 
 <div class="top">
-  <h2>Destino: <span id="destinoNome"></span></h2>
+  <small>Viagem em andamento</small>
+  <div class="destino" id="destinoTopo"></div>
 </div>
 
 <div id="map">
-  <!-- Google Maps será integrado aqui -->
+  Mapa será integrado aqui
 </div>
 
 <div class="bottom">
 
-  <div class="rota" id="rotaInfo"></div>
+  <div class="info-viagem" id="infoRota">
+    6 min • 1,8 km
+  </div>
 
-  <button class="btn btn-waze" onclick="abrirNavegacao()">
+  <button class="btn btn-waze" onclick="abrirWaze()">
     Abrir no Waze
   </button>
 
@@ -129,21 +143,14 @@ if(!corrida){
   window.location.href="driver-home.html";
 }
 
-document.getElementById("destinoNome").innerText=corrida.destino;
-document.getElementById("rotaInfo").innerText=
-  corrida.origem+" → "+corrida.destino;
+document.getElementById("destinoTopo").innerText = corrida.destino;
 
-function abrirNavegacao(){
+function abrirWaze(){
   const destino = encodeURIComponent(corrida.destino);
-
-  const waze = "waze://?q="+destino+"&navigate=yes";
-  const google = "https://www.google.com/maps/dir/?api=1&destination="+destino;
-
-  window.location.href=waze;
-
+  window.location.href="waze://?q="+destino+"&navigate=yes";
   setTimeout(()=>{
-    window.location.href=google;
-  },1200);
+    window.location.href="https://www.google.com/maps/dir/?api=1&destination="+destino;
+  },1000);
 }
 
 function finalizar(){
