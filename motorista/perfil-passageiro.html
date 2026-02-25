@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RF – Perfil do Passageiro</title>
+
+<style>
+:root{
+  --preto:#0f0f0f;
+  --branco:#ffffff;
+  --amarelo:#facc15;
+  --verde:#22c55e;
+  --vermelho:#ef4444;
+}
+
+body{
+  margin:0;
+  background:var(--preto);
+  color:var(--branco);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+/* TOPO */
+.top{
+  background:#fff;
+  padding:25px 20px;
+  border-bottom-left-radius:35px;
+  border-bottom-right-radius:35px;
+  color:#000;
+}
+
+.top-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.voltar{
+  background:none;
+  border:none;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.titulo{
+  font-weight:700;
+  font-size:16px;
+}
+
+/* PERFIL */
+.perfil-box{
+  padding:25px 20px;
+  text-align:center;
+}
+
+.avatar{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:#1c1c1c;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  margin:0 auto 15px auto;
+}
+
+.nome{
+  font-size:20px;
+  font-weight:800;
+}
+
+.info-card{
+  background:#1c1c1c;
+  margin:20px;
+  padding:20px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+.label{
+  opacity:.6;
+  font-size:12px;
+}
+
+.valor{
+  margin-bottom:15px;
+  font-weight:600;
+}
+
+/* BOTÕES */
+.btn{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:20px;
+  font-weight:700;
+  font-size:16px;
+  margin-top:12px;
+  cursor:pointer;
+}
+
+.btn-ligar{
+  background:#1c1c1c;
+  border:1px solid #333;
+  color:#fff;
+}
+
+.btn-chat{
+  background:var(--amarelo);
+  color:#000;
+}
+
+.btn-whatsapp{
+  background:#25D366;
+  color:#fff;
+}
+
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-header">
+    <button class="voltar" onclick="voltar()">Voltar</button>
+    <div class="titulo">Perfil do Passageiro</div>
+    <div></div>
+  </div>
+</div>
+
+<div class="perfil-box">
+
+  <div class="avatar">👤</div>
+  <div class="nome" id="nomePassageiro"></div>
+
+</div>
+
+<div class="info-card">
+
+  <div class="label">ORIGEM</div>
+  <div class="valor" id="origemInfo"></div>
+
+  <div class="label">DESTINO</div>
+  <div class="valor" id="destinoInfo"></div>
+
+  <div class="label">FORMA DE PAGAMENTO</div>
+  <div class="valor" id="pagamentoInfo"></div>
+
+</div>
+
+<div style="padding:0 20px 40px 20px;">
+
+  <button class="btn btn-ligar" onclick="ligar()">
+    Ligar (Número mascarado)
+  </button>
+
+  <button class="btn btn-chat" onclick="chatInterno()">
+    Enviar Mensagem no App
+  </button>
+
+  <button class="btn btn-whatsapp" id="btnWhatsapp" onclick="abrirWhatsapp()">
+    Conversar pelo WhatsApp
+  </button>
+
+</div>
+
+<script>
+
+let corrida = JSON.parse(localStorage.getItem("corrida_ativa"));
+
+if(!corrida){
+  window.location.href="driver-home.html";
+}
+
+document.getElementById("nomePassageiro").innerText =
+corrida.passageiro || "Passageiro";
+
+document.getElementById("origemInfo").innerText =
+corrida.origem;
+
+document.getElementById("destinoInfo").innerText =
+corrida.destino;
+
+document.getElementById("pagamentoInfo").innerText =
+corrida.forma_pagamento;
+
+/* CONTROLE WHATSAPP (FUTURO CONDICIONAL) */
+if(!corrida.whatsapp_autorizado){
+  document.getElementById("btnWhatsapp").style.display="none";
+}
+
+function voltar(){
+  window.history.back();
+}
+
+function ligar(){
+  alert("Integração com número mascarado será implementada via backend.");
+}
+
+function chatInterno(){
+  alert("Chat interno será integrado via Supabase realtime.");
+}
+
+function abrirWhatsapp(){
+  const numero="55XXXXXXXXXX"; // futuro dinâmico
+  window.open("https://wa.me/"+numero);
+}
+
+</script>
+
+</body>
+</html>
