@@ -3,17 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viagem em Andamento - RF Motorista</title>
+<title>RF – Viagem em Andamento</title>
 
 <style>
 :root{
-  --bg:#0f0f0f;
-  --card:#1c1c1c;
-  --text:#ffffff;
-  --text-muted:rgba(255,255,255,0.65);
-  --accent:#facc15;
-  --green:#22c55e;
-  --red:#ef4444;
+  --preto:#0f0f0f;
+  --branco:#ffffff;
+  --amarelo:#facc15;
+  --verde:#22c55e;
+  --vermelho:#ef4444;
 }
 
 body{
@@ -23,226 +21,133 @@ body{
   overflow:hidden;
 }
 
-/* SIDEBAR */
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:#111;
-  transition:.3s;
-  padding:20px;
-  z-index:50;
-}
-
-.sidebar.active{left:0;}
-
-.sidebar a{
-  display:block;
-  margin-bottom:15px;
-  color:var(--text-muted);
-  text-decoration:none;
-}
-
-/* MAPA FULL */
-#map{
+/* TOPO BRANCO */
+.top{
   position:absolute;
   top:0;
   left:0;
-  width:100%;
-  height:100%;
-  background:#111;
+  right:0;
+  background:#fff;
+  padding:20px;
+  border-bottom-left-radius:30px;
+  border-bottom-right-radius:30px;
+  z-index:20;
 }
 
-/* TOP BAR FLUTUANTE */
-.top-bar{
+.top h2{
+  margin:0;
+  font-size:16px;
+  color:#000;
+}
+
+.top span{
+  color:#facc15;
+  font-weight:700;
+}
+
+/* MAPA */
+#map{
   position:absolute;
-  top:15px;
-  left:15px;
-  right:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  z-index:30;
-}
-
-.menu-btn{
+  top:70px;
+  left:0;
+  width:100%;
+  bottom:0;
   background:#111;
-  color:#fff;
-  padding:8px 12px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.status{
-  background:#111;
-  padding:8px 14px;
-  border-radius:20px;
-  font-size:13px;
-  color:#fff;
 }
 
 /* BOTTOM SHEET */
-.bottom-sheet{
+.bottom{
   position:absolute;
   bottom:0;
   left:0;
   width:100%;
-  background:var(--bg);
+  background:var(--preto);
+  padding:20px;
   border-top-left-radius:25px;
   border-top-right-radius:25px;
-  padding:20px;
   box-shadow:0 -10px 30px rgba(0,0,0,.6);
-  z-index:30;
-}
-
-.handle{
-  width:40px;
-  height:4px;
-  background:#333;
-  border-radius:10px;
-  margin:0 auto 15px auto;
-}
-
-.tempo{
-  font-size:14px;
-  color:var(--text-muted);
-}
-
-.nome{
-  font-size:18px;
-  font-weight:700;
-  margin-top:5px;
 }
 
 .rota{
-  font-size:13px;
-  color:var(--text-muted);
-  margin-top:4px;
+  font-size:14px;
+  opacity:.7;
   margin-bottom:15px;
 }
 
 .btn{
   width:100%;
   padding:16px;
-  border-radius:16px;
   border:none;
+  border-radius:18px;
   font-weight:700;
   font-size:16px;
   margin-top:10px;
   cursor:pointer;
 }
 
-.btn-green{background:var(--green);color:#fff;}
-.btn-red{background:var(--red);color:#fff;}
-.btn-dark{
+.btn-waze{
   background:#1c1c1c;
   color:#fff;
   border:1px solid #333;
+}
+
+.btn-finalizar{
+  background:var(--vermelho);
+  color:#fff;
 }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-  <a href="driver-home.html">Home</a>
-  <a href="perfil.html">Perfil</a>
-  <a href="veiculo.html">Veículo</a>
-  <a href="carteira.html">Carteira</a>
-  <a href="configuracoes.html">Configurações</a>
+<div class="top">
+  <h2>Destino: <span id="destinoNome"></span></h2>
 </div>
 
-<!-- MAPA -->
 <div id="map">
   <!-- Google Maps será integrado aqui -->
 </div>
 
-<!-- TOP BAR -->
-<div class="top-bar">
-  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-  <div class="status" id="statusTexto">
-    Indo até passageiro
-  </div>
-</div>
+<div class="bottom">
 
-<!-- BOTTOM SHEET -->
-<div class="bottom-sheet">
+  <div class="rota" id="rotaInfo"></div>
 
-  <div class="handle"></div>
-
-  <div class="tempo" id="tempoInfo">
-    Tempo estimado até chegada
-  </div>
-
-  <div class="nome" id="nomePassageiro">
-    Passageiro
-  </div>
-
-  <div class="rota" id="rotaInfo">
-    Origem → Destino
-  </div>
-
-  <button class="btn btn-green" id="btnPrincipal" onclick="acaoPrincipal()">
-    Cheguei
+  <button class="btn btn-waze" onclick="abrirNavegacao()">
+    Abrir no Waze
   </button>
 
-  <button class="btn btn-dark" onclick="abrirNavegacao()">
-    Navegar
+  <button class="btn btn-finalizar" onclick="finalizar()">
+    Finalizar Corrida
   </button>
 
 </div>
 
 <script>
 
-function toggleSidebar(){
-  document.getElementById("sidebar").classList.toggle("active");
-}
-
-let estado = "INDO";
 let corrida = JSON.parse(localStorage.getItem("corrida_ativa"));
 
 if(!corrida){
-  window.location.href = "driver-home.html";
+  window.location.href="driver-home.html";
 }
 
-document.getElementById("nomePassageiro").innerText = corrida.passageiro || "Passageiro";
-document.getElementById("rotaInfo").innerText = corrida.origem + " → " + corrida.destino;
-
-function acaoPrincipal(){
-
-  if(estado === "INDO"){
-    estado = "AGUARDANDO";
-    document.getElementById("statusTexto").innerText = "Aguardando passageiro";
-    document.getElementById("btnPrincipal").innerText = "Iniciar Viagem";
-  }
-
-  else if(estado === "AGUARDANDO"){
-    estado = "EM_ANDAMENTO";
-    document.getElementById("statusTexto").innerText = "Viagem em andamento";
-    document.getElementById("btnPrincipal").innerText = "Finalizar Corrida";
-    document.getElementById("btnPrincipal").classList.remove("btn-green");
-    document.getElementById("btnPrincipal").classList.add("btn-red");
-  }
-
-  else if(estado === "EM_ANDAMENTO"){
-    window.location.href = "finalizacao.html";
-  }
-
-}
+document.getElementById("destinoNome").innerText=corrida.destino;
+document.getElementById("rotaInfo").innerText=
+  corrida.origem+" → "+corrida.destino;
 
 function abrirNavegacao(){
   const destino = encodeURIComponent(corrida.destino);
 
-  const waze = "waze://?q=" + destino + "&navigate=yes";
-  const google = "https://www.google.com/maps/dir/?api=1&destination=" + destino;
+  const waze = "waze://?q="+destino+"&navigate=yes";
+  const google = "https://www.google.com/maps/dir/?api=1&destination="+destino;
 
-  window.location.href = waze;
+  window.location.href=waze;
 
   setTimeout(()=>{
-    window.location.href = google;
+    window.location.href=google;
   },1200);
+}
+
+function finalizar(){
+  window.location.href="finalizacao.html";
 }
 
 </script>
