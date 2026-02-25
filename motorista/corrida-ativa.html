@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>RF – Corrida Ativa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+body{background:#0f0f0f;color:#fff;}
+
+.top{
+  background:#fff;
+  padding:20px;
+  border-bottom-left-radius:30px;
+  border-bottom-right-radius:30px;
+}
+
+.logo{font-weight:900;color:#000;}
+.sub{color:#facc15;font-weight:700;margin-top:5px;}
+
+.container{padding:20px;}
+
+.mapa{
+  height:220px;
+  background:#1c1c1c;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:15px;
+  font-size:14px;
+  opacity:.7;
+}
+
+.card{
+  background:#1c1c1c;
+  padding:18px;
+  border-radius:20px;
+  margin-bottom:15px;
+}
+
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  font-weight:700;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.btn-green{background:#22c55e;color:#fff;}
+.btn-red{background:#ef4444;color:#fff;}
+.btn-dark{background:#111;color:#fff;border:1px solid #333;}
+
+.hidden{display:none;}
+
+.chat-box{
+  max-height:120px;
+  overflow-y:auto;
+  margin-bottom:10px;
+  font-size:13px;
+}
+input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin-top:5px;
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="logo">Corrida RF</div>
+  <div class="sub" id="statusCorrida">Indo até passageiro</div>
+</div>
+
+<div class="container">
+
+  <div class="mapa">
+    Mapa será integrado aqui (Google Maps futuro)
+  </div>
+
+  <div class="card" id="infoCard">
+    <div><strong>Passageiro:</strong> <span id="nomePassageiro">Carlos</span></div>
+    <div><strong>Pagamento:</strong> <span id="formaPagamento"></span></div>
+    <div><strong>Embarque:</strong> <span id="embarqueInfo">Porta principal</span></div>
+    <div><strong>Destino:</strong> <span id="destinoInfo"></span></div>
+  </div>
+
+  <div class="card">
+    <strong>Conversa</strong>
+    <div class="chat-box" id="chatBox"></div>
+    <input type="text" id="msgInput" placeholder="Enviar mensagem...">
+    <button class="btn btn-dark" onclick="enviarMsg()">Enviar</button>
+  </div>
+
+  <div class="card" id="botoesEstado">
+    <button class="btn btn-green" id="btnPrincipal" onclick="acaoPrincipal()">Cheguei</button>
+    <button class="btn btn-red" onclick="cancelarCorrida()">Cancelar Corrida</button>
+  </div>
+
+  <div class="card hidden" id="resumoFinal">
+    <div><strong>Valor:</strong> R$ <span id="valorFinal"></span></div>
+    <div><strong>Taxa RF (15%):</strong> R$ <span id="taxaFinal"></span></div>
+    <div><strong>Você recebe:</strong> R$ <span id="liquidoFinal"></span></div>
+    <button class="btn btn-dark" onclick="encerrar()">Encerrar</button>
+  </div>
+
+</div>
+
+<script>
+
+let estado="INDO";
+let corrida=JSON.parse(localStorage.getItem("corrida_ativa"));
+let taxaPercentual=0.15;
+
+document.getElementById("formaPagamento").innerText=corrida.forma_pagamento;
+document.getElementById("destinoInfo").innerText=corrida.destino;
+
+function acaoPrincipal(){
+  if(estado==="INDO"){
+    estado="AGUARDANDO";
+    document.getElementById("statusCorrida").innerText="Aguardando passageiro";
+    document.getElementById("btnPrincipal").innerText="Iniciar Viagem";
+  }
+  else if(estado==="AGUARDANDO"){
+    estado="EM_ANDAMENTO";
+    document.getElementById("statusCorrida").innerText="Em andamento";
+    document.getElementById("btnPrincipal").innerText="Finalizar Corrida";
+  }
+  else if(estado==="EM_ANDAMENTO"){
+    finalizarCorrida();
+  }
+}
+
+function finalizarCorrida(){
+  estado="FINALIZADA";
+  document.getElementById("botoesEstado").classList.add("hidden");
+  document.getElementById("resumoFinal").classList.remove("hidden");
+
+  let valor=corrida.valor;
+  let taxa=valor*taxaPercentual;
+  let liquido=valor-taxa;
+
+  document.getElementById("valorFinal").innerText=valor.toFixed(2);
+  document.getElementById("taxaFinal").innerText=taxa.toFixed(2);
+  document.getElementById("liquidoFinal").innerText=liquido.toFixed(2);
+
+  salvarHistorico(valor,taxa,liquido);
+}
+
+function salvarHistorico(valor,taxa,liquido){
+  let historico=JSON.parse(localStorage.getItem("historico_viagens"))||[];
+  historico.push({
+    data:new Date().toLocaleString(),
+    valor,
+    taxa,
+    liquido
+  });
+  localStorage.setItem("historico_viagens",JSON.stringify(historico));
+
+  let totalDia=Number(localStorage.getItem("total_dia")||0);
+  totalDia+=liquido;
+  localStorage.setItem("total_dia",totalDia);
+}
+
+function cancelarCorrida(){
+  window.location.href="driver-home.html";
+}
+
+function encerrar(){
+  localStorage.removeItem("corrida_ativa");
+  window.location.href="driver-home.html";
+}
+
+function enviarMsg(){
+  let msg=document.getElementById("msgInput").value;
+  if(!msg)return;
+  document.getElementById("chatBox").innerHTML+="<div>Você: "+msg+"</div>";
+  document.getElementById("msgInput").value="";
+}
+
+</script>
+
+</body>
+</html>
