@@ -2,271 +2,179 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>RF – Painel Motorista</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RF Motorista</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+:root{
+  --bg:#0f0f0f;
+  --card:#1c1c1c;
+  --text:#ffffff;
+  --text-muted:rgba(255,255,255,0.65);
+  --accent:#facc15;
+  --green:#22c55e;
+  --red:#ef4444;
 }
 
 body{
-  background:#0f0f0f;
-  color:#fff;
-  min-height:100vh;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
-.top{
-  background:#ffffff;
-  padding:25px 20px 65px;
-  border-bottom-left-radius:40px;
-  border-bottom-right-radius:40px;
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:20px;
+  background:#111;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
 
-.logo{
-  font-weight:900;
-  font-size:1.4rem;
-  color:#000;
+.menu-btn{
+  font-size:22px;
+  cursor:pointer;
 }
 
-.status{
-  margin-top:5px;
+.title{
   font-weight:700;
-  color:#facc15;
 }
 
+.theme-toggle{
+  cursor:pointer;
+}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:#111;
+  transition:.3s;
+  padding:20px;
+  z-index:20;
+}
+
+.sidebar.active{
+  left:0;
+}
+
+.sidebar h3{
+  margin-bottom:20px;
+}
+
+.sidebar a{
+  display:block;
+  margin-bottom:15px;
+  color:var(--text-muted);
+  text-decoration:none;
+}
+
+/* CONTENT */
 .content{
-  width:92%;
-  max-width:420px;
-  margin:-45px auto 120px auto;
+  padding:20px;
+  padding-bottom:90px;
 }
 
 .card{
-  background:#1c1c1c;
-  border-radius:20px;
-  padding:22px;
-  box-shadow:0 12px 30px rgba(0,0,0,.5);
+  background:var(--card);
+  padding:20px;
+  border-radius:18px;
   margin-bottom:15px;
 }
 
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#111;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  border-top:1px solid #222;
+}
+
+.bottom-nav div{
+  text-align:center;
+  font-size:12px;
+  color:var(--text-muted);
+  cursor:pointer;
+}
+
+.bottom-nav .active{
+  color:var(--accent);
+}
+
+/* BOTÃO */
 .btn{
   width:100%;
   padding:14px;
   border-radius:14px;
   border:none;
   font-weight:700;
-  margin-top:12px;
+  background:var(--accent);
   cursor:pointer;
-  font-size:15px;
-}
-
-.btn-online{ background:#facc15; color:#000; }
-.btn-green{ background:#22c55e; color:#fff; }
-.btn-red{ background:#ef4444; color:#fff; }
-.btn-dark{ background:#111; color:#fff; border:1px solid #333; }
-
-.valorGrande{
-  font-size:34px;
-  font-weight:800;
-  margin-top:5px;
-}
-
-.infoPequena{
-  font-size:14px;
-  opacity:.8;
-}
-
-.divisor{
-  margin:15px 0;
-  border-top:1px solid #333;
-}
-
-.hidden{ display:none; }
-
-.badge{
-  display:inline-block;
-  background:#2a2a2a;
-  padding:6px 12px;
-  border-radius:20px;
-  font-size:12px;
-  margin-top:8px;
 }
 </style>
 </head>
 <body>
 
-<audio id="audioChamada" src="../assets/sounds/notificacao.mp3" preload="auto"></audio>
-
-<div class="top">
-  <div class="logo">MOTORISTA RF</div>
-  <div class="status" id="statusBadge">Offline</div>
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <h3>Motorista RF</h3>
+  <a href="perfil.html">Perfil</a>
+  <a href="veiculo.html">Veículo</a>
+  <a href="carteira.html">Carteira</a>
+  <a href="configuracoes.html">Configurações</a>
 </div>
 
+<!-- HEADER -->
+<div class="header">
+  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+  <div class="title">Home</div>
+  <div class="theme-toggle" onclick="toggleTheme()">🌓</div>
+</div>
+
+<!-- CONTEÚDO -->
 <div class="content">
 
-  <!-- ONLINE -->
   <div class="card">
-    <button class="btn btn-online" id="btnOnline" onclick="toggleOnline()">
-      Ficar Online
-    </button>
+    <h2>Status</h2>
+    <p style="color:var(--text-muted)">Offline</p>
+    <button class="btn">Ficar Online</button>
   </div>
 
-  <!-- AÇÕES ONLINE -->
-  <div class="card hidden" id="onlineOptions">
-    <button class="btn btn-dark" onclick="simularCorrida()">
-      Simular Corrida Recebida
-    </button>
+  <div class="card">
+    <h2>Resumo do Dia</h2>
+    <p style="color:var(--text-muted)">R$ 0,00</p>
   </div>
 
-  <!-- CARD RECEBENDO -->
-  <div class="card hidden" id="recebendoCard">
+</div>
 
-    <div class="infoPequena">
-      <strong>Viagem RF</strong> · <span id="formaPagamento"></span>
-    </div>
-
-    <div class="valorGrande" id="rideValorGrande"></div>
-
-    <div class="infoPequena" id="valorKm"></div>
-
-    <div class="badge">
-      ⚡ <span id="multiplicador"></span>
-    </div>
-
-    <div class="divisor"></div>
-
-    <div class="infoPequena">
-      ⭐ <span id="avaliacao"></span> · 
-      <span id="totalCorridas"></span> corridas
-    </div>
-
-    <div class="infoPequena" id="perfilPassageiro"></div>
-
-    <div class="divisor"></div>
-
-    <div style="margin-bottom:10px;">
-      ⬆ <span id="tempoOrigem"></span> (<span id="distanciaOrigem"></span>)<br>
-      <div class="infoPequena" id="enderecoOrigem"></div>
-    </div>
-
-    <div>
-      ⬇ <span id="tempoDestino"></span> (<span id="distanciaDestino"></span>)<br>
-      <div class="infoPequena" id="enderecoDestino"></div>
-    </div>
-
-    <button class="btn btn-online" style="margin-top:20px;" onclick="aceitarCorrida()">
-      Aceitar por <span id="botaoValor"></span>
-    </button>
-
-    <button class="btn btn-dark" onclick="recusarCorrida()">
-      Recusar
-    </button>
-
-  </div>
-
-  <!-- INDO PASSAGEIRO -->
-  <div class="card hidden" id="indoCard">
-    <div class="valorGrande">Indo até passageiro</div>
-    <div class="infoPequena" id="indoRota"></div>
-    <button class="btn btn-green" onclick="iniciarCorrida()">Iniciar Corrida</button>
-    <button class="btn btn-red" onclick="cancelarCorrida()">Cancelar</button>
-  </div>
-
-  <!-- EM ANDAMENTO -->
-  <div class="card hidden" id="andamentoCard">
-    <div class="valorGrande" id="andamentoValor"></div>
-    <div class="infoPequena" id="andamentoRota"></div>
-    <button class="btn btn-green" onclick="finalizarCorrida()">Finalizar Corrida</button>
-  </div>
-
-  <!-- FINALIZADA -->
-  <div class="card hidden" id="finalCard">
-    <div class="valorGrande" id="finalValor"></div>
-    <button class="btn btn-dark" onclick="voltarPainel()">Voltar ao Painel</button>
-  </div>
-
+<!-- MENU INFERIOR -->
+<div class="bottom-nav">
+  <div class="active">Home</div>
+  <div>Corridas</div>
+  <div>Carteira</div>
+  <div>Veículo</div>
+  <div>Perfil</div>
 </div>
 
 <script>
 
-let online = false;
-let corridaAtual = null;
-const audio = document.getElementById("audioChamada");
-
-function tocarAlerta(){
-  audio.currentTime = 0;
-  audio.loop = true;
-  audio.play().catch(()=>{});
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("active");
 }
 
-function pararAlerta(){
-  audio.pause();
-  audio.currentTime = 0;
-  audio.loop = false;
-}
-
-function toggleOnline(){
-  online = !online;
-
-  if(online){
-    document.getElementById("btnOnline").innerText = "Online";
-    document.getElementById("btnOnline").classList.replace("btn-online","btn-green");
-    document.getElementById("statusBadge").innerText = "Online";
-    document.getElementById("statusBadge").style.color = "#22c55e";
-    document.getElementById("onlineOptions").classList.remove("hidden");
-  }else{
-    document.getElementById("btnOnline").innerText = "Ficar Online";
-    document.getElementById("btnOnline").classList.replace("btn-green","btn-online");
-    document.getElementById("statusBadge").innerText = "Offline";
-    document.getElementById("statusBadge").style.color = "#facc15";
-    document.getElementById("onlineOptions").classList.add("hidden");
-    document.getElementById("recebendoCard").classList.add("hidden");
-  }
-}
-
-function simularCorrida(){
-
-  if(!online) return alert("Fique online primeiro.");
-
-  corridaAtual = {
-    valor: 8.95,
-    forma_pagamento: "Dinheiro",
-    origem: "Farmácia Santa Rosa, Avenida Eraldo Barros",
-    destino: "Rua Antônio Custódio de Lima",
-    passageiro: "Carlos"
-  };
-
-  document.getElementById("formaPagamento").innerText = corridaAtual.forma_pagamento;
-  document.getElementById("rideValorGrande").innerText = "R$ " + corridaAtual.valor.toFixed(2);
-  document.getElementById("valorKm").innerText = "";
-  document.getElementById("multiplicador").innerText = "";
-  document.getElementById("avaliacao").innerText = "";
-  document.getElementById("totalCorridas").innerText = "";
-  document.getElementById("perfilPassageiro").innerText = "";
-  document.getElementById("tempoOrigem").innerText = "";
-  document.getElementById("distanciaOrigem").innerText = "";
-  document.getElementById("enderecoOrigem").innerText = corridaAtual.origem;
-  document.getElementById("tempoDestino").innerText = "";
-  document.getElementById("distanciaDestino").innerText = "";
-  document.getElementById("enderecoDestino").innerText = corridaAtual.destino;
-  document.getElementById("botaoValor").innerText = "R$ " + corridaAtual.valor.toFixed(2);
-
-  tocarAlerta();
-  document.getElementById("recebendoCard").classList.remove("hidden");
-}
-
-function aceitarCorrida(){
-  pararAlerta();
-  localStorage.setItem("corrida_ativa", JSON.stringify(corridaAtual));
-  window.location.href = "corrida-ativa.html";
-}
-
-function recusarCorrida(){
-  pararAlerta();
-  document.getElementById("recebendoCard").classList.add("hidden");
+function toggleTheme(){
+  document.body.classList.toggle("light-mode");
 }
 
 </script>
