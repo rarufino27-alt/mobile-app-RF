@@ -11,6 +11,7 @@
   --verde:#22c55e;
   --vermelho:#ef4444;
   --branco:#ffffff;
+  --cinza:#1c1c1c;
 }
 
 body{
@@ -30,11 +31,32 @@ body{
   align-items:center;
   justify-content:center;
   font-size:16px;
-  opacity:.5;
+  opacity:.4;
+}
+
+/* RESUMO TOPO */
+.resumo-topo{
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#000;
+  padding:10px 20px;
+  border-radius:25px;
+  font-weight:800;
+  font-size:16px;
+  z-index:5;
+}
+
+.resumo-topo.positivo{
+  color:var(--verde);
+}
+
+.resumo-topo.negativo{
+  color:var(--vermelho);
 }
 
 /* RADAR */
-
 .radar-container{
   position:absolute;
   top:50%;
@@ -50,7 +72,7 @@ body{
 .radar-center{
   width:30px;
   height:30px;
-  background:#22c55e;
+  background:var(--verde);
   border-radius:50%;
   z-index:3;
 }
@@ -69,20 +91,14 @@ body{
 }
 
 @keyframes radar{
-  0%{
-    transform:scale(0.3);
-    opacity:1;
-  }
-  100%{
-    transform:scale(1.5);
-    opacity:0;
-  }
+  0%{transform:scale(0.3);opacity:1;}
+  100%{transform:scale(1.5);opacity:0;}
 }
 
-/* TEXTO PROCURANDO */
+/* PROCURANDO */
 .procurando-texto{
   position:absolute;
-  bottom:120px;
+  bottom:130px;
   left:50%;
   transform:translateX(-50%);
   background:#000;
@@ -96,7 +112,7 @@ body{
 .btn-resumo{
   position:absolute;
   right:20px;
-  bottom:110px;
+  bottom:120px;
   width:50px;
   height:50px;
   border-radius:50%;
@@ -125,11 +141,11 @@ body{
   cursor:pointer;
 }
 
-/* TELA OFFLINE */
+/* OFFLINE */
 .offline{
   position:absolute;
   inset:0;
-  background:#0f0f0f;
+  background:var(--preto);
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -151,12 +167,56 @@ body{
   display:none;
 }
 
+/* CARD CORRIDA */
+.card-corrida{
+  position:absolute;
+  bottom:170px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:420px;
+  background:var(--cinza);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 -10px 30px rgba(0,0,0,.6);
+  display:none;
+  z-index:10;
+}
+
+.card-corrida h3{
+  margin:0 0 10px 0;
+}
+
+.card-corrida button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:15px;
+  font-weight:800;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.btn-aceitar{
+  background:var(--verde);
+  color:#fff;
+}
+
+.btn-recusar{
+  background:#111;
+  border:1px solid #333;
+  color:#fff;
+}
+
 </style>
 </head>
 <body>
 
-<!-- MAPA -->
 <div id="map">Mapa será integrado aqui</div>
+
+<div id="resumoTopo" class="resumo-topo">
+  R$ 0,00
+</div>
 
 <!-- ONLINE AREA -->
 <div id="onlineArea">
@@ -179,25 +239,53 @@ body{
 
 </div>
 
+<!-- CARD CORRIDA -->
+<div id="cardCorrida" class="card-corrida">
+  <h3>Nova Viagem RF</h3>
+  <div id="cardOrigem"></div>
+  <div id="cardDestino"></div>
+  <div style="font-size:22px;font-weight:900;margin:10px 0;">
+    R$ <span id="cardValor"></span>
+  </div>
+
+  <button class="btn-aceitar" onclick="aceitarCorrida()">
+    Aceitar
+  </button>
+
+  <button class="btn-recusar" onclick="recusarCorrida()">
+    Recusar
+  </button>
+</div>
+
 <!-- OFFLINE AREA -->
 <div id="offlineArea" class="offline hidden">
-
   <h2>Você está offline</h2>
-
   <button class="btn-online" onclick="ficarOnline()">
     Ficar Online
   </button>
-
 </div>
 
 <script>
 
 let online = localStorage.getItem("driver_online") === "true";
-
-// ===== SIMULAÇÃO DE CORRIDA =====
-
 let simulacaoTimeout = null;
 
+/* RESUMO DO DIA */
+function atualizarResumo(){
+  let total = Number(localStorage.getItem("total_dia") || 0);
+  const topo = document.getElementById("resumoTopo");
+  topo.innerText = "R$ " + total.toFixed(2);
+
+  topo.classList.remove("positivo","negativo");
+
+  if(total > 0){
+    topo.classList.add("positivo");
+  } else if(total < 0){
+    topo.classList.add("negativo");
+  }
+}
+
+/* SIMULAÇÃO */
 function iniciarSimulacao(){
   simulacaoTimeout = setTimeout(()=>{
     gerarCorridaSimulada();
@@ -220,10 +308,23 @@ function gerarCorridaSimulada(){
 
   localStorage.setItem("corrida_ativa", JSON.stringify(corrida));
 
+  document.getElementById("cardOrigem").innerText = "Origem: " + corrida.origem;
+  document.getElementById("cardDestino").innerText = "Destino: " + corrida.destino;
+  document.getElementById("cardValor").innerText = corrida.valor.toFixed(2);
+
+  document.getElementById("cardCorrida").style.display="block";
+
   tocarSom();
   vibrar();
+}
 
-  window.location.href="indo-ate-passageiro.html";
+function aceitarCorrida(){
+  window.location.href="corrida-ativa.html";
+}
+
+function recusarCorrida(){
+  document.getElementById("cardCorrida").style.display="none";
+  iniciarSimulacao();
 }
 
 function tocarSom(){
@@ -237,13 +338,16 @@ function vibrar(){
   }
 }
 
+/* CONTROLE TELA */
 function atualizarTela(){
   if(online){
     document.getElementById("onlineArea").classList.remove("hidden");
     document.getElementById("offlineArea").classList.add("hidden");
+    iniciarSimulacao();
   }else{
     document.getElementById("onlineArea").classList.add("hidden");
     document.getElementById("offlineArea").classList.remove("hidden");
+    pararSimulacao();
   }
 }
 
@@ -251,13 +355,11 @@ function ficarOnline(){
   online=true;
   localStorage.setItem("driver_online","true");
   atualizarTela();
-  iniciarSimulacao();
 }
 
 function ficarOffline(){
   online=false;
   localStorage.setItem("driver_online","false");
-  pararSimulacao();
   atualizarTela();
 }
 
@@ -265,6 +367,7 @@ function abrirResumo(){
   window.location.href="resumo.html";
 }
 
+atualizarResumo();
 atualizarTela();
 
 </script>
