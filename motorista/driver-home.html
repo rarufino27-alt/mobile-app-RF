@@ -136,13 +136,30 @@ body{
 <div class="area-central">
 
   <div class="card" id="cardCorrida">
-    <div style="font-weight:700;color:#facc15;">Viagem RF • <span id="pagamento"></span></div>
-    <div class="valor" id="valorCorrida"></div>
-    <div class="rota" id="rotaCorrida"></div>
 
-    <button class="btn btn-aceitar" onclick="aceitarCorrida()">Aceitar</button>
-    <button class="btn btn-recusar" onclick="recusarCorrida()">Recusar</button>
+  <div style="font-weight:700;color:#facc15;">
+    Viagem RF • <span id="pagamento"></span>
   </div>
+
+  <div class="valor" id="valorCorrida"></div>
+
+  <div style="margin-top:15px;">
+    <div style="font-size:12px;opacity:.6;">⬆ ORIGEM</div>
+    <div style="font-weight:700;margin-bottom:10px;" id="origemCorrida"></div>
+
+    <div style="font-size:12px;opacity:.6;">⬇ DESTINO</div>
+    <div style="font-weight:700;" id="destinoCorrida"></div>
+  </div>
+
+  <button class="btn btn-aceitar" onclick="aceitarCorrida()">
+    Aceitar
+  </button>
+
+  <button class="btn btn-recusar" onclick="recusarCorrida()">
+    Recusar
+  </button>
+
+</div>
 
   <div id="mensagemCentral" style="opacity:.6;">
     Aguardando corridas...
