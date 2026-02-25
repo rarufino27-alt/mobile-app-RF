@@ -17,7 +17,6 @@
 body{
   margin:0;
   background:var(--preto);
-  color:var(--branco);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   overflow:hidden;
 }
@@ -25,198 +24,184 @@ body{
 /* TOPO */
 .top{
   background:#fff;
-  padding:25px 20px 30px;
+  padding:25px 20px 35px;
   border-bottom-left-radius:35px;
   border-bottom-right-radius:35px;
-  color:#000;
-  min-height:140px;
+  text-align:center;
+  min-height:160px;
 }
 
-.top strong{
-  color:var(--amarelo);
+.top-title{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:12px;
+  font-weight:700;
+  font-size:17px;
+}
+
+.origem-label{
+  font-size:12px;
+  opacity:.6;
+}
+
+.origem-nome{
+  font-size:20px;
+  font-weight:800;
+  margin-top:4px;
+  line-height:1.3;
+  word-break:break-word;
+}
+
+.btn-navegar{
+  margin-top:12px;
+  background:none;
+  border:none;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
 }
 
 /* MAPA */
 #map{
   position:absolute;
-  top:180px;
+  top:190px;
   left:0;
   right:0;
-  bottom:180px;
+  bottom:160px;
   background:#111;
   display:flex;
   align-items:center;
   justify-content:center;
+  color:#fff;
   opacity:.5;
 }
 
-/* BOTTOM */
-.bottom{
+/* SLIDER */
+.slider-container{
   position:absolute;
   bottom:0;
   width:100%;
-  background:#0f0f0f;
-  padding:20px;
-  border-top-left-radius:25px;
-  border-top-right-radius:25px;
-  box-shadow:0 -10px 30px rgba(0,0,0,.6);
+  padding:25px;
 }
 
-.btn{
+.slider{
+  position:relative;
+  height:60px;
+  background:#1c1c1c;
+  border-radius:30px;
+  overflow:hidden;
+}
+
+.slider-track{
+  position:absolute;
   width:100%;
-  padding:16px;
-  border:none;
-  border-radius:18px;
-  font-weight:700;
-  font-size:16px;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-.btn-nav{
-  background:#1c1c1c;
-  border:1px solid #333;
-  color:#fff;
-}
-
-.btn-principal{
-  background:var(--verde);
-  color:#fff;
-}
-
-.btn-cancelar{
-  background:#111;
-  color:#fff;
-  border:1px solid #333;
-}
-
-/* PASSAGEIRO INFO */
-.passageiro-info{
-  display:none;
-  background:#1c1c1c;
-  padding:15px;
-  border-radius:15px;
-  margin-top:10px;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
   font-size:14px;
+  color:#aaa;
 }
+
+.slider-thumb{
+  position:absolute;
+  width:55px;
+  height:55px;
+  background:var(--verde);
+  border-radius:50%;
+  top:2.5px;
+  left:2.5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.slider-thumb.cancel{
+  background:var(--vermelho);
+}
+
 </style>
 </head>
 <body>
 
 <div class="top">
-
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-    <img src="../assets/icons/icon-192.png" style="height:28px;">
-    <div style="font-weight:700;font-size:16px;">
-      Viagem em Andamento
-    </div>
+  <div class="top-title">
+    <img src="../assets/icons/icon-192.png" style="height:26px;">
+    Viagem em Andamento
   </div>
 
-  <div style="font-size:12px;opacity:.6;">
-    ORIGEM
-  </div>
+  <div class="origem-label">ORIGEM</div>
+  <div class="origem-nome" id="origemTopo"></div>
 
-  <div id="origemTopo" 
-       style="font-weight:800;
-              font-size:18px;
-              line-height:1.3;
-              word-wrap:break-word;">
-  </div>
-
-  <!-- BOTÃO NAVEGAÇÃO MINIMALISTA -->
-  <div style="margin-top:10px;">
-    <button onclick="abrirNavegacao()" 
-      style="
-        background:none;
-        border:none;
-        color:#000;
-        font-weight:600;
-        font-size:14px;
-        padding:0;
-        cursor:pointer;
-        display:flex;
-        align-items:center;
-        gap:6px;">
-      🧭 Navegar até passageiro
-    </button>
-  </div>
-
+  <button class="btn-navegar" onclick="abrirNavegacao()">
+    🧭 Navegar até passageiro
+  </button>
 </div>
 
 <div id="map">
   Mapa será integrado aqui
 </div>
 
-<div class="bottom">
-
-  <!-- BOTÃO PRINCIPAL -->
-  <button class="btn btn-principal" onclick="cheguei()">
-    Cheguei
-  </button>
-
-  <!-- PASSAGEIRO -->
-  <button class="btn btn-nav" onclick="toggleInfo()">
-    Encontrar com <span id="nomePassageiro"></span>
-  </button>
-
-  <div class="passageiro-info" id="infoPassageiro">
-    Telefone: 9xxxx-xxxx <br><br>
-    <button class="btn btn-nav" onclick="ligar()">Ligar</button>
-    <button class="btn btn-nav" onclick="mensagem()">Enviar Mensagem</button>
+<div class="slider-container">
+  <div class="slider" id="slider">
+    <div class="slider-track">
+      <span>Cancelar</span>
+      <span>Cheguei</span>
+    </div>
+    <div class="slider-thumb" id="thumb">→</div>
   </div>
-
-  <!-- CANCELAR -->
-  <button class="btn btn-cancelar" onclick="cancelar()">
-    Cancelar Corrida
-  </button>
-
 </div>
 
 <script>
 
 let corrida = JSON.parse(localStorage.getItem("corrida_ativa"));
-
 if(!corrida){
   window.location.href="driver-home.html";
 }
 
-document.getElementById("origemTopo").innerText = corrida.origem;
-document.getElementById("nomePassageiro").innerText = corrida.passageiro || "Passageiro";
-
-function toggleInfo(){
-  const box=document.getElementById("infoPassageiro");
-  box.style.display = box.style.display==="block" ? "none" : "block";
-}
+document.getElementById("origemTopo").innerText=corrida.origem;
 
 function abrirNavegacao(){
   const destino=encodeURIComponent(corrida.origem);
-
-  const waze="waze://?q="+destino+"&navigate=yes";
-  const google="https://www.google.com/maps/dir/?api=1&destination="+destino;
-
-  window.location.href=waze;
-
+  window.location.href="waze://?q="+destino+"&navigate=yes";
   setTimeout(()=>{
-    window.location.href=google;
-  },1200);
+    window.location.href="https://www.google.com/maps/dir/?api=1&destination="+destino;
+  },1000);
 }
 
-function cheguei(){
-  window.location.href="viagem-andamento.html";
-}
+/* SLIDER LOGIC */
+const thumb=document.getElementById("thumb");
+const slider=document.getElementById("slider");
 
-function ligar(){
-  alert("Em breve com máscara de número integrada.");
-}
+let startX=0;
 
-function mensagem(){
-  alert("Chat interno será integrado.");
-}
+thumb.addEventListener("touchstart",e=>{
+  startX=e.touches[0].clientX;
+});
 
-function cancelar(){
-  localStorage.removeItem("corrida_ativa");
-  window.location.href="driver-home.html";
-}
+thumb.addEventListener("touchmove",e=>{
+  let moveX=e.touches[0].clientX - startX;
+  if(moveX>0 && moveX<slider.offsetWidth-60){
+    thumb.style.left=moveX+"px";
+  }
+});
+
+thumb.addEventListener("touchend",()=>{
+  let pos=parseInt(thumb.style.left)||0;
+  if(pos>slider.offsetWidth-120){
+    window.location.href="viagem-andamento.html";
+  }else if(pos<-40){
+    localStorage.removeItem("corrida_ativa");
+    window.location.href="driver-home.html";
+  }
+  thumb.style.left="2.5px";
+});
 
 </script>
 
