@@ -7,18 +7,17 @@
 
 <style>
 :root{
-  --bg:#0f0f0f;
-  --card:#1c1c1c;
-  --text:#ffffff;
-  --text-muted:rgba(255,255,255,0.65);
-  --accent:#facc15;
+  --verde:#22c55e;
+  --cinza:#777;
 }
+
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
-  background:var(--bg);
-  color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#ffffff;
+  color:#111;
 }
 
 /* HEADER */
@@ -27,73 +26,140 @@ body{
   align-items:center;
   justify-content:space-between;
   padding:20px;
-  background:#111;
+  border-bottom:1px solid #eee;
 }
 
-.menu-btn{font-size:22px;cursor:pointer;}
-.title{font-weight:700;}
+.menu-btn{
+  font-size:24px;
+  cursor:pointer;
+}
 
-/* SIDEBAR */
-.sidebar{
+.title{
+  font-weight:800;
+  font-size:18px;
+}
+
+.spacer{
+  width:24px;
+}
+
+/* MENU INSTITUCIONAL */
+.menu{
   position:fixed;
   top:0;
-  left:-260px;
-  width:260px;
+  left:-280px;
+  width:280px;
   height:100%;
   background:#111;
+  color:#fff;
+  padding:25px 20px;
   transition:.3s;
-  padding:20px;
+  z-index:20;
 }
 
-.sidebar.active{left:0;}
+.menu.active{ left:0; }
 
-.sidebar a{
-  display:block;
-  margin-bottom:15px;
-  color:var(--text-muted);
-  text-decoration:none;
+.menu-header{
+  text-align:center;
+  margin-bottom:25px;
 }
+
+.menu-header img{
+  width:70px;
+  border-radius:50%;
+  margin-bottom:10px;
+}
+
+.menu-item{
+  margin:18px 0;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.menu-item:hover{ color:var(--verde); }
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  z-index:15;
+}
+
+.overlay.active{ display:block; }
 
 /* CONTENT */
 .content{
   padding:20px;
-  padding-bottom:90px;
+  padding-bottom:100px;
 }
 
 .card{
-  background:var(--card);
-  padding:20px;
-  border-radius:18px;
-  margin-bottom:15px;
+  background:#fff;
+  padding:25px;
+  border-radius:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.05);
   text-align:center;
+}
+
+/* FOTO */
+.car-wrapper{
+  position:relative;
+  width:100%;
+  height:170px;
+  margin-bottom:15px;
 }
 
 .car-img{
   width:100%;
-  height:160px;
-  background:#333;
-  border-radius:14px;
-  margin-bottom:15px;
+  height:170px;
+  background:#ddd;
+  border-radius:15px;
+  background-size:cover;
+  background-position:center;
+  cursor:pointer;
 }
 
-.modelo{
-  font-size:18px;
-  font-weight:700;
+.car-overlay{
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  background:var(--verde);
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
 }
 
-.info{
-  color:var(--text-muted);
+/* FORM */
+.label{
+  text-align:left;
+  margin-top:15px;
+  font-weight:600;
+  font-size:14px;
+}
+
+.input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #ddd;
   margin-top:6px;
+  font-size:14px;
 }
 
-.categoria{
-  margin-top:10px;
-  display:inline-block;
-  background:#222;
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:12px;
-  color:var(--accent);
+.select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  margin-top:6px;
+  font-size:14px;
 }
 
 .btn{
@@ -102,9 +168,10 @@ body{
   border-radius:14px;
   border:none;
   font-weight:700;
-  background:var(--accent);
+  background:var(--verde);
+  color:#fff;
   cursor:pointer;
-  margin-top:15px;
+  margin-top:20px;
 }
 
 /* BOTTOM NAV */
@@ -112,74 +179,158 @@ body{
   position:fixed;
   bottom:0;
   width:100%;
-  background:#111;
+  background:#ffffff;
   display:flex;
   justify-content:space-around;
   padding:12px 0;
-  border-top:1px solid #222;
+  border-top:1px solid #eee;
 }
 
 .bottom-nav div{
   font-size:12px;
-  color:var(--text-muted);
+  color:#777;
+  cursor:pointer;
 }
 
 .bottom-nav .active{
-  color:var(--accent);
+  color:var(--verde);
+  font-weight:700;
 }
 </style>
 </head>
 <body>
 
-<div class="sidebar" id="sidebar">
-  <a href="driver-home.html">Home</a>
-  <a href="perfil.html">Perfil</a>
-  <a href="carteira.html">Carteira</a>
-  <a href="configuracoes.html">Configurações</a>
+<!-- MENU -->
+<div id="menu" class="menu">
+  <div class="menu-header">
+    <img src="https://rarufino27-alt.github.io/mobile-app-RF/assets/icons/icon-192.png">
+  </div>
+  <div class="menu-item" onclick="ir('offline.html')">🏠 Início</div>
+  <div class="menu-item" onclick="ir('politica.html')">📄 Política de Privacidade</div>
+  <div class="menu-item" onclick="ir('termos.html')">📑 Termos de Uso</div>
+  <div class="menu-item" onclick="ir('configuracoes.html')">⚙ Configurações</div>
 </div>
 
+<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+<!-- HEADER -->
 <div class="header">
-  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
   <div class="title">Veículo</div>
-  <div></div>
+  <div class="spacer"></div>
 </div>
 
+<!-- CONTENT -->
 <div class="content">
 
   <div class="card">
 
-    <div class="car-img">
-      <!-- Futuro: imagem real do veículo -->
+    <div class="car-wrapper">
+      <div class="car-img" id="carImg"></div>
+      <div class="car-overlay" onclick="document.getElementById('carInput').click()">✏️</div>
+      <input type="file" id="carInput" accept="image/*" style="display:none">
     </div>
 
-    <div class="modelo">Toyota Corolla 2022</div>
-    <div class="info">Placa: ABC1D23</div>
-    <div class="info">Cor: Prata</div>
+    <div class="label">Modelo</div>
+    <input type="text" id="modelo" class="input">
 
-    <div class="categoria">RF Econômico</div>
+    <div class="label">Placa</div>
+    <input type="text" id="placa" class="input">
 
-    <div class="info" style="margin-top:10px;">
-      Status: Ativo
-    </div>
+    <div class="label">Cor</div>
+    <input type="text" id="cor" class="input">
 
-    <button class="btn">Editar Veículo</button>
+    <div class="label">Categoria</div>
+    <select id="categoria" class="select">
+      <option>RF Econômico</option>
+      <option>RF Comfort</option>
+      <option>RF Premium</option>
+    </select>
+
+    <div class="label">Status</div>
+    <select id="status" class="select">
+      <option>Ativo</option>
+      <option>Inativo</option>
+    </select>
+
+    <button class="btn" onclick="salvarVeiculo()">Salvar Alterações</button>
 
   </div>
 
 </div>
 
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <div onclick="location.href='driver-home.html'">Home</div>
-  <div>Corridas</div>
-  <div>Carteira</div>
+  <div onclick="location.href='corridas.html'">Corridas</div>
+  <div onclick="location.href='carteira.html'">Carteira</div>
   <div class="active">Veículo</div>
   <div onclick="location.href='perfil.html'">Perfil</div>
 </div>
 
 <script>
-function toggleSidebar(){
-  document.getElementById("sidebar").classList.toggle("active");
+
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("active");
+  document.getElementById("overlay").classList.toggle("active");
 }
+
+function ir(pagina){
+  window.location.href = pagina;
+}
+
+/* CARREGAR */
+function carregarVeiculo(){
+  document.getElementById("modelo").value =
+    localStorage.getItem("veiculo_modelo") || "Toyota Corolla 2022";
+
+  document.getElementById("placa").value =
+    localStorage.getItem("veiculo_placa") || "ABC1D23";
+
+  document.getElementById("cor").value =
+    localStorage.getItem("veiculo_cor") || "Prata";
+
+  document.getElementById("categoria").value =
+    localStorage.getItem("veiculo_categoria") || "RF Econômico";
+
+  document.getElementById("status").value =
+    localStorage.getItem("veiculo_status") || "Ativo";
+
+  const foto = localStorage.getItem("veiculo_foto");
+  if(foto){
+    document.getElementById("carImg").style.backgroundImage = `url(${foto})`;
+  }else{
+    document.getElementById("carImg").style.backgroundImage = "none";
+  }
+}
+
+/* SALVAR */
+function salvarVeiculo(){
+  localStorage.setItem("veiculo_modelo", document.getElementById("modelo").value);
+  localStorage.setItem("veiculo_placa", document.getElementById("placa").value);
+  localStorage.setItem("veiculo_cor", document.getElementById("cor").value);
+  localStorage.setItem("veiculo_categoria", document.getElementById("categoria").value);
+  localStorage.setItem("veiculo_status", document.getElementById("status").value);
+
+  alert("Veículo atualizado com sucesso!");
+}
+
+/* FOTO */
+document.getElementById("carInput").addEventListener("change", function(){
+  const file = this.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      localStorage.setItem("veiculo_foto", e.target.result);
+      document.getElementById("carImg").style.backgroundImage =
+        `url(${e.target.result})`;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+carregarVeiculo();
+
 </script>
 
 </body>
