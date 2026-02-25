@@ -48,13 +48,8 @@ body{
   z-index:5;
 }
 
-.resumo-topo.positivo{
-  color:var(--verde);
-}
-
-.resumo-topo.negativo{
-  color:var(--vermelho);
-}
+.resumo-topo.positivo{ color:var(--verde); }
+.resumo-topo.negativo{ color:var(--vermelho); }
 
 /* RADAR */
 .radar-container{
@@ -86,9 +81,7 @@ body{
   animation: radar 2.5s infinite;
 }
 
-.radar-wave:nth-child(2){
-  animation-delay:1s;
-}
+.radar-wave:nth-child(2){ animation-delay:1s; }
 
 @keyframes radar{
   0%{transform:scale(0.3);opacity:1;}
@@ -163,9 +156,7 @@ body{
   cursor:pointer;
 }
 
-.hidden{
-  display:none;
-}
+.hidden{ display:none; }
 
 /* CARD CORRIDA */
 .card-corrida{
@@ -197,15 +188,27 @@ body{
   cursor:pointer;
 }
 
-.btn-aceitar{
-  background:var(--verde);
-  color:#fff;
-}
-
+.btn-aceitar{ background:var(--verde); color:#fff; }
 .btn-recusar{
   background:#111;
   border:1px solid #333;
   color:#fff;
+}
+
+/* BARRA TEMPO */
+.barra-container{
+  background:#333;
+  height:6px;
+  border-radius:5px;
+  overflow:hidden;
+  margin-bottom:8px;
+}
+
+.barra-tempo{
+  height:100%;
+  width:100%;
+  background:var(--verde);
+  transition:width 1s linear;
 }
 
 </style>
@@ -242,10 +245,20 @@ body{
 <!-- CARD CORRIDA -->
 <div id="cardCorrida" class="card-corrida">
   <h3>Nova Viagem RF</h3>
+
   <div id="cardOrigem"></div>
   <div id="cardDestino"></div>
+
   <div style="font-size:22px;font-weight:900;margin:10px 0;">
     R$ <span id="cardValor"></span>
+  </div>
+
+  <div class="barra-container">
+    <div id="barraTempo" class="barra-tempo"></div>
+  </div>
+
+  <div style="font-size:12px;opacity:.7;text-align:right;">
+    <span id="contadorTempo">10</span>s restantes
   </div>
 
   <button class="btn-aceitar" onclick="aceitarCorrida()">
@@ -269,8 +282,10 @@ body{
 
 let online = localStorage.getItem("driver_online") === "true";
 let simulacaoTimeout = null;
+let tempoRestante = 10;
+let intervaloContador = null;
 
-/* RESUMO DO DIA */
+/* RESUMO */
 function atualizarResumo(){
   let total = Number(localStorage.getItem("total_dia") || 0);
   const topo = document.getElementById("resumoTopo");
@@ -278,11 +293,8 @@ function atualizarResumo(){
 
   topo.classList.remove("positivo","negativo");
 
-  if(total > 0){
-    topo.classList.add("positivo");
-  } else if(total < 0){
-    topo.classList.add("negativo");
-  }
+  if(total > 0){ topo.classList.add("positivo"); }
+  else if(total < 0){ topo.classList.add("negativo"); }
 }
 
 /* SIMULAÇÃO */
@@ -314,21 +326,13 @@ function gerarCorridaSimulada(){
 
   document.getElementById("cardCorrida").style.display="block";
 
+  iniciarContador();
   tocarSom();
   vibrar();
 }
 
-function aceitarCorrida(){
-  window.location.href="corrida-ativa.html";
-}
-
-function recusarCorrida(){
-  document.getElementById("cardCorrida").style.display="none";
-  iniciarSimulacao();
-}
-
 function tocarSom(){
-  const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+  const audio = new Audio("Assenta/sounds/notificacao.mp3");
   audio.play();
 }
 
@@ -338,7 +342,49 @@ function vibrar(){
   }
 }
 
-/* CONTROLE TELA */
+function iniciarContador(){
+  tempoRestante = 10;
+  atualizarBarra();
+  document.getElementById("contadorTempo").innerText = tempoRestante;
+
+  intervaloContador = setInterval(()=>{
+    tempoRestante--;
+    document.getElementById("contadorTempo").innerText = tempoRestante;
+    atualizarBarra();
+
+    if(tempoRestante <= 0){
+      clearInterval(intervaloContador);
+      autoRecusar();
+    }
+  },1000);
+}
+
+function atualizarBarra(){
+  const porcentagem = (tempoRestante / 10) * 100;
+  const barra = document.getElementById("barraTempo");
+  barra.style.width = porcentagem + "%";
+
+  if(tempoRestante <= 3){
+    barra.style.background = "#ef4444";
+  }
+}
+
+function autoRecusar(){
+  document.getElementById("cardCorrida").style.display="none";
+  iniciarSimulacao();
+}
+
+function aceitarCorrida(){
+  clearInterval(intervaloContador);
+  window.location.href="corrida-ativa.html";
+}
+
+function recusarCorrida(){
+  clearInterval(intervaloContador);
+  document.getElementById("cardCorrida").style.display="none";
+  iniciarSimulacao();
+}
+
 function atualizarTela(){
   if(online){
     document.getElementById("onlineArea").classList.remove("hidden");
