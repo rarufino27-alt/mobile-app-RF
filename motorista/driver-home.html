@@ -3,260 +3,198 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RF Motorista</title>
+<title>RF – Painel Motorista</title>
 
 <style>
 :root{
   --preto:#0f0f0f;
-  --branco:#ffffff;
-  --amarelo:#facc15;
   --verde:#22c55e;
   --vermelho:#ef4444;
+  --branco:#ffffff;
 }
 
 body{
   margin:0;
-  background:var(--preto);
-  color:var(--branco);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-}
-
-/* HEADER */
-.header{
-  background:#fff;
-  padding:25px 20px 60px;
-  border-bottom-left-radius:40px;
-  border-bottom-right-radius:40px;
-  color:#000;
-  font-weight:900;
-  font-size:1.3rem;
-}
-
-/* RESUMO */
-.resumo{
-  margin:-40px 20px 20px 20px;
-  background:#1c1c1c;
-  padding:18px;
-  border-radius:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:700;
-}
-
-.resumo span{
-  font-size:20px;
-}
-
-/* CENTRO */
-.area-central{
-  margin:20px;
-  height:360px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
-}
-
-/* CARD CORRIDA */
-.card{
-  width:100%;
-  max-width:420px;
-  background:#1c1c1c;
-  padding:20px;
-  border-radius:20px;
-  display:none;
-  box-shadow:0 15px 40px rgba(0,0,0,.6);
-}
-
-.card .valor{
-  font-size:32px;
-  font-weight:900;
-  margin:10px 0;
-}
-
-.card .rota{
-  font-size:14px;
-  opacity:.7;
-}
-
-.btn{
-  width:100%;
-  padding:15px;
-  border:none;
-  border-radius:16px;
-  font-weight:700;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-.btn-aceitar{background:var(--verde);color:#fff;}
-.btn-recusar{background:#111;color:#fff;border:1px solid #333;}
-.btn-online{
-  position:fixed;
-  bottom:80px;
-  left:20px;
-  right:20px;
-  background:var(--amarelo);
-  color:#000;
-}
-
-/* MENU */
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
   background:#111;
-  display:flex;
-  justify-content:space-around;
-  padding:12px 0;
-  border-top:1px solid #222;
+  color:#fff;
+  overflow:hidden;
 }
 
-.bottom-nav div{
-  font-size:12px;
-  color:#aaa;
+/* MAPA */
+#map{
+  position:absolute;
+  inset:0;
+  background:#1c1c1c;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  opacity:.5;
+}
+
+/* PROCURANDO */
+.procurando{
+  position:absolute;
+  bottom:110px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#000;
+  padding:12px 25px;
+  border-radius:25px;
+  font-weight:600;
+  font-size:14px;
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+
+.pontos span{
+  animation: piscar 1.5s infinite;
+}
+
+.pontos span:nth-child(2){
+  animation-delay:.2s;
+}
+
+.pontos span:nth-child(3){
+  animation-delay:.4s;
+}
+
+@keyframes piscar{
+  0%{opacity:.2}
+  50%{opacity:1}
+  100%{opacity:.2}
+}
+
+/* BOTÃO RESUMO */
+.btn-resumo{
+  position:absolute;
+  right:20px;
+  bottom:110px;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
   cursor:pointer;
 }
+
+/* BOTÃO OFFLINE */
+.btn-offline{
+  position:absolute;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--vermelho);
+  color:#fff;
+  padding:18px 35px;
+  border:none;
+  border-radius:30px;
+  font-weight:800;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* TELA OFFLINE */
+.offline{
+  position:absolute;
+  inset:0;
+  background:#0f0f0f;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+}
+
+.btn-online{
+  background:var(--verde);
+  padding:18px 35px;
+  border:none;
+  border-radius:30px;
+  font-weight:800;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.hidden{
+  display:none;
+}
+
 </style>
 </head>
 <body>
 
-<audio id="audioChamada" src="../assets/sounds/notificacao.mp3"></audio>
+<!-- MAPA -->
+<div id="map">Mapa será integrado aqui</div>
 
-<div class="header">
-  MOTORISTA RF
-</div>
+<!-- ONLINE AREA -->
+<div id="onlineArea">
 
-<div class="resumo">
-  <div>Resumo do Dia</div>
-  <span id="resumoValor">R$ 0,00</span>
-</div>
-
-<div class="area-central">
-
-  <div class="card" id="cardCorrida">
-
-  <div style="font-weight:700;color:#facc15;">
-    Viagem RF • <span id="pagamento"></span>
+  <div class="procurando">
+    Procurando viagens
+    <div class="pontos">
+      <span>.</span>
+      <span>.</span>
+      <span>.</span>
+    </div>
   </div>
 
-  <div class="valor" id="valorCorrida"></div>
+  <div class="btn-resumo" onclick="abrirResumo()">📊</div>
 
-  <div style="margin-top:15px;">
-    <div style="font-size:12px;opacity:.6;">⬆ ORIGEM</div>
-    <div style="font-weight:700;margin-bottom:10px;" id="origemCorrida"></div>
-
-    <div style="font-size:12px;opacity:.6;">⬇ DESTINO</div>
-    <div style="font-weight:700;" id="destinoCorrida"></div>
-  </div>
-
-  <button class="btn btn-aceitar" onclick="aceitarCorrida()">
-    Aceitar
-  </button>
-
-  <button class="btn btn-recusar" onclick="recusarCorrida()">
-    Recusar
+  <button class="btn-offline" onclick="ficarOffline()">
+    Ficar Offline
   </button>
 
 </div>
 
-  <div id="mensagemCentral" style="opacity:.6;">
-    Aguardando corridas...
-  </div>
+<!-- OFFLINE AREA -->
+<div id="offlineArea" class="offline hidden">
 
-</div>
+  <h2>Você está offline</h2>
 
-<button class="btn btn-online" id="btnOnline" onclick="toggleOnline()">
-  Ficar Online
-</button>
+  <button class="btn-online" onclick="ficarOnline()">
+    Ficar Online
+  </button>
 
-<div class="bottom-nav">
-  <div>Home</div>
-  <div onclick="location.href='corridas.html'">Corridas</div>
-  <div onclick="location.href='carteira.html'">Carteira</div>
-  <div onclick="location.href='veiculo.html'">Veículo</div>
-  <div onclick="location.href='perfil.html'">Perfil</div>
 </div>
 
 <script>
 
-let online=false;
-let corridaAtual=null;
-const audio=document.getElementById("audioChamada");
+let online = localStorage.getItem("driver_online") === "true";
 
-/* RESUMO */
-function atualizarResumo(){
-  let total=Number(localStorage.getItem("total_dia")||0);
-  document.getElementById("resumoValor").innerText=
-    "R$ "+total.toFixed(2);
-}
-atualizarResumo();
-
-/* ONLINE */
-function toggleOnline(){
-  online=!online;
-  const btn=document.getElementById("btnOnline");
-
+function atualizarTela(){
   if(online){
-    btn.innerText="Online";
-    btn.style.background="#22c55e";
-    simularCorrida();
+    document.getElementById("onlineArea").classList.remove("hidden");
+    document.getElementById("offlineArea").classList.add("hidden");
   }else{
-    btn.innerText="Ficar Online";
-    btn.style.background="#facc15";
-    esconderCorrida();
+    document.getElementById("onlineArea").classList.add("hidden");
+    document.getElementById("offlineArea").classList.remove("hidden");
   }
 }
 
-/* SIMULAÇÃO */
-function simularCorrida(){
-
-  if(!online) return;
-
-  corridaAtual={
-    valor:12.00,
-    forma_pagamento:"Dinheiro",
-    origem:"Farmácia Central",
-    destino:"Rua das Flores",
-    passageiro:"Carlos"
-  };
-
-  document.getElementById("pagamento").innerText=
-    corridaAtual.forma_pagamento;
-
-  document.getElementById("valorCorrida").innerText=
-    "R$ "+corridaAtual.valor.toFixed(2);
-
-  document.getElementById("origemCorrida").innerText=
-    corridaAtual.origem;
-
-  document.getElementById("destinoCorrida").innerText=
-    corridaAtual.destino;
-
-  audio.loop=true;
-  audio.play().catch(()=>{});
-
-  document.getElementById("cardCorrida").style.display="block";
-  document.getElementById("mensagemCentral").style.display="none";
+function ficarOnline(){
+  online=true;
+  localStorage.setItem("driver_online","true");
+  atualizarTela();
 }
 
-function esconderCorrida(){
-  audio.pause();
-  audio.currentTime=0;
-  document.getElementById("cardCorrida").style.display="none";
-  document.getElementById("mensagemCentral").style.display="block";
+function ficarOffline(){
+  online=false;
+  localStorage.setItem("driver_online","false");
+  atualizarTela();
 }
 
-function aceitarCorrida(){
-  esconderCorrida();
-  localStorage.setItem("corrida_ativa",JSON.stringify(corridaAtual));
-  window.location.href="corrida-ativa.html";
+function abrirResumo(){
+  window.location.href="resumo.html";
 }
 
-function recusarCorrida(){
-  esconderCorrida();
-}
+atualizarTela();
 
 </script>
 
