@@ -272,9 +272,8 @@ function simularCorrida(){
 
 function aceitarCorrida(){
   pararAlerta();
-  esconderCards();
-  document.getElementById("indoCard").classList.remove("hidden");
-  document.getElementById("indoRota").innerText=corridaAtual.origem;
+  localStorage.setItem("corrida_ativa", JSON.stringify(corridaAtual));
+  window.location.href = "corrida-ativa.html";
 }
 
 function iniciarCorrida(){
