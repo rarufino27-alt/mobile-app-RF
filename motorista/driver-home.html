@@ -3,209 +3,309 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RF – Online</title>
+<title>RF Motorista</title>
 
 <style>
 :root{
-  --preto:#0f0f0f;
   --verde:#22c55e;
+  --preto:#111;
+  --cinza:#777;
   --vermelho:#ef4444;
-  --cinza:#1c1c1c;
 }
 
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#111;
-  color:#fff;
+  background:#eaeaea;
   overflow:hidden;
 }
 
+/* MAPA */
 #map{
   position:absolute;
   inset:0;
-  background:#1c1c1c;
+  background:linear-gradient(180deg,#dfe6e9,#cfd8dc);
+}
+
+/* TOP BAR */
+.top-bar{
+  position:absolute;
+  top:20px;
+  left:20px;
+  right:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:10;
+}
+
+.menu-btn{
+  width:45px;
+  height:45px;
+  border-radius:12px;
+  background:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
-  opacity:.35;
-}
-
-.resumo{
-  position:absolute;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#000;
-  padding:10px 20px;
-  border-radius:25px;
-  font-weight:800;
-  color:#22c55e;
-}
-
-.radar{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:150px;
-  height:150px;
-}
-
-.radar div{
-  position:absolute;
-  border-radius:50%;
-  border:2px solid rgba(34,197,94,0.4);
-  width:150px;
-  height:150px;
-  animation:radar 2.5s infinite;
-}
-
-.radar div:nth-child(2){
-  animation-delay:1s;
-}
-
-@keyframes radar{
-  0%{transform:scale(.3);opacity:1;}
-  100%{transform:scale(1.5);opacity:0;}
-}
-
-.radar-center{
-  position:absolute;
-  width:30px;
-  height:30px;
-  background:#22c55e;
-  border-radius:50%;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-}
-
-.procurando{
-  position:absolute;
-  bottom:120px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#000;
-  padding:12px 25px;
-  border-radius:25px;
-}
-
-.btn-offline{
-  position:absolute;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#ef4444;
-  border:none;
-  padding:16px 40px;
-  border-radius:30px;
-  color:#fff;
-  font-weight:800;
+  font-size:20px;
+  box-shadow:0 5px 15px rgba(0,0,0,.1);
   cursor:pointer;
 }
 
-/* CARD */
-.card{
+.saldo-box{
+  background:#1e1e2f;
+  color:#fff;
+  padding:10px 25px;
+  border-radius:25px;
+  font-weight:700;
+  box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+/* STATUS */
+.status-bar{
   position:absolute;
-  bottom:170px;
-  left:50%;
-  transform:translateX(-50%);
-  width:90%;
-  max-width:420px;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  padding:18px;
+  border-top-left-radius:20px;
+  border-top-right-radius:20px;
+  text-align:center;
+  font-weight:700;
+  font-size:18px;
+  box-shadow:0 -5px 20px rgba(0,0,0,.1);
+}
+
+.status-bar button{
+  margin-top:10px;
+  padding:10px 20px;
+  border:none;
+  border-radius:25px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.online-btn{
+  background:var(--verde);
+  color:#fff;
+}
+
+.recharge-btn{
+  background:var(--vermelho);
+  color:#fff;
+}
+
+/* CARD CORRIDA */
+.request-card{
+  position:absolute;
+  bottom:120px;
+  left:15px;
+  right:15px;
   background:#1c1c1c;
-  border-radius:20px;
+  color:#fff;
+  border-radius:25px;
   padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
   display:none;
 }
 
-.card button{
-  width:100%;
+.request-card.active{
+  display:block;
+  animation:slideUp .4s ease;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(40px);opacity:0;}
+  to{transform:translateY(0);opacity:1;}
+}
+
+.price{
+  text-align:center;
+  margin-bottom:15px;
+}
+
+.price h2{
+  font-size:32px;
+  margin:0;
+}
+
+.price small{
+  color:#ccc;
+}
+
+.route{
+  font-size:14px;
+  margin-top:10px;
+  color:#ccc;
+}
+
+.actions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:20px;
+}
+
+.btn{
+  flex:1;
   padding:14px;
   border:none;
-  border-radius:15px;
+  border-radius:30px;
   font-weight:800;
-  margin-top:10px;
   cursor:pointer;
 }
 
-.btn-aceitar{background:#22c55e;color:#fff;}
-.btn-recusar{background:#111;color:#fff;border:1px solid #333;}
+.btn-accept{
+  background:var(--verde);
+  color:#fff;
+  margin-left:10px;
+}
 
+.btn-decline{
+  background:#444;
+  color:#fff;
+  margin-right:10px;
+}
 </style>
 </head>
 <body>
 
-<div id="map">Mapa será integrado aqui</div>
+<div id="map"></div>
 
-<div class="resumo">R$ 0,00</div>
-
-<div class="radar">
-  <div></div>
-  <div></div>
-  <div class="radar-center"></div>
+<div class="top-bar">
+  <div class="menu-btn">☰</div>
+  <div class="saldo-box">
+    Créditos: <span id="saldo">0.00</span>
+  </div>
 </div>
 
-<div class="procurando">
-  Procurando viagens...
+<div id="requestCard" class="request-card">
+
+  <div class="price">
+    <div>Dinheiro</div>
+    <h2>R$ 9,00</h2>
+    <small>R$2,34/km</small>
+  </div>
+
+  <div class="route">
+    <strong>Origem:</strong><br>
+    Avenida Eraldo Barros de Souza
+  </div>
+
+  <div class="route">
+    <strong>Destino:</strong><br>
+    Assembleia de Deus Vida Nova
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-decline" onclick="recusar()">Recusar</button>
+    <button class="btn btn-accept" onclick="aceitar()">Aceitar</button>
+  </div>
+
 </div>
 
-<button class="btn-offline" onclick="ficarOffline()">
-  Ficar Offline
-</button>
-
-<div id="card" class="card">
-  <h3>Nova Viagem RF</h3>
-  <div>Origem: Farmácia Central</div>
-  <div>Destino: Rua das Flores</div>
-  <div style="font-size:22px;margin-top:10px;">R$ 12.00</div>
-
-  <button class="btn-aceitar" onclick="aceitar()">
-    Aceitar
-  </button>
-  <button class="btn-recusar" onclick="recusar()">
-    Recusar
-  </button>
+<div class="status-bar" id="statusBar">
 </div>
-
-<audio id="audioNotificacao" preload="auto">
-  <source src="https://rarufino27-alt.github.io/mobile-app-RF/assets/sounds/notificacao.mp3" type="audio/mpeg">
-</audio>
 
 <script>
 
-const audio = document.getElementById("audioNotificacao");
+let online = false;
 
-document.addEventListener("click", function desbloquear(){
-  audio.play().then(()=>{
-    audio.pause();
-    audio.currentTime = 0;
-    document.removeEventListener("click", desbloquear);
-  });
-});
-
-function tocarSom(){
-  audio.currentTime = 0;
-  audio.play();
-  navigator.vibrate && navigator.vibrate([300,150,300]);
+/* ATUALIZA SALDO */
+function atualizarSaldo(){
+  let saldo = parseFloat(localStorage.getItem("creditos")) || 0;
+  document.getElementById("saldo").innerText = saldo.toFixed(2);
+  return saldo;
 }
 
-setTimeout(()=>{
-  document.getElementById("card").style.display="block";
-  tocarSom();
-},5000);
+/* STATUS */
+function atualizarStatus(){
+  let saldo = atualizarSaldo();
+  let status = document.getElementById("statusBar");
 
+  if(saldo <= 0){
+    online = false;
+    status.innerHTML = `
+      Sem créditos disponíveis<br>
+      <button class="recharge-btn" onclick="irCarteira()">Recarregar Créditos</button>
+    `;
+    return;
+  }
+
+  if(!online){
+    status.innerHTML = `
+      Offline<br>
+      <button class="online-btn" onclick="ficarOnline()">Ficar Online</button>
+    `;
+  }else{
+    status.innerHTML = "Buscando corridas...";
+    simularCorrida();
+  }
+}
+
+/* ONLINE */
+function ficarOnline(){
+  let saldo = atualizarSaldo();
+  if(saldo <= 0){
+    atualizarStatus();
+    return;
+  }
+
+  online = true;
+  atualizarStatus();
+}
+
+/* SIMULAÇÃO DE CORRIDA */
+function simularCorrida(){
+  setTimeout(()=>{
+    if(!online) return;
+
+    let saldo = atualizarSaldo();
+    if(saldo <= 0){
+      online = false;
+      atualizarStatus();
+      return;
+    }
+
+    document.getElementById("requestCard").classList.add("active");
+  },5000);
+}
+
+/* ACEITAR */
 function aceitar(){
-  window.location.href="corrida-ativa.html";
+  let saldo = atualizarSaldo();
+
+  if(saldo < 1){
+    alert("Créditos insuficientes.");
+    return;
+  }
+
+  saldo -= 1;
+  localStorage.setItem("creditos", saldo);
+  atualizarSaldo();
+
+  alert("Corrida aceita! 1 crédito descontado.");
+  document.getElementById("requestCard").classList.remove("active");
+
+  if(saldo <= 0){
+    online = false;
+  }
+
+  atualizarStatus();
 }
 
+/* RECUSAR */
 function recusar(){
-  document.getElementById("card").style.display="none";
+  document.getElementById("requestCard").classList.remove("active");
+  simularCorrida();
 }
 
-function ficarOffline(){
-  window.location.href="offline.html";
+function irCarteira(){
+  window.location.href="carteira.html";
 }
+
+/* INIT */
+atualizarStatus();
 
 </script>
 
