@@ -10,9 +10,14 @@
   --verde:#22c55e;
   --preto:#111;
   --cinza:#777;
+  --vermelho:#ef4444;
 }
 
-/* BODY */
+/* RESET */
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -32,7 +37,7 @@ body{
 }
 
 .menu-btn{
-  font-size:22px;
+  font-size:24px;
   cursor:pointer;
 }
 
@@ -61,6 +66,7 @@ body{
   justify-content:center;
   text-align:center;
   padding:0 30px;
+  overflow:hidden;
 }
 
 .slide{
@@ -68,6 +74,7 @@ body{
   opacity:0;
   transform:translateX(30px);
   transition:0.6s ease;
+  max-width:300px;
 }
 
 .slide.active{
@@ -127,28 +134,62 @@ body{
   position:fixed;
   top:0;
   left:0;
-  width:260px;
+  width:280px;
   height:100%;
   background:#111;
   color:#fff;
-  padding:30px 20px;
+  padding:25px 20px;
   transform:translateX(-100%);
   transition:transform 0.3s ease;
   z-index:20;
+  overflow-y:auto;
 }
 
 .menu.active{
   transform:translateX(0);
 }
 
-.menu h3{
-  margin-top:0;
+.menu-header{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.menu-header img{
+  width:70px;
+  border-radius:50%;
+  margin-bottom:10px;
+}
+
+.menu-header .nome{
+  font-weight:800;
+}
+
+.menu-header .status{
+  font-size:13px;
+  color:#aaa;
+  margin-top:5px;
+}
+
+.menu-header .saldo{
+  margin-top:8px;
+  font-size:14px;
+}
+
+.menu hr{
+  border:none;
+  height:1px;
+  background:#333;
+  margin:20px 0;
 }
 
 .menu-item{
-  margin:20px 0;
+  margin:18px 0;
   cursor:pointer;
   font-weight:600;
+}
+
+.menu-item:hover{
+  color:var(--verde);
 }
 
 /* OVERLAY */
@@ -170,14 +211,32 @@ body{
 
 <!-- MENU -->
 <div id="menu" class="menu">
-  <h3>RF Motorista</h3>
-  <div class="menu-item" onclick="ir('perfil.html')">Perfil</div>
-  <div class="menu-item" onclick="ir('veiculo.html')">Veículo</div>
-  <div class="menu-item" onclick="ir('carteira.html')">Carteira</div>
-  <div class="menu-item" onclick="ir('configuracoes.html')">Configurações</div>
-  <div class="menu-item" onclick="ir('politica.html')">Política de Privacidade</div>
-  <div class="menu-item" onclick="ir('termos.html')">Termos de Uso</div>
-  <div class="menu-item" onclick="ir('suporte.html')">Suporte</div>
+
+  <div class="menu-header">
+    <img src="https://rarufino27-alt.github.io/mobile-app-RF/assets/icons/icon-192.png">
+    <div class="nome" id="nomeMotorista">Motorista RF</div>
+    <div class="status">Status: Offline</div>
+    <div class="saldo">
+      Saldo hoje: <strong id="saldoDia">R$ 0,00</strong>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="menu-item" onclick="ir('perfil.html')">👤 Perfil</div>
+  <div class="menu-item" onclick="ir('veiculo.html')">🚗 Veículo</div>
+  <div class="menu-item" onclick="ir('carteira.html')">💰 Carteira</div>
+  <div class="menu-item" onclick="ir('configuracoes.html')">⚙ Configurações</div>
+  <div class="menu-item" onclick="ir('politica.html')">📄 Política</div>
+  <div class="menu-item" onclick="ir('termos.html')">📑 Termos</div>
+  <div class="menu-item" onclick="ir('suporte.html')">📞 Suporte</div>
+
+  <hr>
+
+  <div class="menu-item" style="color:var(--vermelho);" onclick="logout()">
+    🚪 Sair
+  </div>
+
 </div>
 
 <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
@@ -243,7 +302,21 @@ setInterval(()=>{
   slides[index].classList.add("active");
 },4000);
 
-/* BOTÃO */
+/* DADOS MOTORISTA */
+document.getElementById("nomeMotorista").innerText =
+  localStorage.getItem("motorista_nome") || "Motorista RF";
+
+let saldo = Number(localStorage.getItem("total_dia") || 0);
+document.getElementById("saldoDia").innerText =
+  "R$ " + saldo.toFixed(2);
+
+/* LOGOUT */
+function logout(){
+  localStorage.clear();
+  window.location.href="index.html";
+}
+
+/* ONLINE */
 function ficarOnline(){
   window.location.href="driver-home.html";
 }
