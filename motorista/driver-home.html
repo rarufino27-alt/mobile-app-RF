@@ -209,6 +209,8 @@ body{
 
 <script>
 
+let corridaAtual = null;
+const TAXA_PLATAFORMA = 0.15;
 let online = false;
 let audio = new Audio("https://rarufino27-alt.github.io/mobile-app-RF/assets/sounds/notificacao.mp3");
 audio.loop = true;
@@ -292,29 +294,45 @@ function pararSom(){
 
 /* ACEITAR */
 function aceitar(){
-  let saldo = atualizarSaldo();
 
-  if(saldo < 1){
-    alert("Créditos insuficientes.");
-    return;
-  }
-
-  saldo -= 1;
-  localStorage.setItem("creditos", saldo);
-  atualizarSaldo();
+  let valorCorrida = 9.00; // depois virá do backend
+  corridaAtual = valorCorrida;
 
   pararSom();
 
-  alert("Corrida aceita! 1 crédito descontado.");
+  alert("Corrida aceita!");
+
   document.getElementById("requestCard").classList.remove("active");
 
-  if(saldo <= 0){
+  // aqui futuramente você redireciona para corrida-ativa.html
+}
+
+  function finalizarCorrida(){
+
+  if(!corridaAtual) return;
+
+  let saldo = atualizarSaldo();
+
+  let desconto = corridaAtual * TAXA_PLATAFORMA;
+
+  if(saldo < desconto){
+    alert("Créditos insuficientes para pagar a taxa da plataforma.");
     online = false;
+    atualizarStatus();
+    return;
   }
+
+  saldo -= desconto;
+
+  localStorage.setItem("creditos", saldo);
+
+  alert("Corrida finalizada. Taxa descontada: R$ " + desconto.toFixed(2));
+
+  corridaAtual = null;
 
   atualizarStatus();
 }
-
+  
 /* RECUSAR */
 function recusar(){
   pararSom();
