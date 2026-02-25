@@ -8,15 +8,19 @@
 <style>
 :root{
   --verde:#22c55e;
+  --vermelho:#ef4444;
   --preto:#111;
   --cinza:#777;
 }
 
-body{
+html,body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#eef1f5;
+  padding:0;
+  width:100%;
+  height:100%;
   overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#f2f4f5;
 }
 
 /* MAPA */
@@ -26,42 +30,7 @@ body{
   background:linear-gradient(180deg,#dfe6e9,#cfd8dc);
 }
 
-/* MENU LATERAL */
-.menu{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:#111;
-  color:#fff;
-  padding:25px;
-  transition:.3s;
-  z-index:50;
-}
-
-.menu.active{
-  left:0;
-}
-
-.menu-item{
-  margin:18px 0;
-  cursor:pointer;
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  display:none;
-  z-index:40;
-}
-
-.overlay.active{
-  display:block;
-}
-
-/* TOPO */
+/* TOP BAR */
 .top-bar{
   position:absolute;
   top:20px;
@@ -70,7 +39,7 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  z-index:30;
+  z-index:10;
 }
 
 .menu-btn{
@@ -89,57 +58,81 @@ body{
 .credit-box{
   background:#111;
   color:#fff;
-  padding:8px 16px;
-  border-radius:20px;
-  font-size:13px;
-  font-weight:600;
+  padding:8px 18px;
+  border-radius:25px;
+  font-weight:700;
+  font-size:14px;
 }
 
-/* GANHOS */
-.day-card{
+/* GANHOS HOJE */
+.daily-card{
   position:absolute;
-  top:100px;
+  top:110px;
   left:50%;
   transform:translateX(-50%);
-  width:85%;
-  max-width:420px;
   background:#fff;
-  padding:20px;
+  padding:25px 40px;
   border-radius:20px;
   text-align:center;
   box-shadow:0 10px 30px rgba(0,0,0,.08);
-  z-index:20;
+  z-index:5;
 }
 
-.day-card h3{
-  margin:0;
-  font-size:14px;
-  color:var(--cinza);
+.daily-card small{
+  color:#777;
+  font-weight:600;
 }
 
-.day-card .valor{
-  font-size:34px;
+.daily-card h2{
+  margin:5px 0 0;
+  font-size:36px;
+}
+
+/* BOTÃO OFFLINE */
+.offline-btn{
+  position:absolute;
+  bottom:40px;
+  left:50%;
+  transform:translateX(-50%);
+  width:95px;
+  height:95px;
+  border-radius:50%;
+  background:var(--vermelho);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
   font-weight:800;
-  margin-top:5px;
+  font-size:16px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+  animation:pulse 2s infinite;
+  z-index:10;
+}
+
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(239,68,68,.6);}
+  70%{box-shadow:0 0 0 20px rgba(239,68,68,0);}
+  100%{box-shadow:0 0 0 0 rgba(239,68,68,0);}
 }
 
 /* CARD CORRIDA */
 .request-card{
   position:absolute;
-  bottom:150px;
+  bottom:160px;
   left:15px;
   right:15px;
   background:#1c1c1c;
   color:#fff;
   border-radius:25px;
   padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
   display:none;
-  z-index:30;
 }
 
 .request-card.active{
   display:block;
-  animation:slideUp .3s ease;
+  animation:slideUp .4s ease;
 }
 
 @keyframes slideUp{
@@ -147,10 +140,30 @@ body{
   to{transform:translateY(0);opacity:1;}
 }
 
+.price{
+  text-align:center;
+  margin-bottom:15px;
+}
+
+.price h2{
+  font-size:32px;
+  margin:0;
+}
+
+.price small{
+  color:#ccc;
+}
+
+.route{
+  font-size:14px;
+  margin-top:10px;
+  color:#ccc;
+}
+
 .actions{
   display:flex;
   justify-content:space-between;
-  margin-top:15px;
+  margin-top:20px;
 }
 
 .btn{
@@ -173,69 +186,40 @@ body{
   color:#fff;
   margin-right:10px;
 }
-
-/* BOTÃO ONLINE/OFFLINE */
-.online-toggle{
-  position:absolute;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%);
-  width:80px;
-  height:80px;
-  border-radius:50%;
-  background:var(--verde);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow:0 10px 25px rgba(0,0,0,.2);
-  animation:pulse 2s infinite;
-  z-index:30;
-}
-
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(34,197,94,.6);}
-  70%{box-shadow:0 0 0 20px rgba(34,197,94,0);}
-  100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}
-}
 </style>
 </head>
 <body>
 
 <div id="map"></div>
 
-<!-- MENU -->
-<div id="menu" class="menu">
-  <div class="menu-item" onclick="ir('offline.html')">Início</div>
-  <div class="menu-item" onclick="ir('perfil.html')">Perfil</div>
-  <div class="menu-item" onclick="ir('veiculo.html')">Veículo</div>
-  <div class="menu-item" onclick="ir('carteira.html')">Carteira</div>
-  <div class="menu-item" onclick="ir('configuracoes.html')">Configurações</div>
-</div>
-
-<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
-
-<!-- TOPO -->
 <div class="top-bar">
-  <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <div class="menu-btn" onclick="window.location.href='perfil.html'">☰</div>
   <div class="credit-box">
-    Créditos: <span id="creditos">0.00</span>
+    Créditos: <span id="saldo">0.00</span>
   </div>
 </div>
 
-<!-- GANHOS -->
-<div class="day-card">
-  <h3>Ganhos Hoje</h3>
-  <div class="valor">R$ <span id="ganhosDia">0.00</span></div>
+<div class="daily-card">
+  <small>Ganhos Hoje</small>
+  <h2 id="ganhosHoje">R$ 0.00</h2>
 </div>
 
-<!-- CARD CORRIDA -->
 <div id="requestCard" class="request-card">
-  <strong>Nova Viagem</strong><br><br>
-  Origem: Avenida Central<br>
-  Destino: Shopping Center<br><br>
+  <div class="price">
+    <div>Dinheiro</div>
+    <h2>R$ 9,00</h2>
+    <small>R$2,34/km</small>
+  </div>
+
+  <div class="route">
+    <strong>Origem:</strong><br>
+    Avenida Eraldo Barros de Souza
+  </div>
+
+  <div class="route">
+    <strong>Destino:</strong><br>
+    Assembleia de Deus Vida Nova
+  </div>
 
   <div class="actions">
     <button class="btn btn-decline" onclick="recusar()">Recusar</button>
@@ -243,74 +227,71 @@ body{
   </div>
 </div>
 
-<!-- BOTÃO OFFLINE -->
-<div class="online-toggle" onclick="ficarOffline()">
-  Online
+<div class="offline-btn" onclick="ficarOffline()">
+  OFFLINE
 </div>
 
 <script>
 
-let online = true; // entra online automaticamente
-let corridaValor = 10.00;
+let online = true;
 let audio = new Audio("https://rarufino27-alt.github.io/mobile-app-RF/assets/sounds/notificacao.mp3");
 audio.loop = true;
 
-/* MENU */
-function toggleMenu(){
-  document.getElementById("menu").classList.toggle("active");
-  document.getElementById("overlay").classList.toggle("active");
+/* SALDO */
+function atualizarSaldo(){
+  let saldo = parseFloat(localStorage.getItem("creditos")) || 0;
+  document.getElementById("saldo").innerText = saldo.toFixed(2);
 }
+atualizarSaldo();
 
-function ir(p){
-  window.location.href = p;
-}
-
-/* CREDITOS */
-function atualizarCreditos(){
-  let c = parseFloat(localStorage.getItem("creditos")) || 0;
-  document.getElementById("creditos").innerText = c.toFixed(2);
-  return c;
-}
-
-/* GANHOS */
+/* GANHOS DO DIA */
 function atualizarGanhos(){
-  let g = parseFloat(localStorage.getItem("ganhosDia")) || 0;
-  document.getElementById("ganhosDia").innerText = g.toFixed(2);
+  let hoje = new Date().toISOString().split("T")[0];
+  let ganhos = parseFloat(localStorage.getItem("ganhos_"+hoje)) || 0;
+  document.getElementById("ganhosHoje").innerText = "R$ " + ganhos.toFixed(2);
 }
+atualizarGanhos();
 
 /* SIMULAÇÃO */
 function simularCorrida(){
   setTimeout(()=>{
     if(!online) return;
     document.getElementById("requestCard").classList.add("active");
-    audio.play().catch(()=>{});
-  },4000);
+    tocarSom();
+  },5000);
+}
+simularCorrida();
+
+/* SOM */
+function tocarSom(){
+  if(localStorage.getItem("som")==="off") return;
+  audio.currentTime=0;
+  audio.play().catch(()=>{});
+}
+function pararSom(){
+  audio.pause();
+  audio.currentTime=0;
 }
 
 /* ACEITAR */
 function aceitar(){
-  audio.pause();
-  localStorage.setItem("corridaValor", corridaValor);
+  pararSom();
+  document.getElementById("requestCard").classList.remove("active");
   window.location.href="corrida-ativa.html";
 }
 
 /* RECUSAR */
 function recusar(){
-  audio.pause();
+  pararSom();
   document.getElementById("requestCard").classList.remove("active");
   simularCorrida();
 }
 
 /* OFFLINE */
 function ficarOffline(){
-  online = false;
+  online=false;
   window.location.href="offline.html";
 }
-
-/* INIT */
-atualizarCreditos();
-atualizarGanhos();
-simularCorrida();
 
 </script>
 
