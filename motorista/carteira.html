@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carteira - RF Motorista</title>
+
+<style>
+:root{
+  --bg:#0f0f0f;
+  --card:#1c1c1c;
+  --text:#ffffff;
+  --text-muted:rgba(255,255,255,0.65);
+  --accent:#facc15;
+  --green:#22c55e;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:20px;
+  background:#111;
+}
+
+.menu-btn{font-size:22px;cursor:pointer;}
+.title{font-weight:700;}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:#111;
+  transition:.3s;
+  padding:20px;
+}
+
+.sidebar.active{left:0;}
+
+.sidebar a{
+  display:block;
+  margin-bottom:15px;
+  color:var(--text-muted);
+  text-decoration:none;
+}
+
+/* CONTENT */
+.content{
+  padding:20px;
+  padding-bottom:100px;
+}
+
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:18px;
+  margin-bottom:15px;
+}
+
+.saldo{
+  font-size:34px;
+  font-weight:800;
+}
+
+.sub{
+  color:var(--text-muted);
+  margin-top:4px;
+  font-size:14px;
+}
+
+.linha{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+}
+
+.valor{
+  font-weight:700;
+}
+
+.historico-item{
+  padding:12px 0;
+  border-bottom:1px solid #222;
+  font-size:14px;
+}
+
+.btn{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  font-weight:700;
+  background:var(--accent);
+  cursor:pointer;
+  margin-top:15px;
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#111;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  border-top:1px solid #222;
+}
+
+.bottom-nav div{
+  font-size:12px;
+  color:var(--text-muted);
+}
+
+.bottom-nav .active{
+  color:var(--accent);
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+  <a href="driver-home.html">Home</a>
+  <a href="perfil.html">Perfil</a>
+  <a href="veiculo.html">Veículo</a>
+  <a href="configuracoes.html">Configurações</a>
+</div>
+
+<div class="header">
+  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+  <div class="title">Carteira</div>
+  <div></div>
+</div>
+
+<div class="content">
+
+  <!-- SALDO -->
+  <div class="card">
+    <div class="saldo">R$ 0,00</div>
+    <div class="sub">Saldo disponível</div>
+  </div>
+
+  <!-- RESUMO -->
+  <div class="card">
+    <div class="linha">
+      <div>Ganhos hoje</div>
+      <div class="valor">R$ 0,00</div>
+    </div>
+
+    <div class="linha">
+      <div>Ganhos semana</div>
+      <div class="valor">R$ 0,00</div>
+    </div>
+
+    <div class="linha">
+      <div>Total de corridas</div>
+      <div class="valor">0</div>
+    </div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div class="card">
+    <strong>Últimas corridas</strong>
+
+    <div class="historico-item">
+      25/02 • R$ 12,00
+    </div>
+
+    <div class="historico-item">
+      24/02 • R$ 9,50
+    </div>
+
+  </div>
+
+  <button class="btn">Solicitar Saque</button>
+
+</div>
+
+<div class="bottom-nav">
+  <div onclick="location.href='driver-home.html'">Home</div>
+  <div>Corridas</div>
+  <div class="active">Carteira</div>
+  <div onclick="location.href='veiculo.html'">Veículo</div>
+  <div onclick="location.href='perfil.html'">Perfil</div>
+</div>
+
+<script>
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>
