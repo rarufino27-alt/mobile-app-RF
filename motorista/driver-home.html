@@ -11,20 +11,56 @@
   --preto:#111;
   --cinza:#777;
   --vermelho:#ef4444;
+  --card:#ffffff;
 }
 
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#eaeaea;
+  background:#f2f4f7;
   overflow:hidden;
 }
 
-/* MAPA */
+/* MAPA SIMULADO */
 #map{
   position:absolute;
   inset:0;
   background:linear-gradient(180deg,#dfe6e9,#cfd8dc);
+}
+
+/* MENU */
+.menu{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:#111;
+  color:#fff;
+  padding:25px;
+  transition:.3s;
+  z-index:20;
+}
+
+.menu.active{
+  left:0;
+}
+
+.menu-item{
+  margin:18px 0;
+  cursor:pointer;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  z-index:15;
+}
+
+.overlay.active{
+  display:block;
 }
 
 /* TOP BAR */
@@ -52,13 +88,42 @@ body{
   cursor:pointer;
 }
 
-.saldo-box{
-  background:#1e1e2f;
+/* CREDITOS MINIMALISTA */
+.credit-box{
+  background:#111;
   color:#fff;
-  padding:10px 25px;
-  border-radius:25px;
-  font-weight:700;
-  box-shadow:0 5px 15px rgba(0,0,0,.2);
+  padding:8px 18px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
+}
+
+/* CARD GANHOS DO DIA */
+.day-card{
+  position:absolute;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:85%;
+  max-width:420px;
+  background:#fff;
+  padding:20px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  z-index:5;
+}
+
+.day-card h3{
+  margin:0;
+  font-size:14px;
+  color:var(--cinza);
+}
+
+.day-card .valor{
+  font-size:32px;
+  font-weight:800;
+  margin-top:5px;
 }
 
 /* STATUS */
@@ -68,51 +133,32 @@ body{
   left:0;
   right:0;
   background:#fff;
-  padding:18px;
-  border-top-left-radius:20px;
-  border-top-right-radius:20px;
+  padding:20px;
+  border-top-left-radius:25px;
+  border-top-right-radius:25px;
   text-align:center;
   font-weight:700;
   font-size:18px;
-  box-shadow:0 -5px 20px rgba(0,0,0,.1);
-}
-
-.status-bar button{
-  margin-top:10px;
-  padding:10px 20px;
-  border:none;
-  border-radius:25px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.online-btn{
-  background:var(--verde);
-  color:#fff;
-}
-
-.recharge-btn{
-  background:var(--vermelho);
-  color:#fff;
+  box-shadow:0 -10px 25px rgba(0,0,0,.08);
 }
 
 /* CARD CORRIDA */
 .request-card{
   position:absolute;
-  bottom:120px;
+  bottom:140px;
   left:15px;
   right:15px;
   background:#1c1c1c;
   color:#fff;
   border-radius:25px;
   padding:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.4);
   display:none;
+  z-index:10;
 }
 
 .request-card.active{
   display:block;
-  animation:slideUp .4s ease;
+  animation:slideUp .3s ease;
 }
 
 @keyframes slideUp{
@@ -120,30 +166,10 @@ body{
   to{transform:translateY(0);opacity:1;}
 }
 
-.price{
-  text-align:center;
-  margin-bottom:15px;
-}
-
-.price h2{
-  font-size:32px;
-  margin:0;
-}
-
-.price small{
-  color:#ccc;
-}
-
-.route{
-  font-size:14px;
-  margin-top:10px;
-  color:#ccc;
-}
-
 .actions{
   display:flex;
   justify-content:space-between;
-  margin-top:20px;
+  margin-top:15px;
 }
 
 .btn{
@@ -172,176 +198,130 @@ body{
 
 <div id="map"></div>
 
+<!-- MENU -->
+<div id="menu" class="menu">
+  <div class="menu-item" onclick="ir('offline.html')">Início</div>
+  <div class="menu-item" onclick="ir('perfil.html')">Perfil</div>
+  <div class="menu-item" onclick="ir('veiculo.html')">Veículo</div>
+  <div class="menu-item" onclick="ir('carteira.html')">Carteira</div>
+  <div class="menu-item" onclick="ir('configuracoes.html')">Configurações</div>
+</div>
+
+<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+<!-- TOP -->
 <div class="top-bar">
-  <div class="menu-btn">☰</div>
-  <div class="saldo-box">
-    Créditos: <span id="saldo">0.00</span>
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <div class="credit-box">
+    Créditos: <span id="creditos">0.00</span>
   </div>
 </div>
 
+<!-- GANHOS DO DIA -->
+<div class="day-card">
+  <h3>Ganhos Hoje</h3>
+  <div class="valor">R$ <span id="ganhosDia">0.00</span></div>
+</div>
+
+<!-- CARD CORRIDA -->
 <div id="requestCard" class="request-card">
-
-  <div class="price">
-    <div>Dinheiro</div>
-    <h2>R$ 9,00</h2>
-    <small>R$2,34/km</small>
-  </div>
-
-  <div class="route">
-    <strong>Origem:</strong><br>
-    Avenida Eraldo Barros de Souza
-  </div>
-
-  <div class="route">
-    <strong>Destino:</strong><br>
-    Assembleia de Deus Vida Nova
-  </div>
+  <strong>Nova Viagem</strong><br><br>
+  Origem: Avenida Central<br>
+  Destino: Shopping Center<br><br>
 
   <div class="actions">
     <button class="btn btn-decline" onclick="recusar()">Recusar</button>
     <button class="btn btn-accept" onclick="aceitar()">Aceitar</button>
   </div>
-
 </div>
 
-<div class="status-bar" id="statusBar">
-</div>
+<!-- STATUS -->
+<div class="status-bar" id="statusBar"></div>
 
 <script>
 
-let corridaAtual = null;
-const TAXA_PLATAFORMA = 0.15;
+const TAXA = 0.15;
 let online = false;
+let corridaValor = 10.00;
 let audio = new Audio("https://rarufino27-alt.github.io/mobile-app-RF/assets/sounds/notificacao.mp3");
 audio.loop = true;
 
-/* ATUALIZA SALDO */
-function atualizarSaldo(){
-  let saldo = parseFloat(localStorage.getItem("creditos")) || 0;
-  document.getElementById("saldo").innerText = saldo.toFixed(2);
-  return saldo;
+/* MENU */
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("active");
+  document.getElementById("overlay").classList.toggle("active");
+}
+
+function ir(p){
+  window.location.href = p;
+}
+
+/* CREDITOS */
+function atualizarCreditos(){
+  let c = parseFloat(localStorage.getItem("creditos")) || 0;
+  document.getElementById("creditos").innerText = c.toFixed(2);
+  return c;
+}
+
+/* GANHOS DO DIA */
+function atualizarGanhos(){
+  let g = parseFloat(localStorage.getItem("ganhosDia")) || 0;
+  document.getElementById("ganhosDia").innerText = g.toFixed(2);
 }
 
 /* STATUS */
 function atualizarStatus(){
-  let saldo = atualizarSaldo();
-  let status = document.getElementById("statusBar");
+  let creditos = atualizarCreditos();
+  atualizarGanhos();
 
-  if(saldo <= 0){
+  if(creditos <= 0){
     online = false;
-    status.innerHTML = `
-      Sem créditos disponíveis<br>
-      <button class="recharge-btn" onclick="irCarteira()">Recarregar Créditos</button>
-    `;
+    document.getElementById("statusBar").innerHTML =
+      'Sem créditos disponíveis<br><button onclick="ir(\'carteira.html\')">Recarregar</button>';
     return;
   }
 
   if(!online){
-    status.innerHTML = `
-      Offline<br>
-      <button class="online-btn" onclick="ficarOnline()">Ficar Online</button>
-    `;
+    document.getElementById("statusBar").innerHTML =
+      '<button onclick="ficarOnline()">Ficar Online</button>';
   }else{
-    status.innerHTML = "Buscando corridas...";
+    document.getElementById("statusBar").innerText = "Buscando corridas...";
     simularCorrida();
   }
 }
 
+/* ENTRAR ONLINE AUTOMATICAMENTE */
+if(localStorage.getItem("autoOnline") === "true"){
+  online = true;
+  localStorage.removeItem("autoOnline");
+}
+
 /* ONLINE */
 function ficarOnline(){
-  let saldo = atualizarSaldo();
-  if(saldo <= 0){
-    atualizarStatus();
-    return;
-  }
-
   online = true;
   atualizarStatus();
 }
 
-/* SIMULAÇÃO DE CORRIDA */
+/* SIMULAÇÃO */
 function simularCorrida(){
   setTimeout(()=>{
     if(!online) return;
-
-    let saldo = atualizarSaldo();
-    if(saldo <= 0){
-      online = false;
-      atualizarStatus();
-      return;
-    }
-
     document.getElementById("requestCard").classList.add("active");
-
-    tocarSom();
-  },5000);
-}
-
-/* SOM */
-function tocarSom(){
-  let somAtivo = localStorage.getItem("som");
-
-  if(somAtivo === "off") return;
-
-  audio.currentTime = 0;
-  audio.play().catch(e => console.log("Autoplay bloqueado:", e));
-}
-
-function pararSom(){
-  audio.pause();
-  audio.currentTime = 0;
+    audio.play().catch(()=>{});
+  },4000);
 }
 
 /* ACEITAR */
 function aceitar(){
-
-  let valorCorrida = 9.00; // depois virá do backend
-  corridaAtual = valorCorrida;
-
-  pararSom();
-
-  alert("Corrida aceita!");
-
-  document.getElementById("requestCard").classList.remove("active");
-
-  // aqui futuramente você redireciona para corrida-ativa.html
+  audio.pause();
+  localStorage.setItem("corridaValor", corridaValor);
+  window.location.href="corrida-ativa.html";
 }
 
-  function finalizarCorrida(){
-
-  if(!corridaAtual) return;
-
-  let saldo = atualizarSaldo();
-
-  let desconto = corridaAtual * TAXA_PLATAFORMA;
-
-  if(saldo < desconto){
-    alert("Créditos insuficientes para pagar a taxa da plataforma.");
-    online = false;
-    atualizarStatus();
-    return;
-  }
-
-  saldo -= desconto;
-
-  localStorage.setItem("creditos", saldo);
-
-  alert("Corrida finalizada. Taxa descontada: R$ " + desconto.toFixed(2));
-
-  corridaAtual = null;
-
-  atualizarStatus();
-}
-  
 /* RECUSAR */
 function recusar(){
-  pararSom();
+  audio.pause();
   document.getElementById("requestCard").classList.remove("active");
-  simularCorrida();
-}
-
-function irCarteira(){
-  window.location.href="carteira.html";
 }
 
 /* INIT */
