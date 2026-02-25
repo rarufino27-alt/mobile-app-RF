@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Política de Privacidade - RF Motorista</title>
+
+<style>
+:root{
+  --verde:#22c55e;
+  --cinza:#777;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#ffffff;
+  color:#111;
+  line-height:1.6;
+}
+
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:20px;
+  border-bottom:1px solid #eee;
+  font-weight:800;
+}
+
+.menu{
+  position:fixed;
+  top:0;
+  left:-280px;
+  width:280px;
+  height:100%;
+  background:#111;
+  color:#fff;
+  padding:25px 20px;
+  transition:.3s;
+  z-index:20;
+}
+
+.menu.active{ left:0; }
+
+.menu-item{
+  margin:18px 0;
+  cursor:pointer;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  z-index:15;
+}
+
+.overlay.active{ display:block; }
+
+.content{
+  padding:20px;
+  padding-bottom:60px;
+}
+
+h2{
+  margin-top:25px;
+  font-size:18px;
+}
+
+.small{
+  color:var(--cinza);
+  font-size:13px;
+}
+</style>
+</head>
+<body>
+
+<div id="menu" class="menu">
+  <div class="menu-item" onclick="ir('offline.html')">🏠 Início</div>
+  <div class="menu-item">📄 Política de Privacidade</div>
+  <div class="menu-item" onclick="ir('termos.html')">📑 Termos de Uso</div>
+  <div class="menu-item" onclick="ir('configuracoes.html')">⚙ Configurações</div>
+</div>
+
+<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+<div class="header">
+  <div onclick="toggleMenu()" style="cursor:pointer;">☰</div>
+  Política de Privacidade
+  <div></div>
+</div>
+
+<div class="content">
+
+<p class="small">Última atualização: 2026</p>
+
+<h2>1. Coleta de Dados</h2>
+<p>Coletamos informações fornecidas pelo motorista, incluindo nome, telefone, dados do veículo, localização em tempo real e dados financeiros relacionados a créditos e corridas.</p>
+
+<h2>2. Uso das Informações</h2>
+<p>Os dados são utilizados para operação da plataforma, intermediação de corridas, segurança, prevenção a fraudes, melhorias técnicas e cumprimento de obrigações legais.</p>
+
+<h2>3. Compartilhamento</h2>
+<p>Podemos compartilhar dados com autoridades competentes mediante obrigação legal, bem como com parceiros de pagamento e serviços técnicos.</p>
+
+<h2>4. Localização</h2>
+<p>A localização é utilizada exclusivamente para viabilizar corridas e melhorar a experiência operacional. O uso indevido do aplicativo fora da plataforma não é de responsabilidade da RF.</p>
+
+<h2>5. Segurança</h2>
+<p>Adotamos medidas técnicas razoáveis para proteção dos dados. Contudo, nenhuma transmissão digital é totalmente isenta de riscos.</p>
+
+<h2>6. Responsabilidade</h2>
+<p>A RF atua como intermediadora tecnológica. Não nos responsabilizamos por condutas individuais de motoristas ou passageiros fora dos limites da plataforma.</p>
+
+<h2>7. Retenção</h2>
+<p>Os dados poderão ser armazenados pelo período necessário para cumprimento legal e operacional.</p>
+
+<h2>8. Direitos do Usuário</h2>
+<p>O motorista pode solicitar atualização ou exclusão de seus dados, respeitadas obrigações legais.</p>
+
+</div>
+
+<script>
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("active");
+  document.getElementById("overlay").classList.toggle("active");
+}
+function ir(p){ window.location.href=p; }
+</script>
+
+</body>
+</html>
