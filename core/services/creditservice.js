@@ -1,7 +1,13 @@
-const CreditService = {
+window.CreditService = {
 
   podeFicarOnline(){
-    return DataManager.getCreditos() > 0;
+    const creditos = DataManager.getCreditos();
+    return creditos > 0;
+  },
+
+  descontarCorrida(valorCorrida){
+    const taxa = valorCorrida * 0.15;
+    DataManager.descontarCreditos(taxa);
   }
 
 };
