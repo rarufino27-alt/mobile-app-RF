@@ -9,17 +9,19 @@ window.DataManager = {
   },
 
   setCreditos(valor){
-    localStorage.setItem("rf_creditos", parseFloat(valor).toFixed(2));
+    const numero = parseFloat(valor) || 0;
+    localStorage.setItem("rf_creditos", numero.toFixed(2));
   },
 
   adicionarCreditos(valor){
-    let atual = this.getCreditos();
+    const atual = this.getCreditos();
     this.setCreditos(atual + parseFloat(valor));
   },
 
   descontarCreditos(valor){
-    let atual = this.getCreditos();
-    this.setCreditos(Math.max(0, atual - parseFloat(valor)));
+    const atual = this.getCreditos();
+    const novo = Math.max(0, atual - parseFloat(valor));
+    this.setCreditos(novo);
   },
 
   /* =========================
@@ -31,7 +33,8 @@ window.DataManager = {
   },
 
   isOnline(){
-    return localStorage.getItem("rf_online") === "1";
+    const status = localStorage.getItem("rf_online");
+    return status === "1"; // leitura direta e segura
   },
 
   /* =========================
@@ -44,12 +47,14 @@ window.DataManager = {
     const dataSalva = localStorage.getItem("rf_data_ganhos");
 
     if(dataSalva !== hoje){
-      localStorage.setItem("rf_ganhos_dia", 0);
+      localStorage.setItem("rf_ganhos_dia", "0.00");
       localStorage.setItem("rf_data_ganhos", hoje);
     }
 
-    let atual = parseFloat(localStorage.getItem("rf_ganhos_dia")) || 0;
-    localStorage.setItem("rf_ganhos_dia", (atual + parseFloat(valor)).toFixed(2));
+    const atual = parseFloat(localStorage.getItem("rf_ganhos_dia")) || 0;
+    const novo = atual + parseFloat(valor);
+
+    localStorage.setItem("rf_ganhos_dia", novo.toFixed(2));
   },
 
   getGanhosHoje(){
@@ -62,7 +67,7 @@ window.DataManager = {
 
   criarCorridaSimulada(){
 
-    // Se já existir corrida ativa, não cria outra
+    // Impede duplicação
     if(this.getCorrida()) return null;
 
     const corrida = {
@@ -78,11 +83,12 @@ window.DataManager = {
   },
 
   getCorrida(){
-    return JSON.parse(localStorage.getItem("rf_corrida"));
+    const dados = localStorage.getItem("rf_corrida");
+    return dados ? JSON.parse(dados) : null;
   },
 
   atualizarStatusCorrida(status){
-    let corrida = this.getCorrida();
+    const corrida = this.getCorrida();
     if(!corrida) return;
 
     corrida.status = status;
