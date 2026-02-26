@@ -54,6 +54,15 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
 });
 
+if(creditos <= 0){
+  SoundService.play("SEM_CREDITO");
+  alert("Sem créditos suficientes.");
+  return;
+}
+
+SoundService.play("ONLINE");
+DataManager.setOnline(true);
+
 function ficarOnline(){
 
   const creditos = DataManager.getCreditos();
