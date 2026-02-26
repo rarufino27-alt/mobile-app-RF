@@ -3,160 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RF – Viagem em Andamento</title>
+<title>Viagem em Andamento</title>
 
-<style>
-:root{
-  --preto:#0f0f0f;
-  --branco:#ffffff;
-  --amarelo:#facc15;
-  --verde:#22c55e;
-  --vermelho:#ef4444;
-}
+<link rel="stylesheet" href="../core/ui/layout.css">
 
-body{
-  margin:0;
-  background:var(--preto);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  overflow:hidden;
-  color:#fff;
-}
-
-/* TOPO */
-.top{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  background:#fff;
-  padding:20px;
-  border-bottom-left-radius:30px;
-  border-bottom-right-radius:30px;
-  color:#000;
-  z-index:10;
-  text-align:center;
-}
-
-.top small{
-  display:block;
-  font-size:12px;
-  opacity:.6;
-}
-
-.destino{
-  font-size:22px;
-  font-weight:900;
-  margin-top:5px;
-  line-height:1.3;
-  word-break:break-word;
-}
-
-/* MAPA */
-#map{
-  position:absolute;
-  top:120px;
-  left:0;
-  right:0;
-  bottom:140px;
-  background:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  opacity:.6;
-}
-
-/* BOTTOM BAR */
-.bottom{
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#0f0f0f;
-  padding:20px;
-  border-top-left-radius:25px;
-  border-top-right-radius:25px;
-  box-shadow:0 -10px 30px rgba(0,0,0,.6);
-}
-
-.info-viagem{
-  font-size:14px;
-  opacity:.7;
-  margin-bottom:15px;
-}
-
-.btn{
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:20px;
-  font-weight:800;
-  font-size:16px;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-.btn-waze{
-  background:#1c1c1c;
-  border:1px solid #333;
-  color:#fff;
-}
-
-.btn-finalizar{
-  background:var(--vermelho);
-  color:#fff;
-}
-
-</style>
+<script src="../core/config.js"></script>
+<script src="../core/datamanager.js"></script>
+<script src="../core/ui/theme.js" defer></script>
+<script src="../core/ui/sidebar.js" defer></script>
 </head>
+
 <body>
 
-<div class="top">
-  <small>Viagem em andamento</small>
-  <div class="destino" id="destinoTopo"></div>
-</div>
+<aside id="sidebar" class="sidebar"></aside>
+<div id="overlay" class="overlay"></div>
 
-<div id="map">
-  Mapa será integrado aqui
-</div>
+<header class="rf-top">
+  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+  <div>Viagem em Andamento</div>
+  <div class="credit-box">
+    Créditos: <span id="creditosTopo">0.00</span>
+  </div>
+</header>
 
-<div class="bottom">
+<main class="rf-body">
 
-  <div class="info-viagem" id="infoRota">
-    6 min • 1,8 km
+  <div class="rf-card" style="text-align:center;">
+    <h2>Viagem em andamento...</h2>
+    <p>Siga até o destino</p>
   </div>
 
-  <button class="btn btn-waze" onclick="abrirWaze()">
-    Abrir no Waze
+  <button class="fab fab-offline" onclick="finalizar()">
+    FINALIZAR
   </button>
 
-  <button class="btn btn-finalizar" onclick="finalizar()">
-    Finalizar Corrida
-  </button>
-
-</div>
+</main>
 
 <script>
-
-let corrida = JSON.parse(localStorage.getItem("corrida_ativa"));
-
-if(!corrida){
-  window.location.href="driver-home.html";
-}
-
-document.getElementById("destinoTopo").innerText = corrida.destino;
-
-function abrirWaze(){
-  const destino = encodeURIComponent(corrida.destino);
-  window.location.href="waze://?q="+destino+"&navigate=yes";
-  setTimeout(()=>{
-    window.location.href="https://www.google.com/maps/dir/?api=1&destination="+destino;
-  },1000);
-}
+document.addEventListener("DOMContentLoaded", ()=>{
+  document.getElementById("creditosTopo").innerText =
+    DataManager.getCreditos().toFixed(2);
+});
 
 function finalizar(){
-  window.location.href="finalizacao.html";
+  window.location.href = "finalizacao.html";
 }
-
 </script>
 
 </body>
