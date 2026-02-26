@@ -48,9 +48,10 @@
 </main>
 
 <script>
+
 document.addEventListener("DOMContentLoaded", ()=>{
 
-  const corrida = DataManager.getCorridaAtual();
+  const corrida = DataManager.getCorrida();
 
   if(!corrida){
     window.location.href = "driver-home.html";
@@ -60,20 +61,23 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("creditosTopo").innerText =
     DataManager.getCreditos().toFixed(2);
 
-  document.getElementById("origem").innerText = corrida.origem;
-  document.getElementById("destino").innerText = corrida.destino;
-  document.getElementById("valor").innerText = corrida.valor.toFixed(2);
+  document.getElementById("origem").innerText = corrida.origem || "-";
+  document.getElementById("destino").innerText = corrida.destino || "-";
+  document.getElementById("valor").innerText = parseFloat(corrida.valor).toFixed(2);
 
 });
 
+/* =========================
+   CHEGUEI AO PASSAGEIRO
+========================= */
+
 function iniciarViagem(){
+
+  DataManager.atualizarStatusCorrida("a_caminho");
+
   window.location.href = "viagem-andamento.html";
 }
 
-function irPassageiro(){
-  DataManager.atualizarStatusCorrida("aceita");
-  window.location.href = "viagem-andamento.html";
-}
 </script>
 
 </body>
