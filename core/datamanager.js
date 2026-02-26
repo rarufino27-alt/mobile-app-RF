@@ -1,7 +1,8 @@
-const DataManager = {
+window.DataManager = {
 
-  /* CRÉDITOS */
-  window.DataManager = {
+  /* =========================
+     CRÉDITOS
+  ========================== */
 
   getCreditos(){
     return parseFloat(localStorage.getItem("rf_creditos")) || 0;
@@ -21,33 +22,38 @@ const DataManager = {
     this.setCreditos(atual - parseFloat(valor));
   },
 
+  /* =========================
+     STATUS ONLINE
+  ========================== */
+
   setOnline(status){
     localStorage.setItem("rf_online", status ? "1" : "0");
   },
 
   isOnline(){
     return localStorage.getItem("rf_online") === "1";
-  }
+  },
 
-};
+  /* =========================
+     GANHOS DO DIA
+  ========================== */
 
-  /* GANHOS DO DIA */
   atualizarGanhos(valor){
 
     const hoje = new Date().toDateString();
-    const dataSalva = localStorage.getItem(CONFIG.STORAGE_KEYS.DATA_GANHOS);
+    const dataSalva = localStorage.getItem("rf_data_ganhos");
 
     if(dataSalva !== hoje){
-      localStorage.setItem(CONFIG.STORAGE_KEYS.GANHOS_DIA, 0);
-      localStorage.setItem(CONFIG.STORAGE_KEYS.DATA_GANHOS, hoje);
+      localStorage.setItem("rf_ganhos_dia", 0);
+      localStorage.setItem("rf_data_ganhos", hoje);
     }
 
-    let atual = parseFloat(localStorage.getItem(CONFIG.STORAGE_KEYS.GANHOS_DIA)) || 0;
-    localStorage.setItem(CONFIG.STORAGE_KEYS.GANHOS_DIA, atual + valor);
+    let atual = parseFloat(localStorage.getItem("rf_ganhos_dia")) || 0;
+    localStorage.setItem("rf_ganhos_dia", atual + parseFloat(valor));
   },
 
   getGanhosHoje(){
-    return parseFloat(localStorage.getItem(CONFIG.STORAGE_KEYS.GANHOS_DIA)) || 0;
+    return parseFloat(localStorage.getItem("rf_ganhos_dia")) || 0;
   }
 
 };
