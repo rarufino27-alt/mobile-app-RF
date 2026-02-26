@@ -43,18 +43,20 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", ()=>{
+
   document.getElementById("creditosTopo").innerText =
-    DataManager.getCreditos().toFixed(2);
+    window.DataManager.getCreditos().toFixed(2);
+
 });
 
 function ficarOnline(){
 
-  if(!CreditService.podeFicarOnline()){
+  if(!window.CreditService.podeFicarOnline()){
     alert("Sem créditos suficientes.");
     return;
   }
 
-  DataManager.setOnline(true);
+  window.DataManager.setOnline(true);
   window.location.href = "driver-home.html";
 }
 </script>
