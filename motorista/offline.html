@@ -55,14 +55,17 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
 function ficarOnline(){
 
-  if(!window.CreditService || !window.CreditService.podeFicarOnline()){
+  const creditos = DataManager.getCreditos();
+
+  if(creditos <= 0){
     alert("Sem créditos suficientes.");
     return;
   }
 
-  window.DataManager.setOnline(true);
+  DataManager.setOnline(true);
   window.location.href = "driver-home.html";
 }
+
 </script>
 
 </body>
