@@ -14,65 +14,6 @@
 <script src="../core/ui/theme.js" defer></script>
 <script src="../core/ui/sidebar.js" defer></script>
 
-<style>
-.rf-ride-card{
-  margin-top:15px;
-  animation:slideUp .4s ease;
-}
-
-.ride-header{
-  display:flex;
-  justify-content:space-between;
-  font-weight:600;
-  margin-bottom:10px;
-}
-
-.ride-timer{
-  background:#ef4444;
-  color:#fff;
-  padding:4px 10px;
-  border-radius:20px;
-  font-size:14px;
-}
-
-.ride-valor{
-  text-align:center;
-  margin-bottom:15px;
-}
-
-.ride-valor h2{
-  font-size:30px;
-  margin:0;
-  color:#22c55e;
-}
-
-.ride-negociacao input{
-  width:100%;
-  padding:10px;
-  border-radius:12px;
-  border:1px solid #ddd;
-  margin-bottom:10px;
-}
-
-.ride-actions{
-  display:flex;
-  gap:6px;
-}
-
-.ride-actions button{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:20px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.btn-recusar{ background:#333; color:#fff; }
-.btn-enviar{ background:#facc15; color:#000; }
-.btn-aceitar{ background:#22c55e; color:#fff; }
-</style>
-
 </head>
 
 <body>
@@ -95,39 +36,6 @@
     <h1>R$ <span id="ganhosHoje">0.00</span></h1>
   </div>
 
-  <!-- CARD INDRIVER -->
-  <div id="requestCard" class="rf-card rf-ride-card" style="display:none;">
-
-    <div class="ride-header">
-      <span>Dinheiro</span>
-      <span class="ride-timer" id="contador">15</span>
-    </div>
-
-    <div class="ride-valor">
-      <h2>R$ <span id="valorSugerido">0.00</span></h2>
-      <small>Valor sugerido pelo passageiro</small>
-    </div>
-
-    <div>
-      <strong>Origem</strong>
-      <p id="origem"></p>
-
-      <strong>Destino</strong>
-      <p id="destino"></p>
-    </div>
-
-    <div class="ride-negociacao">
-      <input type="number" id="contraValor" placeholder="Seu valor (opcional)" />
-    </div>
-
-    <div class="ride-actions">
-      <button class="btn-recusar" onclick="recusarCorrida()">Recusar</button>
-      <button class="btn-enviar" onclick="enviarContra()">Enviar</button>
-      <button class="btn-aceitar" onclick="aceitarCorrida()">Aceitar</button>
-    </div>
-
-  </div>
-
   <button class="fab fab-offline" onclick="ficarOffline()">
     OFFLINE
   </button>
@@ -136,8 +44,6 @@
 
 <script>
 
-let tempo = 15;
-let timerInterval;
 let simulacaoTimer = null;
 
 document.addEventListener("DOMContentLoaded", ()=>{
@@ -150,11 +56,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
   atualizarTopo();
   atualizarGanhos();
   iniciarLoopAtualizacao();
-  simularCorrida();
+  iniciarSimulacao();
 
 });
 
 /* ========================= */
+/* ATUALIZAÇÕES VISUAIS */
+
 function atualizarTopo(){
   document.getElementById("creditosTopo").innerText =
     DataManager.getCreditos().toFixed(2);
@@ -173,6 +81,8 @@ function iniciarLoopAtualizacao(){
 }
 
 /* ========================= */
+/* OFFLINE */
+
 function ficarOffline(){
   SoundService.play("OFFLINE");
   DataManager.setOnline(false);
@@ -181,91 +91,29 @@ function ficarOffline(){
 
 /* ========================= */
 /* SIMULAÇÃO */
-function simularCorrida(){
 
-  setTimeout(()=>{
+function iniciarSimulacao(){
+
+  if(simulacaoTimer) clearTimeout(simulacaoTimer);
+
+  simulacaoTimer = setTimeout(()=>{
 
     if(!DataManager.isOnline()) return;
+
     if(DataManager.getCorrida()) return;
 
     const corrida = DataManager.criarCorridaSimulada();
 
-    RideCard.show(corrida);
+    console.log("Corrida simulada:", corrida);
 
-  },4000);
-}
-
-function mostrarCard(corrida){
-
-  document.getElementById("requestCard").style.display="block";
-
-  document.getElementById("valorSugerido").innerText =
-    corrida.valor.toFixed(2);
-
-  document.getElementById("origem").innerText =
-    corrida.origem || "Centro";
-
-  document.getElementById("destino").innerText =
-    corrida.destino || "Shopping";
-
-  SoundService.play("CHAMADA");
-
-  iniciarContador();
-}
-
-function iniciarContador(){
-
-  tempo = 15;
-
-  timerInterval = setInterval(()=>{
-
-    tempo--;
-    document.getElementById("contador").innerText = tempo;
-
-    if(tempo <= 0){
-      clearInterval(timerInterval);
-      recusarCorrida();
+    if(window.RideCard){
+      RideCard.show(corrida);
+    }else{
+      console.error("RideCard não carregado.");
     }
 
-  },1000);
-}
+  },3000);
 
-function aceitarCorrida(){
-
-  clearInterval(timerInterval);
-
-  SoundService.play("ACEITA");
-
-  DataManager.atualizarStatusCorrida("aceita");
-
-  window.location.href="corrida-ativa.html";
-}
-
-function recusarCorrida(){
-
-  clearInterval(timerInterval);
-
-  SoundService.play("CANCELADA");
-
-  DataManager.limparCorrida();
-
-  document.getElementById("requestCard").style.display="none";
-
-  simularCorrida();
-}
-
-function enviarContra(){
-
-  const valor = parseFloat(document.getElementById("contraValor").value);
-
-  if(!valor || valor <= 0){
-    alert("Informe um valor válido.");
-    return;
-  }
-
-  SoundService.play("MSG_PASSAGEIRO");
-
-  alert("Contra-proposta enviada: R$ " + valor.toFixed(2));
 }
 
 </script>
