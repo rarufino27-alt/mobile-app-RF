@@ -45,6 +45,11 @@ document.addEventListener("DOMContentLoaded", ()=>{
     DataManager.getCreditos().toFixed(2);
 });
 
+function iniciarViagem(){
+  DataManager.atualizarStatusCorrida("andamento");
+  window.location.href = "finalizacao.html";
+}
+
 function finalizar(){
   window.location.href = "finalizacao.html";
 }
