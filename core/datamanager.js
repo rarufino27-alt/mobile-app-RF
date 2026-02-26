@@ -9,7 +9,7 @@ window.DataManager = {
   },
 
   setCreditos(valor){
-    localStorage.setItem("rf_creditos", parseFloat(valor));
+    localStorage.setItem("rf_creditos", parseFloat(valor).toFixed(2));
   },
 
   adicionarCreditos(valor){
@@ -19,7 +19,7 @@ window.DataManager = {
 
   descontarCreditos(valor){
     let atual = this.getCreditos();
-    this.setCreditos(atual - parseFloat(valor));
+    this.setCreditos(Math.max(0, atual - parseFloat(valor)));
   },
 
   /* =========================
@@ -49,7 +49,7 @@ window.DataManager = {
     }
 
     let atual = parseFloat(localStorage.getItem("rf_ganhos_dia")) || 0;
-    localStorage.setItem("rf_ganhos_dia", atual + parseFloat(valor));
+    localStorage.setItem("rf_ganhos_dia", (atual + parseFloat(valor)).toFixed(2));
   },
 
   getGanhosHoje(){
@@ -57,14 +57,19 @@ window.DataManager = {
   },
 
   /* =========================
-     CORRIDA SIMULADA
+     CORRIDA
   ========================== */
 
   criarCorridaSimulada(){
 
+    // Se já existir corrida ativa, não cria outra
+    if(this.getCorrida()) return null;
+
     const corrida = {
       id: Date.now(),
       valor: 20 + Math.floor(Math.random() * 30),
+      origem: "Centro da Cidade",
+      destino: "Shopping Principal",
       status: "pendente"
     };
 
