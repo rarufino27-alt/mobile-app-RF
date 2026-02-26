@@ -3,324 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RF – Offline</title>
+<title>Offline - RF Motorista</title>
 
-<style>
-:root{
-  --verde:#22c55e;
-  --preto:#111;
-  --cinza:#777;
-  --vermelho:#ef4444;
-}
+<link rel="stylesheet" href="../core/ui/layout.css">
 
-/* RESET */
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#ffffff;
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-  overflow:hidden;
-}
-
-/* HEADER */
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:20px;
-}
-
-.menu-btn{
-  font-size:24px;
-  cursor:pointer;
-}
-
-.logo-area{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.logo-area img{
-  width:40px;
-}
-
-.logo-area h1{
-  font-size:18px;
-  margin:0;
-  font-weight:800;
-}
-
-/* SLIDER */
-.slider{
-  flex:1;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:0 30px;
-  overflow:hidden;
-}
-
-.slide{
-  position:absolute;
-  opacity:0;
-  transform:translateX(30px);
-  transition:0.6s ease;
-  max-width:300px;
-}
-
-.slide.active{
-  opacity:1;
-  transform:translateX(0);
-}
-
-.slide h2{
-  margin:0 0 10px;
-  font-size:22px;
-}
-
-.slide p{
-  color:var(--cinza);
-}
-
-/* CARD */
-.card{
-  background:#fff;
-  padding:25px;
-  border-top-left-radius:25px;
-  border-top-right-radius:25px;
-  box-shadow:0 -5px 20px rgba(0,0,0,.08);
-  text-align:center;
-}
-
-.card h2{
-  margin:0 0 10px;
-}
-
-.card p{
-  color:var(--cinza);
-  margin:0 0 20px;
-}
-
-.btn-online{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:50px;
-  background:var(--verde);
-  color:#fff;
-  font-size:18px;
-  font-weight:800;
-  cursor:pointer;
-  animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(34,197,94,.6);}
-  70%{box-shadow:0 0 0 18px rgba(34,197,94,0);}
-  100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}
-}
-
-/* MENU LATERAL */
-.menu{
-  position:fixed;
-  top:0;
-  left:0;
-  width:280px;
-  height:100%;
-  background:#111;
-  color:#fff;
-  padding:25px 20px;
-  transform:translateX(-100%);
-  transition:transform 0.3s ease;
-  z-index:20;
-  overflow-y:auto;
-}
-
-.menu.active{
-  transform:translateX(0);
-}
-
-.menu-header{
-  text-align:center;
-  margin-bottom:25px;
-}
-
-.menu-header img{
-  width:70px;
-  border-radius:50%;
-  margin-bottom:10px;
-}
-
-.menu-header .nome{
-  font-weight:800;
-}
-
-.menu-header .status{
-  font-size:13px;
-  color:#aaa;
-  margin-top:5px;
-}
-
-.menu-header .saldo{
-  margin-top:8px;
-  font-size:14px;
-}
-
-.menu hr{
-  border:none;
-  height:1px;
-  background:#333;
-  margin:20px 0;
-}
-
-.menu-item{
-  margin:18px 0;
-  cursor:pointer;
-  font-weight:600;
-}
-
-.menu-item:hover{
-  color:var(--verde);
-}
-
-/* OVERLAY */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.4);
-  display:none;
-  z-index:15;
-}
-
-.overlay.active{
-  display:block;
-}
-
-</style>
+<script src="../core/config.js"></script>
+<script src="../core/datamanager.js"></script>
+<script src="../core/services/creditService.js"></script>
+<script src="../core/ui/theme.js" defer></script>
+<script src="../core/ui/sidebar.js" defer></script>
 </head>
+
 <body>
 
-<!-- MENU -->
-<div id="menu" class="menu">
+<aside id="sidebar" class="sidebar"></aside>
+<div id="overlay" class="overlay"></div>
 
-  <div class="menu-header">
-    <img src="https://rarufino27-alt.github.io/mobile-app-RF/assets/icons/icon-192.png">
-    <div class="nome" id="nomeMotorista">Motorista RF</div>
-    <div class="status">Status: Offline</div>
-    <div class="saldo">
-      Saldo hoje: <strong id="saldoDia">R$ 0,00</strong>
-    </div>
+<header class="rf-top">
+  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+  <div>RF Motorista</div>
+  <div class="credit-box">
+    Créditos: <span id="creditosTopo">0.00</span>
+  </div>
+</header>
+
+<main class="rf-body">
+
+  <div class="rf-card" style="text-align:center;">
+    <h2>Você está Offline</h2>
+    <p>Ative para começar a receber corridas</p>
   </div>
 
-  <hr>
-
-  <div class="menu-item" onclick="ir('perfil.html')">👤 Perfil</div>
-  <div class="menu-item" onclick="ir('veiculo.html')">🚗 Veículo</div>
-  <div class="menu-item" onclick="ir('carteira.html')">💰 Carteira</div>
-  <div class="menu-item" onclick="ir('configuracoes.html')">⚙ Configurações</div>
-  <div class="menu-item" onclick="ir('politica.html')">📄 Política</div>
-  <div class="menu-item" onclick="ir('termos.html')">📑 Termos</div>
-  <div class="menu-item" onclick="ir('suporte.html')">📞 Suporte</div>
-
-  <hr>
-
-  <div class="menu-item" style="color:var(--vermelho);" onclick="logout()">
-    🚪 Sair
-  </div>
-
-</div>
-
-<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
-
-<!-- HEADER -->
-<div class="header">
-  <div class="menu-btn" onclick="toggleMenu()">☰</div>
-
-  <div class="logo-area">
-    <img src="https://rarufino27-alt.github.io/mobile-app-RF/assets/icons/icon-192.png">
-    <h1>RF Motorista</h1>
-  </div>
-
-  <div></div>
-</div>
-
-<!-- SLIDER -->
-<div class="slider">
-  <div class="slide active">
-    <h2>Ganhe até R$ 300 por dia</h2>
-    <p>Fique online e comece agora mesmo</p>
-  </div>
-
-  <div class="slide">
-    <h2>Indique e ganhe bônus</h2>
-    <p>Convide motoristas e aumente seus ganhos</p>
-  </div>
-
-  <div class="slide">
-    <h2>Mais liberdade</h2>
-    <p>Você escolhe quando trabalhar</p>
-  </div>
-</div>
-
-<!-- CARD -->
-<div class="card">
-  <h2>Você está offline</h2>
-  <p>Fique online para começar a receber viagens</p>
-  <button class="btn-online" onclick="ficarOnline()">
-    Ficar Online
+  <button class="fab fab-online" onclick="ficarOnline()">
+    ONLINE
   </button>
-</div>
+
+</main>
 
 <script>
+document.addEventListener("DOMContentLoaded", ()=>{
+  document.getElementById("creditosTopo").innerText =
+    DataManager.getCreditos().toFixed(2);
+});
 
-/* MENU */
-function toggleMenu(){
-  document.getElementById("menu").classList.toggle("active");
-  document.getElementById("overlay").classList.toggle("active");
-}
-
-function ir(pagina){
-  window.location.href = pagina;
-}
-
-/* SLIDER */
-let slides = document.querySelectorAll(".slide");
-let index = 0;
-
-setInterval(()=>{
-  slides[index].classList.remove("active");
-  index = (index + 1) % slides.length;
-  slides[index].classList.add("active");
-},4000);
-
-/* DADOS MOTORISTA */
-document.getElementById("nomeMotorista").innerText =
-  localStorage.getItem("motorista_nome") || "Motorista RF";
-
-let saldo = Number(localStorage.getItem("total_dia") || 0);
-document.getElementById("saldoDia").innerText =
-  "R$ " + saldo.toFixed(2);
-
-/* LOGOUT */
-function logout(){
-  localStorage.clear();
-  window.location.href="index.html";
-}
-
-/* ONLINE */
 function ficarOnline(){
-  window.location.href="driver-home.html";
-}
 
+  if(!CreditService.podeFicarOnline()){
+    alert("Sem créditos suficientes.");
+    return;
+  }
+
+  DataManager.setOnline(true);
+  window.location.href = "driver-home.html";
+}
 </script>
 
 </body>
