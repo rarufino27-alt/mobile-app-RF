@@ -46,14 +46,6 @@
 
 document.addEventListener("DOMContentLoaded", ()=>{
 
-if(!DataManager.getCorrida()){
-  setTimeout(()=>{
-    const corrida = DataManager.criarCorridaSimulada();
-    alert("Nova corrida disponível: R$ " + corrida.valor.toFixed(2));
-    window.location.href = "corrida-ativa.html";
-  }, 3000);
-}
-
   if(!DataManager.isOnline()){
     window.location.href = "offline.html";
     return;
@@ -63,6 +55,7 @@ if(!DataManager.getCorrida()){
   atualizarGanhos();
 
   simularCorrida();
+
 });
 
 function atualizarTopo(){
@@ -70,36 +63,33 @@ function atualizarTopo(){
     DataManager.getCreditos().toFixed(2);
 }
 
-SoundService.play("CHAMADA");
-SoundService.play("OFFLINE");
-DataManager.setOnline(false);
-
 function atualizarGanhos(){
   document.getElementById("ganhosHoje").innerText =
     DataManager.getGanhosHoje().toFixed(2);
 }
 
 function ficarOffline(){
+  SoundService.play("OFFLINE");
   DataManager.setOnline(false);
   window.location.href = "offline.html";
 }
 
-/* SIMULAÇÃO */
+/* SIMULAÇÃO DE CHAMADA */
 function simularCorrida(){
 
   setTimeout(()=>{
 
     if(!DataManager.isOnline()) return;
 
-    const corrida = {
-      valor: 10.00,
-      origem: "Centro",
-      destino: "Shopping"
-    };
+    if(DataManager.getCorrida()) return;
 
-    RideService.aceitarCorrida(corrida);
+    const corrida = DataManager.criarCorridaSimulada();
 
-  }, 5000);
+    SoundService.play("CHAMADA");
+
+    window.location.href = "corrida-ativa.html";
+
+  }, 4000);
 
 }
 
