@@ -171,3 +171,89 @@ body.dark .rf-body{
 .overlay.active{
   display:block;
 }
+
+.rf-ride-central{
+  position:fixed;
+  bottom:90px;
+  left:15px;
+  right:15px;
+  background:linear-gradient(135deg,#111,#1c1c1c);
+  color:#fff;
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.6);
+  animation:rfSlide .4s ease;
+  z-index:999;
+}
+
+@keyframes rfSlide{
+  from{transform:translateY(40px);opacity:0;}
+  to{transform:translateY(0);opacity:1;}
+}
+
+.rf-ride-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:12px;
+  font-weight:700;
+}
+
+.rf-timer{
+  background:#ef4444;
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+.rf-ride-price{
+  text-align:center;
+  margin-bottom:15px;
+}
+
+.rf-ride-price h2{
+  font-size:32px;
+  margin:0;
+  color:#22c55e;
+}
+
+.rf-ride-route p{
+  margin:4px 0 10px 0;
+  opacity:.8;
+}
+
+.rf-ride-central input{
+  width:100%;
+  padding:10px;
+  border-radius:14px;
+  border:none;
+  margin:10px 0;
+}
+
+.rf-ride-actions{
+  display:flex;
+  gap:6px;
+}
+
+.rf-ride-actions button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:20px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.rf-ride-actions button:first-child{
+  background:#333;
+  color:#fff;
+}
+
+.rf-contra{
+  background:#facc15;
+  color:#000;
+}
+
+.rf-accept{
+  background:#22c55e;
+  color:#fff;
+}
