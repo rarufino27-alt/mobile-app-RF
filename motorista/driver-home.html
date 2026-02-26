@@ -70,6 +70,9 @@ function atualizarTopo(){
     DataManager.getCreditos().toFixed(2);
 }
 
+SoundService.play("OFFLINE");
+DataManager.setOnline(false);
+
 function atualizarGanhos(){
   document.getElementById("ganhosHoje").innerText =
     DataManager.getGanhosHoje().toFixed(2);
