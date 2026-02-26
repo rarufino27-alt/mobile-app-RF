@@ -44,6 +44,8 @@
 
 <script>
 
+let simulacaoTimer = null;
+
 document.addEventListener("DOMContentLoaded", ()=>{
 
   if(!DataManager.isOnline()){
@@ -54,9 +56,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
   atualizarTopo();
   atualizarGanhos();
 
+  iniciarLoopAtualizacao();
   simularCorrida();
 
 });
+
+/* =========================
+   ATUALIZAÇÕES VISUAIS
+========================= */
 
 function atualizarTopo(){
   document.getElementById("creditosTopo").innerText =
@@ -68,16 +75,32 @@ function atualizarGanhos(){
     DataManager.getGanhosHoje().toFixed(2);
 }
 
+function iniciarLoopAtualizacao(){
+  setInterval(()=>{
+    atualizarTopo();
+    atualizarGanhos();
+  }, 2000);
+}
+
+/* =========================
+   FICAR OFFLINE
+========================= */
+
 function ficarOffline(){
   SoundService.play("OFFLINE");
   DataManager.setOnline(false);
   window.location.href = "offline.html";
 }
 
-/* SIMULAÇÃO DE CHAMADA */
+/* =========================
+   SIMULAÇÃO DE CHAMADA
+========================= */
+
 function simularCorrida(){
 
-  setTimeout(()=>{
+  if(simulacaoTimer) clearTimeout(simulacaoTimer);
+
+  simulacaoTimer = setTimeout(()=>{
 
     if(!DataManager.isOnline()) return;
 
