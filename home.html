@@ -14,12 +14,7 @@
   --rf-radius:20px;
 }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
 
 body{
   background: radial-gradient(circle at top,#141417 0%,#0e0e11 70%);
@@ -35,17 +30,9 @@ body{
   font-size:16px;
 }
 
-.logo-img{
-  width:26px;
-  height:26px;
-  border-radius:8px;
-}
+.logo-img{width:26px;height:26px;border-radius:8px;}
 
-.hero{
-  padding:10px 20px 5px;
-  font-size:20px;
-  font-weight:800;
-}
+.hero{padding:10px 20px 5px;font-size:20px;font-weight:800;}
 
 .card{
   margin:10px 20px 30px;
@@ -70,37 +57,25 @@ body{
   font-size:14px;
 }
 
-.dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-}
-
+.dot{width:10px;height:10px;border-radius:50%;}
 .origem{background:#22c55e;}
 .parada{background:#3b82f6;}
 .destino{background:#ef4444;}
 
 .plus-btn{
   align-self:center;
-  width:38px;
-  height:38px;
+  width:38px;height:38px;
   border-radius:50%;
   background:linear-gradient(135deg,var(--rf-gold),var(--rf-gold-soft));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
-  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;cursor:pointer;
 }
 
 .option-btn{
-  padding:10px;
-  border-radius:14px;
+  padding:10px;border-radius:14px;
   border:1px solid rgba(255,255,255,.15);
-  text-align:center;
-  cursor:pointer;
-  font-size:13px;
-  background:rgba(255,255,255,.05);
+  text-align:center;cursor:pointer;
+  font-size:13px;background:rgba(255,255,255,.05);
 }
 
 .option-btn.active{
@@ -108,19 +83,12 @@ body{
   background:rgba(198,168,94,.12);
 }
 
-.radio-group{
-  display:flex;
-  gap:8px;
-}
+.radio-group{display:flex;gap:8px;}
 
 .radio-option{
-  flex:1;
-  padding:10px;
-  border-radius:14px;
+  flex:1;padding:10px;border-radius:14px;
   border:1px solid rgba(255,255,255,.15);
-  text-align:center;
-  cursor:pointer;
-  font-size:13px;
+  text-align:center;cursor:pointer;font-size:13px;
   background:rgba(255,255,255,.05);
 }
 
@@ -130,54 +98,35 @@ body{
 }
 
 .preco{
-  display:none;
-  padding:14px;
-  border-radius:14px;
+  display:none;padding:14px;border-radius:14px;
   background:rgba(198,168,94,.12);
   font-size:14px;
 }
 
-.preco strong{
-  color:var(--rf-gold);
-}
+.preco strong{color:var(--rf-gold);}
 
 button{
-  padding:14px;
-  border:none;
-  border-radius:30px;
+  padding:14px;border:none;border-radius:30px;
   background:linear-gradient(135deg,var(--rf-gold),var(--rf-gold-soft));
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
+  font-weight:700;font-size:14px;cursor:pointer;
 }
 
-button:disabled{
-  opacity:.4;
-}
+button:disabled{opacity:.4;}
 
 .modal{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:rgba(0,0,0,.8);
-  display:none;
-  align-items:center;
-  justify-content:center;
+  display:none;align-items:center;justify-content:center;
 }
 
 .modal-content{
-  background:#141417;
-  width:90%;
-  max-width:400px;
-  border-radius:18px;
-  padding:18px;
-  max-height:80vh;
-  overflow:auto;
+  background:#141417;width:90%;max-width:400px;
+  border-radius:18px;padding:18px;
+  max-height:80vh;overflow:auto;
 }
 
 .modal-content div{
-  padding:10px;
-  border-radius:10px;
-  cursor:pointer;
+  padding:10px;border-radius:10px;cursor:pointer;
 }
 
 .modal-content div:hover{
@@ -193,9 +142,7 @@ button:disabled{
   PASSAGEIRO RF
 </header>
 
-<div class="hero">
-  Para onde vamos?
-</div>
+<div class="hero">Para onde vamos?</div>
 
 <div class="card">
 
@@ -216,21 +163,12 @@ button:disabled{
     <div id="destinoTexto">Selecionar destino</div>
   </div>
 
-  <div class="option-btn" id="desvioRotaBtn">
-    Desvio simples (+R$5)
-  </div>
-
-  <div class="option-btn" id="mercadoBtn">
-    🛒 Saída Mercado (+R$3,89)
-  </div>
+  <div class="option-btn" id="desvioRotaBtn">Desvio simples (+R$5)</div>
+  <div class="option-btn" id="mercadoBtn">🛒 Saída Mercado (+R$3,89)</div>
 
   <div class="radio-group">
-    <div class="radio-option" id="carro6Btn">
-      🚐 6 Lugares (+50%)
-    </div>
-    <div class="radio-option" id="excessoBtn">
-      👥 Excesso (+50%)
-    </div>
+    <div class="radio-option" id="carro6Btn">🚐 6 Lugares (+50%)</div>
+    <div class="radio-option" id="excessoBtn">👥 Excesso (+50%)</div>
   </div>
 
   <div class="preco" id="precoBox">
@@ -248,73 +186,48 @@ button:disabled{
 
 <script>
 
-let origem=null;
-let destino=null;
-let parada=null;
-
-let usarParada=false;
-let desvioRota=false;
-let usarMercado=false;
-
-let carro6=false;
-let excesso=false;
+let origem=null,destino=null,parada=null;
+let usarParada=false,desvioRota=false,usarMercado=false;
+let carro6=false,excesso=false;
 
 const origemTexto=document.getElementById("origemTexto");
 const destinoTexto=document.getElementById("destinoTexto");
 const paradaTexto=document.getElementById("paradaTexto");
-
 const precoBox=document.getElementById("precoBox");
 const precoValor=document.getElementById("precoValor");
 const confirmarBtn=document.getElementById("confirmar");
+const modal=document.getElementById("modal");
+const lista=document.getElementById("lista");
 
-async function iniciar(){
-  await DataManager.carregarOrigens();
-}
+async function iniciar(){await DataManager.carregarOrigens();}
 iniciar();
+
+/* ========= CÁLCULO ========= */
 
 function calcularCorrida(valorBase){
 
   let adicionalNoturno=0;
-  let tipoNoturno=null;
-  let subtotal=valorBase;
-
   const agora=new Date();
-  const horaDecimal=agora.getHours()+(agora.getMinutes()/60);
-  const noturno=(horaDecimal>=22.5||horaDecimal<=5);
+  const hora=agora.getHours()+(agora.getMinutes()/60);
+  const noturno=(hora>=22.5||hora<=5);
 
   if(noturno){
     if(valorBase<=24.90){
       adicionalNoturno=4.99;
-      tipoNoturno="fixo";
-      subtotal+=adicionalNoturno;
     }else{
       adicionalNoturno=valorBase*0.35;
-      tipoNoturno="35%";
-      subtotal+=adicionalNoturno;
     }
   }
 
-  let multiplicador=1;
-  let tipoExtra=null;
-
-  if(carro6){
-    multiplicador=1.5;
-    tipoExtra="6_lugares";
-  }
-
-  if(excesso){
-    multiplicador=1.5;
-    tipoExtra="excesso";
-  }
+  let subtotal=valorBase+adicionalNoturno;
+  let multiplicador=(carro6||excesso)?1.5:1;
 
   const totalFinal=Number((subtotal*multiplicador).toFixed(2));
 
   return{
-    valorBase,
+    valorBase:Number(valorBase.toFixed(2)),
     adicionalNoturno:Number(adicionalNoturno.toFixed(2)),
-    tipoNoturno,
     multiplicador,
-    tipoExtra,
     totalFinal
   };
 }
@@ -330,9 +243,8 @@ function recalcular(){
   let valorBase=0;
 
   if(usarParada&&parada){
-    const v1=DataManager.buscarValor(origem,parada)||0;
-    const v2=DataManager.buscarValor(parada,destino)||0;
-    valorBase=v1+v2;
+    valorBase=(DataManager.buscarValor(origem,parada)||0)
+             +(DataManager.buscarValor(parada,destino)||0);
   }else{
     valorBase=DataManager.buscarValor(origem,destino)||0;
   }
@@ -349,33 +261,114 @@ function recalcular(){
   window.corridaCalculada=resultado;
 }
 
+/* ========= MODAL ========= */
+
+async function abrirModal(tipo){
+
+  if((tipo==="destino"||tipo==="parada")&&!origem){
+    alert("Selecione a origem primeiro.");
+    return;
+  }
+
+  modal.style.display="flex";
+  lista.innerHTML="";
+
+  let dados=[];
+
+  if(tipo==="origem"){
+    dados=await DataManager.carregarOrigens();
+  }
+
+  if(tipo==="destino"||tipo==="parada"){
+    dados=DataManager.listarDestinos(origem);
+  }
+
+  dados.forEach(item=>{
+    const div=document.createElement("div");
+    div.innerText=item;
+    div.onclick=()=>{
+      if(tipo==="origem"){
+        origem=item;
+        destino=null;
+        parada=null;
+        origemTexto.innerText=item;
+        destinoTexto.innerText="Selecionar destino";
+        paradaTexto.innerText="Selecionar parada";
+      }
+      if(tipo==="destino"){
+        destino=item;
+        destinoTexto.innerText=item;
+      }
+      if(tipo==="parada"){
+        parada=item;
+        paradaTexto.innerText=item;
+      }
+      modal.style.display="none";
+      recalcular();
+    };
+    lista.appendChild(div);
+  });
+}
+
+/* ========= EVENTOS ========= */
+
+document.getElementById("origemBtn").onclick=()=>abrirModal("origem");
+document.getElementById("destinoBtn").onclick=()=>abrirModal("destino");
+document.getElementById("paradaBtn").onclick=()=>abrirModal("parada");
+
+document.getElementById("plusBtn").onclick=()=>{
+  usarParada=!usarParada;
+  document.getElementById("paradaBtn").style.display=usarParada?"flex":"none";
+  parada=null;
+  paradaTexto.innerText="Selecionar parada";
+  recalcular();
+};
+
+document.getElementById("desvioRotaBtn").onclick=()=>{
+  desvioRota=!desvioRota;
+  document.getElementById("desvioRotaBtn").classList.toggle("active");
+  recalcular();
+};
+
+document.getElementById("mercadoBtn").onclick=()=>{
+  usarMercado=!usarMercado;
+  document.getElementById("mercadoBtn").classList.toggle("active");
+  recalcular();
+};
+
 document.getElementById("carro6Btn").onclick=()=>{
-  carro6=true;
-  excesso=false;
+  carro6=true;excesso=false;
   document.getElementById("carro6Btn").classList.add("active");
   document.getElementById("excessoBtn").classList.remove("active");
   recalcular();
 };
 
 document.getElementById("excessoBtn").onclick=()=>{
-  excesso=true;
-  carro6=false;
+  excesso=true;carro6=false;
   document.getElementById("excessoBtn").classList.add("active");
   document.getElementById("carro6Btn").classList.remove("active");
   recalcular();
 };
 
 confirmarBtn.onclick=()=>{
+  if(!window.corridaCalculada) return;
+
   localStorage.setItem("rf_corrida_temp",JSON.stringify({
     origem,
     destino,
     parada:usarParada?parada:null,
     desvioRota,
     mercado:usarMercado,
+    carro6,
+    excesso,
     ...window.corridaCalculada
   }));
 
   window.location.href="procurando.html";
+};
+
+modal.onclick=(e)=>{
+  if(e.target===modal) modal.style.display="none";
 };
 
 </script>
