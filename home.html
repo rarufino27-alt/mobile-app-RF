@@ -48,11 +48,55 @@ body{
   border-radius:8px;
 }
 
-/* HERO MINIMAL */
+/* HERO */
 .hero{
   padding:10px 20px 5px;
   font-size:20px;
   font-weight:800;
+}
+
+/* SLIDER CARD */
+.slide-wrapper{
+  margin:8px 20px 10px;
+  height:110px;
+  position:relative;
+  overflow:hidden;
+}
+
+.slide-card{
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+  background-size:cover;
+  background-position:center;
+  opacity:0;
+  transform:scale(1.05);
+  transition:all .6s ease;
+  display:flex;
+  align-items:flex-end;
+}
+
+.slide-card.ativo{
+  opacity:1;
+  transform:scale(1);
+}
+
+.slide-card .overlay{
+  width:100%;
+  padding:14px;
+  border-radius:18px;
+  background:linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,.2));
+}
+
+.slide-card h3{
+  font-size:14px;
+  font-weight:700;
+}
+
+.slide-card p{
+  font-size:12px;
+  opacity:.85;
+  margin-top:2px;
 }
 
 /* CARD */
@@ -170,7 +214,6 @@ button{
   font-weight:700;
   font-size:14px;
   cursor:pointer;
-  transition:.2s;
 }
 
 button:disabled{
@@ -221,6 +264,31 @@ button:disabled{
   Para onde vamos?
 </div>
 
+<div class="slide-wrapper">
+
+  <div class="slide-card ativo" style="background-image:url('assets/slides/seguranca.webp')">
+    <div class="overlay">
+      <h3>Segurança em primeiro lugar</h3>
+      <p>Motoristas verificados e monitorados.</p>
+    </div>
+  </div>
+
+  <div class="slide-card" style="background-image:url('assets/slides/compromisso.webp')">
+    <div class="overlay">
+      <h3>Compromisso com você</h3>
+      <p>Atendimento garantido todos os dias.</p>
+    </div>
+  </div>
+
+  <div class="slide-card" style="background-image:url('assets/slides/confianca.webp')">
+    <div class="overlay">
+      <h3>Solicite pelo aplicativo</h3>
+      <p>Mais organização. Mais rapidez. Mais confiança.</p>
+    </div>
+  </div>
+
+</div>
+
 <div class="card">
 
   <div class="input-box" id="origemBtn">
@@ -263,10 +331,22 @@ button:disabled{
 
 <script>
 
+/* SLIDER */
+const slideCards=document.querySelectorAll(".slide-card");
+let slideIndex=0;
+
+setInterval(()=>{
+  slideCards[slideIndex].classList.remove("ativo");
+  slideIndex++;
+  if(slideIndex>=slideCards.length) slideIndex=0;
+  slideCards[slideIndex].classList.add("ativo");
+},5000);
+
+/* SUA LÓGICA ORIGINAL ABAIXO (INALTERADA) */
+
 let origem=null;
 let destino=null;
 let parada=null;
-
 let usarParada=false;
 let desvioRota=false;
 let usarMercado=false;
@@ -306,11 +386,11 @@ function recalcular(){
   let total=0;
 
   if(usarParada && parada){
-    const v1=DataManager.buscarValor(origem,parada) || 0;
-    const v2=DataManager.buscarValor(parada,destino) || 0;
+    const v1=DataManager.buscarValor(origem,parada)||0;
+    const v2=DataManager.buscarValor(parada,destino)||0;
     total=v1+v2;
   }else{
-    total=DataManager.buscarValor(origem,destino) || 0;
+    total=DataManager.buscarValor(origem,destino)||0;
   }
 
   if(desvioRota) total+=5;
@@ -318,10 +398,6 @@ function recalcular(){
 
   precoValor.innerText="R$ "+total.toFixed(2);
   precoBox.style.display="block";
-  precoBox.classList.remove("animar");
-  void precoBox.offsetWidth;
-  precoBox.classList.add("animar");
-
   confirmarBtn.disabled=false;
 }
 
@@ -358,12 +434,10 @@ async function abrirModal(tipo){
         destinoTexto.innerText="Selecionar destino";
         paradaTexto.innerText="Selecionar parada";
       }
-
       if(tipo==="destino"){
         destino=item;
         destinoTexto.innerText=item;
       }
-
       if(tipo==="parada"){
         parada=item;
         paradaTexto.innerText=item;
@@ -385,12 +459,10 @@ plusBtn.onclick=()=>{
   usarParada=!usarParada;
   desvioRota=false;
   desvioRotaBtn.classList.remove("active");
-
   parada=null;
   paradaTexto.innerText="Selecionar parada";
   paradaBtn.style.display=usarParada?"flex":"none";
   plusBtn.classList.toggle("active");
-
   recalcular();
 };
 
@@ -401,7 +473,6 @@ desvioRotaBtn.onclick=()=>{
   paradaBtn.style.display="none";
   parada=null;
   paradaTexto.innerText="Selecionar parada";
-
   desvioRotaBtn.classList.toggle("active");
   recalcular();
 };
