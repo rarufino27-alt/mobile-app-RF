@@ -15,160 +15,186 @@
 
 <style>
 
-/* ===== TOPO GANHOS ===== */
+/* ===== TOGGLE ONLINE ===== */
 
-.ganhos-box{
-  text-align:center;
-  margin-top:20px;
+.online-toggle{
+  display:flex;
+  background:#1c1c1c;
+  border-radius:30px;
+  padding:5px;
+  gap:5px;
 }
 
-.ganhos-valor{
-  font-size:32px;
+.toggle-btn{
+  padding:6px 16px;
+  border-radius:25px;
+  font-size:13px;
   font-weight:700;
+  cursor:pointer;
   transition:.3s;
 }
 
-.ganhos-valor.masked{
-  letter-spacing:6px;
+.toggle-online.active{
+  background:#22c55e;
+  color:#fff;
 }
 
-.eye-btn{
-  background:none;
-  border:none;
-  font-size:18px;
-  cursor:pointer;
-  margin-left:8px;
+.toggle-offline.active{
+  background:#ef4444;
+  color:#fff;
 }
 
-/* ===== LISTA DE VIAGENS ===== */
+/* ===== RADAR ===== */
 
-.lista-viagens{
+.radar-container{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:55vh;
+  flex-direction:column;
+}
+
+.radar{
+  width:200px;
+  height:200px;
+  border-radius:50%;
+  border:3px solid rgba(34,197,94,.3);
+  position:relative;
+  overflow:hidden;
+}
+
+.radar::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:3px solid rgba(34,197,94,.6);
+  animation:radarPulse 2s infinite;
+}
+
+@keyframes radarPulse{
+  0%{transform:scale(.8);opacity:.8}
+  100%{transform:scale(1.5);opacity:0}
+}
+
+.radar-text{
+  margin-top:15px;
+  font-weight:600;
+  opacity:.8;
+}
+
+/* ===== LISTA ===== */
+
+.lista{
   margin-top:20px;
-  max-height:55vh;
-  overflow-y:auto;
   padding-bottom:120px;
 }
 
-.viagem-item{
-  background:#111;
-  margin:10px 15px;
-  padding:15px;
-  border-radius:12px;
+.ride-item{
+  background:rgba(255,255,255,0.05);
+  margin:15px;
+  padding:18px;
+  border-radius:18px;
   cursor:pointer;
-  transition:.2s;
+  transition:.3s;
+  backdrop-filter:blur(6px);
 }
 
-.viagem-item:hover{
-  transform:scale(1.02);
+.ride-item:hover{
+  transform:scale(1.03);
 }
 
-.distancia{
+.ride-item h3{
+  margin:0;
+  color:#22c55e;
+}
+
+.dist{
   font-size:13px;
   opacity:.7;
 }
 
-/* ===== BARRA INFERIOR ===== */
+/* ===== BOTTOM SHEET ===== */
 
-.bottom-bar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:#000;
-  color:#fff;
-  padding:15px;
-  border-top-left-radius:20px;
-  border-top-right-radius:20px;
-  transition:.4s;
-}
-
-.bottom-bar.collapsed{
-  height:60px;
-  overflow:hidden;
-}
-
-.status-msg{
-  text-align:center;
-  animation:fadeMsg 3s infinite;
-}
-
-@keyframes fadeMsg{
-  0%{opacity:1}
-  50%{opacity:.3}
-  100%{opacity:1}
-}
-
-.btn-offline{
-  margin-top:10px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:25px;
-  background:#ef4444;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  transition:.3s;
-}
-
-.btn-offline:hover{
-  transform:scale(1.05);
-}
-
-/* ===== CARD DETALHE ===== */
-
-.modal{
+.overlay-ride{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.8);
+  background:rgba(0,0,0,.6);
   display:none;
-  align-items:center;
+  align-items:flex-end;
   justify-content:center;
+  z-index:3000;
 }
 
-.modal-content{
-  background:#111;
-  padding:20px;
-  border-radius:15px;
-  width:90%;
+.sheet{
+  background:linear-gradient(180deg,#0f172a,#1e293b);
+  width:100%;
+  max-width:500px;
+  border-top-left-radius:25px;
+  border-top-right-radius:25px;
+  padding:25px;
+  animation:slideUp .4s ease;
 }
 
-.percentuais{
-  display:flex;
-  gap:8px;
+@keyframes slideUp{
+  from{transform:translateY(100%);}
+  to{transform:translateY(0);}
+}
+
+.timer{
+  background:#ef4444;
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:700;
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.1)}
+  100%{transform:scale(1)}
+}
+
+.sheet-price{
+  font-size:32px;
+  text-align:center;
+  color:#22c55e;
+  margin:15px 0;
+}
+
+.accept-btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:30px;
+  background:#22c55e;
+  font-weight:800;
+  font-size:16px;
+  cursor:pointer;
   margin-top:15px;
 }
 
-.percentuais button{
+.percent-buttons{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+.percent-buttons button{
   flex:1;
   padding:10px;
   border:none;
   border-radius:20px;
-  background:#22c55e;
-  color:#000;
-  font-weight:600;
+  background:#1c1c1c;
+  color:#fff;
+  font-weight:700;
   cursor:pointer;
 }
 
-.manual{
-  margin-top:15px;
-}
-
-.manual input{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  margin-bottom:10px;
-}
-
-.manual button{
-  width:100%;
-  padding:10px;
-  border:none;
-  border-radius:20px;
-  background:#facc15;
-  font-weight:700;
+.status-msg{
+  text-align:center;
+  margin-top:10px;
+  font-weight:600;
 }
 
 </style>
@@ -179,168 +205,162 @@
 <header class="rf-top">
   <div class="menu-btn" onclick="toggleSidebar()">☰</div>
   <div>RF Motorista</div>
-  <div>Créditos: <span id="creditosTopo">0.00</span></div>
+  <div class="online-toggle">
+    <div class="toggle-btn toggle-online active">ONLINE</div>
+    <div class="toggle-btn toggle-offline" onclick="irOffline()">OFFLINE</div>
+  </div>
 </header>
 
-<main>
+<div class="rf-body">
 
-<div class="ganhos-box">
-  <div>
-    Ganhos Hoje
-    <button class="eye-btn" onclick="toggleGanhos()">👁</button>
-  </div>
-  <div id="ganhosValor" class="ganhos-valor">
-    R$ <span id="ganhosHoje">0.00</span>
-  </div>
+<!-- RADAR -->
+<div id="radarArea" class="radar-container">
+  <div class="radar"></div>
+  <div class="radar-text">Buscando solicitações próximas...</div>
 </div>
 
-<div class="lista-viagens" id="listaViagens"></div>
+<!-- LISTA -->
+<div id="listaArea" class="lista" style="display:none;"></div>
 
-</main>
-
-<div class="bottom-bar collapsed" id="bottomBar">
-  <div class="status-msg" id="statusMsg">
-    Procurando viagem...
-  </div>
-  <button class="btn-offline" onclick="ficarOffline()">OFFLINE</button>
 </div>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content" id="modalContent"></div>
+<!-- SHEET -->
+<div id="rideOverlay" class="overlay-ride">
+  <div class="sheet" id="rideSheet"></div>
 </div>
 
 <script>
 
-/* ===== DADOS MOCK ===== */
-
 let viagens = [
   {id:1, origem:"Centro", destino:"Shopping", valor:40, distancia:1.2},
-  {id:2, origem:"Praia", destino:"Hospital", valor:35, distancia:3.8},
-  {id:3, origem:"Rodoviária", destino:"Aeroporto", valor:60, distancia:5.5}
+  {id:2, origem:"Praia", destino:"Hospital", valor:35, distancia:2.8},
+  {id:3, origem:"Rodoviária", destino:"Aeroporto", valor:60, distancia:4.5}
 ];
 
 viagens.sort((a,b)=>a.distancia-b.distancia);
 
-/* ===== GANHOS ===== */
+setTimeout(()=>{
+  document.getElementById("radarArea").style.display="none";
+  renderLista();
+},3000);
 
-function toggleGanhos(){
-  const el = document.getElementById("ganhosValor");
-  el.classList.toggle("masked");
+function renderLista(){
 
-  if(el.classList.contains("masked")){
-    document.getElementById("ganhosHoje").innerText="••••";
-  }else{
-    document.getElementById("ganhosHoje").innerText=
-      DataManager.getGanhosHoje().toFixed(2);
-  }
-}
-
-/* ===== LISTAR VIAGENS ===== */
-
-function renderViagens(){
-
-  const lista = document.getElementById("listaViagens");
-  lista.innerHTML="";
+  const area = document.getElementById("listaArea");
+  area.style.display="block";
+  area.innerHTML="";
 
   viagens.forEach(v=>{
-    lista.innerHTML += `
-      <div class="viagem-item" onclick="abrirModal(${v.id})">
-        <strong>R$ ${v.valor.toFixed(2)}</strong>
+    area.innerHTML += `
+      <div class="ride-item" onclick="abrirSheet(${v.id})">
+        <h3>R$ ${v.valor.toFixed(2)}</h3>
         <div>${v.origem} → ${v.destino}</div>
-        <div class="distancia">${v.distancia} km de você</div>
+        <div class="dist">${v.distancia} km de você</div>
       </div>
     `;
   });
 
 }
 
-renderViagens();
+let timerInterval;
 
-/* ===== MODAL ===== */
-
-function abrirModal(id){
+function abrirSheet(id){
 
   const v = viagens.find(x=>x.id===id);
-  const modal = document.getElementById("modal");
-  const content = document.getElementById("modalContent");
 
-  const p5 = (v.valor*1.05).toFixed(2);
-  const p10 = (v.valor*1.10).toFixed(2);
-  const p15 = (v.valor*1.15).toFixed(2);
+  document.getElementById("rideOverlay").style.display="flex";
 
-  content.innerHTML = `
-    <h3>${v.origem} → ${v.destino}</h3>
-    <h2>R$ ${v.valor.toFixed(2)}</h2>
-
-    <div class="percentuais">
-      <button onclick="ofertar(${p5})">+5%</button>
-      <button onclick="ofertar(${p10})">+10%</button>
-      <button onclick="ofertar(${p15})">+15%</button>
+  document.getElementById("rideSheet").innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>Nova Solicitação</div>
+      <div class="timer" id="timer">15</div>
     </div>
 
-    <div class="manual">
-      <input type="number" id="manualValor" placeholder="Sua oferta">
-      <button onclick="ofertaManual(${v.valor})">Ofertar manual</button>
+    <div class="sheet-price">R$ ${v.valor.toFixed(2)}</div>
+
+    <div>${v.origem} → ${v.destino}</div>
+
+    <button class="accept-btn" onclick="aceitarDireto(${v.valor})">
+      ACEITAR POR R$ ${v.valor.toFixed(2)}
+    </button>
+
+    <div class="percent-buttons">
+      <button onclick="enviarProposta(${v.valor},1.05)">+5%</button>
+      <button onclick="enviarProposta(${v.valor},1.10)">+10%</button>
+      <button onclick="enviarProposta(${v.valor},1.15)">+15%</button>
     </div>
 
-    <button onclick="fecharModal()">Fechar</button>
+    <div class="status-msg" id="statusMsg"></div>
   `;
 
-  modal.style.display="flex";
+  SoundService.play("CHAMADA");
+
+  iniciarTimer();
+
 }
 
-function fecharModal(){
-  document.getElementById("modal").style.display="none";
+function iniciarTimer(){
+
+  let tempo=15;
+
+  timerInterval=setInterval(()=>{
+    tempo--;
+    document.getElementById("timer").innerText=tempo;
+
+    if(tempo<=0){
+      clearInterval(timerInterval);
+      fecharSheet();
+    }
+  },1000);
+
 }
 
-function ofertar(valor){
-  alert("Oferta enviada: R$ "+valor);
-  fecharModal();
+function aceitarDireto(valor){
+  clearInterval(timerInterval);
+  SoundService.play("ACEITA");
+  window.location.href="corrida-ativa.html";
 }
 
-function ofertaManual(original){
+function enviarProposta(valor,multi){
 
-  const val = parseFloat(document.getElementById("manualValor").value);
-  if(!val || val<=0){
-    alert("Valor inválido");
-    return;
-  }
+  clearInterval(timerInterval);
 
-  if(val > original*2){
-    alert("Não pode ultrapassar o dobro do valor original");
-    return;
-  }
+  const novoValor=(valor*multi).toFixed(2);
 
-  alert("Oferta manual enviada: R$ "+val.toFixed(2));
-  fecharModal();
+  document.getElementById("statusMsg").innerText="Enviando proposta...";
+
+  SoundService.play("MSG_PASSAGEIRO");
+
+  setTimeout(()=>{
+
+    const aceita=Math.random()<0.6;
+
+    if(aceita){
+      SoundService.play("ACEITA");
+      document.getElementById("statusMsg").innerText="Proposta aceita!";
+      setTimeout(()=>{
+        window.location.href="corrida-ativa.html";
+      },1500);
+    }else{
+      SoundService.play("CANCELADA");
+      document.getElementById("statusMsg").innerText="Proposta recusada.";
+      setTimeout(()=>{
+        fecharSheet();
+      },1500);
+    }
+
+  },3000);
+
 }
 
-/* ===== BOTTOM BAR ===== */
-
-let alternar = true;
-
-setInterval(()=>{
-  document.getElementById("statusMsg").innerText =
-    alternar ? "Procurando viagem..." : "Você está online";
-  alternar=!alternar;
-},3000);
-
-document.getElementById("bottomBar").addEventListener("click",()=>{
-  document.getElementById("bottomBar").classList.toggle("collapsed");
-});
-
-/* ===== OFFLINE ===== */
-
-function ficarOffline(){
-  alert("Você ficou offline");
+function fecharSheet(){
+  document.getElementById("rideOverlay").style.display="none";
 }
 
-document.getElementById("creditosTopo").innerText=
-  DataManager.getCreditos().toFixed(2);
-
-document.getElementById("ganhosHoje").innerText=
-  DataManager.getGanhosHoje().toFixed(2);
+function irOffline(){
+  DataManager.setOnline(false);
+  window.location.href="offline.html";
+}
 
 </script>
 
