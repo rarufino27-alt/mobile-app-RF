@@ -30,10 +30,9 @@ body.dark{
 }
 
 body{
-  background:linear-gradient(180deg,#111 0%, #1a1a1a 40%, #f5f5f5 100%);
+  background: radial-gradient(circle at 50% 0%, #2a2a2a 0%, #111 50%, #0a0a0a 100%);
   height:100vh;
   overflow:hidden;
-  transition:.3s ease;
 }
 
 /* MAPA */
@@ -71,7 +70,8 @@ body.dark .top{
 
 .logo{
   font-weight:900;
-  font-size:1rem;
+  font-size:1.1rem;
+  letter-spacing:.5px;
 }
 
 .menu{
@@ -81,17 +81,12 @@ body.dark .top{
 
 /* CARD */
 .card{
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
-  background:var(--rf-card);
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(20px);
   border-top-left-radius:28px;
   border-top-right-radius:28px;
   padding:25px 20px 35px 20px;
-  box-shadow:0 -10px 40px rgba(0,0,0,.25);
-  z-index:2;
-  animation:slideUp .4s ease;
+  box-shadow: 0 -20px 60px rgba(0,0,0,.25);
 }
 
 @keyframes slideUp{
@@ -157,20 +152,16 @@ body.dark .input-box{
 
 /* BOTÃO */
 button{
-  width:100%;
-  margin-top:15px;
-  padding:16px;
-  border:none;
-  border-radius:30px;
-  background:var(--rf-yellow);
+  background: linear-gradient(135deg,#ffd600,#ffb800);
+  box-shadow: 0 10px 25px rgba(255,190,0,.5);
+  color:#000;
   font-weight:800;
-  font-size:1rem;
-  cursor:pointer;
+  transition:.2s ease;
 }
 
-button:disabled{
-  background:#ccc;
-  cursor:not-allowed;
+button:active{
+  transform:scale(.96);
+  box-shadow: 0 6px 15px rgba(255,190,0,.4);
 }
 
 /* MODAL */
@@ -275,7 +266,9 @@ button:disabled{
 }
 
 .slide h2{
-  font-size:1.1rem;
+  font-size:1.25rem;
+  font-weight:800;
+  letter-spacing:.3px;
 }
 
 .input-box{
@@ -304,6 +297,26 @@ button:active{
 #btnLoader{
   display:inline-block;
   animation:spin 1s linear infinite;
+}
+
+.premium-yellow{
+  background: linear-gradient(135deg,#ffd600,#ffb800);
+  box-shadow: 0 15px 40px rgba(255,190,0,.4);
+}
+
+.premium-dark{
+  background: linear-gradient(135deg,#1e1e1e,#000);
+  box-shadow: 0 15px 40px rgba(0,0,0,.6);
+}
+
+.premium-blue{
+  background: linear-gradient(135deg,#2563eb,#1e40af);
+  box-shadow: 0 15px 40px rgba(37,99,235,.5);
+}
+
+.premium-green{
+  background: linear-gradient(135deg,#22c55e,#15803d);
+  box-shadow: 0 15px 40px rgba(34,197,94,.5);
 }
 </style>
 </head>
