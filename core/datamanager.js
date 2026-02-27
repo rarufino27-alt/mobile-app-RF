@@ -44,10 +44,17 @@ const DataManager = {
     );
 
     const rotas = respostas.flat();
-    this.cache.rotas = rotas;
 
-    const origens = [...new Set(rotas.map(r => r.origem))]
-      .sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    // Normaliza todos os textos removendo espaços invisíveis
+    this.cache.rotas = rotas.map(r => ({
+      origem: r.origem.trim(),
+      destino: r.destino.trim(),
+      valor: r.valor
+    }));
+
+    const origens = [...new Set(
+      this.cache.rotas.map(r => r.origem)
+    )].sort((a,b)=>a.localeCompare(b,'pt-BR'));
 
     this.cache.origens = origens;
 
@@ -58,9 +65,13 @@ const DataManager = {
 
     if(!this.cache.rotas) return [];
 
-    return this.cache.rotas
-      .filter(r => r.origem === origem)
-      .map(r => r.destino)
+    const origemLimpa = origem.trim();
+
+    const destinos = this.cache.rotas
+      .filter(r => r.origem === origemLimpa)
+      .map(r => r.destino);
+
+    return [...new Set(destinos)]
       .sort((a,b)=>a.localeCompare(b,'pt-BR'));
   },
 
@@ -68,9 +79,12 @@ const DataManager = {
 
     if(!this.cache.rotas) return null;
 
+    const o = origem.trim();
+    const d = destino.trim();
+
     const rota = this.cache.rotas.find(r =>
-      (r.origem === origem && r.destino === destino) ||
-      (r.origem === destino && r.destino === origem)
+      (r.origem === o && r.destino === d) ||
+      (r.origem === d && r.destino === o)
     );
 
     return rota ? Number(rota.valor) : null;
