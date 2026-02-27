@@ -21,21 +21,15 @@
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
-/* ===== TEMA ===== */
-body.dark{
-  background: radial-gradient(circle at top,#1c1c1c 0%,#000 70%);
+/* ===== FUNDO PREMIUM ===== */
+body{
+  background: radial-gradient(circle at top,#1a1a1a 0%,#000 70%);
   color:#fff;
-}
-
-body.light{
-  background: radial-gradient(circle at top,#ffffff 0%,#ececec 70%);
-  color:#000;
 }
 
 /* ===== HEADER ===== */
 .header{
-  padding:22px;
-  background:linear-gradient(180deg,#000,#111);
+  padding:25px;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -47,50 +41,68 @@ body.light{
   gap:10px;
   font-weight:900;
   font-size:18px;
-  color:#fff;
 }
 
 .logo-img{
-  width:28px;
-  height:28px;
-  border-radius:8px;
+  width:30px;
+  height:30px;
+  border-radius:10px;
 }
 
 /* ===== HERO ===== */
 .hero{
-  padding:40px 25px 20px;
+  padding:35px 25px 10px;
   text-align:center;
 }
 
-.status-card{
-  margin:0 25px 25px;
-  padding:18px;
-  border-radius:var(--rf-radius);
-  background:rgba(255,255,255,.06);
+.hero h1{
+  font-size:22px;
+  font-weight:800;
 }
 
-/* ===== CARD PRINCIPAL ===== */
+.hero p{
+  opacity:.6;
+  margin-top:6px;
+}
+
+.status-card{
+  margin:20px 25px;
+  padding:16px;
+  border-radius:20px;
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:14px;
+}
+
+/* ===== CARD GLASS ===== */
 .card{
-  margin:0 25px 40px;
+  margin:0 25px 50px;
   padding:25px;
-  border-radius:var(--rf-radius);
-  background:#fff;
-  color:#000;
-  box-shadow:0 30px 60px rgba(0,0,0,.6);
+  border-radius:30px;
+  background:rgba(255,255,255,.07);
+  backdrop-filter:blur(25px);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 20px 60px rgba(0,0,0,.8);
   display:flex;
   flex-direction:column;
   gap:18px;
-  position:relative;
 }
 
+/* ===== INPUTS ===== */
 .input-box{
-  background:#f2f2f2;
+  background:rgba(255,255,255,.08);
   padding:16px;
-  border-radius:16px;
+  border-radius:18px;
   display:flex;
   align-items:center;
   gap:12px;
   cursor:pointer;
+  transition:.2s;
+}
+
+.input-box:hover{
+  background:rgba(255,255,255,.12);
 }
 
 .dot{
@@ -103,10 +115,11 @@ body.light{
 .parada{background:#3b82f6;}
 .destino{background:#ef4444;}
 
+/* ===== BOTÃO + ===== */
 .plus-btn{
   align-self:center;
-  width:42px;
-  height:42px;
+  width:44px;
+  height:44px;
   border-radius:50%;
   background:linear-gradient(135deg,var(--rf-yellow),var(--rf-yellow-strong));
   display:flex;
@@ -116,30 +129,35 @@ body.light{
   cursor:pointer;
   font-size:22px;
   transition:.3s;
-  box-shadow:0 10px 25px rgba(255,214,0,.4);
+  box-shadow:0 10px 30px rgba(255,214,0,.5);
 }
 
 .plus-btn.active{
   transform:rotate(45deg);
   background:#ef4444;
-  box-shadow:0 10px 25px rgba(239,68,68,.5);
+  box-shadow:0 10px 30px rgba(239,68,68,.5);
   color:#fff;
 }
 
+/* ===== BOTÕES EXTRAS ===== */
 .option-btn{
-  padding:12px;
-  border-radius:12px;
-  border:2px solid #ddd;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.15);
   text-align:center;
   cursor:pointer;
   font-weight:600;
+  background:rgba(255,255,255,.06);
   transition:.2s;
-  background:#fff;
+}
+
+.option-btn:hover{
+  background:rgba(255,255,255,.12);
 }
 
 .option-btn.active{
-  border-color:var(--rf-yellow-strong);
-  background:rgba(255,214,0,.2);
+  border-color:var(--rf-yellow);
+  background:rgba(255,214,0,.15);
 }
 
 .option-mercado.active{
@@ -147,12 +165,18 @@ body.light{
   background:rgba(34,197,94,.15);
 }
 
+/* ===== PREÇO ===== */
 .preco{
   display:none;
   background:rgba(255,214,0,.15);
-  padding:16px;
-  border-radius:16px;
-  transition:.2s;
+  padding:18px;
+  border-radius:18px;
+  text-align:center;
+}
+
+.preco strong{
+  font-size:20px;
+  color:var(--rf-yellow);
 }
 
 .preco.animar{
@@ -165,6 +189,7 @@ body.light{
   100%{ transform:scale(1); }
 }
 
+/* ===== BOTÃO PRINCIPAL ===== */
 button{
   padding:18px;
   border:none;
@@ -172,15 +197,25 @@ button{
   background:linear-gradient(135deg,var(--rf-yellow),var(--rf-yellow-strong));
   font-weight:900;
   cursor:pointer;
+  font-size:16px;
+  box-shadow:0 15px 40px rgba(255,214,0,.5);
+  transition:.2s;
 }
 
-button:disabled{opacity:.4;}
+button:hover{
+  transform:translateY(-2px);
+}
+
+button:disabled{
+  opacity:.4;
+  box-shadow:none;
+}
 
 /* ===== MODAL ===== */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.8);
   display:none;
   align-items:center;
   justify-content:center;
@@ -192,7 +227,7 @@ button:disabled{opacity:.4;}
   color:#fff;
   width:90%;
   max-width:420px;
-  border-radius:20px;
+  border-radius:22px;
   padding:20px;
   max-height:80vh;
   overflow:auto;
@@ -200,12 +235,13 @@ button:disabled{opacity:.4;}
 
 .modal-content div{
   padding:12px;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
+  transition:.2s;
 }
 
 .modal-content div:hover{
-  background:rgba(255,255,255,.08);
+  background:rgba(255,255,255,.1);
 }
 </style>
 </head>
