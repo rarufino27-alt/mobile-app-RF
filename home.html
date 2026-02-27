@@ -78,22 +78,27 @@ body{
 .parada{background:#3b82f6;}
 .destino{background:#ef4444;}
 
+/* BOTÃO + PREMIUM */
 .plus-btn{
   align-self:center;
-  width:36px;
-  height:36px;
+  width:42px;
+  height:42px;
   border-radius:50%;
-  background:var(--rf-yellow);
+  background:linear-gradient(135deg,var(--rf-yellow),var(--rf-yellow-strong));
   display:flex;
   align-items:center;
   justify-content:center;
   font-weight:900;
   cursor:pointer;
-  font-size:20px;
+  font-size:22px;
+  transition:.3s;
+  box-shadow:0 10px 25px rgba(255,214,0,.4);
 }
 
 .plus-btn.active{
+  transform:rotate(45deg);
   background:#ef4444;
+  box-shadow:0 10px 25px rgba(239,68,68,.5);
   color:#fff;
 }
 
@@ -104,6 +109,7 @@ body{
   text-align:center;
   cursor:pointer;
   font-weight:600;
+  transition:.2s;
 }
 
 .option-desvio.active{
@@ -129,6 +135,7 @@ button{
 
 button:disabled{opacity:.4;}
 
+/* MODAL PRETO */
 .modal{
   position:fixed;
   inset:0;
@@ -136,10 +143,12 @@ button:disabled{opacity:.4;}
   display:none;
   align-items:center;
   justify-content:center;
+  z-index:100;
 }
 
 .modal-content{
-  background:#fff;
+  background:#111;
+  color:#fff;
   width:90%;
   max-width:420px;
   border-radius:20px;
@@ -149,11 +158,14 @@ button:disabled{opacity:.4;}
 }
 
 .modal-content div{
-  padding:10px;
+  padding:12px;
+  border-radius:10px;
   cursor:pointer;
+  transition:.2s;
 }
+
 .modal-content div:hover{
-  background:#f2f2f2;
+  background:rgba(255,255,255,.08);
 }
 </style>
 </head>
@@ -224,8 +236,11 @@ const origemTexto=document.getElementById("origemTexto");
 const destinoTexto=document.getElementById("destinoTexto");
 const paradaTexto=document.getElementById("paradaTexto");
 
-const plusBtn=document.getElementById("plusBtn");
+const origemBtn=document.getElementById("origemBtn");
+const destinoBtn=document.getElementById("destinoBtn");
 const paradaBtn=document.getElementById("paradaBtn");
+
+const plusBtn=document.getElementById("plusBtn");
 const desvioRotaBtn=document.getElementById("desvioRotaBtn");
 
 const precoBox=document.getElementById("precoBox");
@@ -235,8 +250,9 @@ const confirmarBtn=document.getElementById("confirmar");
 const modal=document.getElementById("modal");
 const lista=document.getElementById("lista");
 
+/* Lazy load compatível */
 async function iniciar(){
-  await DataManager.carregar();
+  await DataManager.carregarOrigens();
 }
 iniciar();
 
@@ -267,7 +283,7 @@ function recalcular(){
   confirmarBtn.disabled=false;
 }
 
-function abrirModal(tipo){
+async function abrirModal(tipo){
 
   if((tipo==="destino" || tipo==="parada") && !origem){
     alert("Selecione a origem primeiro.");
@@ -278,13 +294,23 @@ function abrirModal(tipo){
   lista.innerHTML="";
 
   let dados=[];
-  if(tipo==="origem") dados=DataManager.listarOrigens();
-  if(tipo==="destino") dados=DataManager.listarDestinos(origem);
-  if(tipo==="parada") dados=DataManager.listarDestinos(origem);
+
+  if(tipo==="origem"){
+    dados = await DataManager.carregarOrigens();
+  }
+
+  if(tipo==="destino"){
+    dados = DataManager.listarDestinos(origem);
+  }
+
+  if(tipo==="parada"){
+    dados = DataManager.listarDestinos(origem);
+  }
 
   dados.forEach(item=>{
     const div=document.createElement("div");
     div.innerText=item;
+
     div.onclick=()=>{
       if(tipo==="origem"){
         origem=item;
@@ -294,10 +320,12 @@ function abrirModal(tipo){
         destinoTexto.innerText="Selecionar destino";
         paradaTexto.innerText="Selecionar parada";
       }
+
       if(tipo==="destino"){
         destino=item;
         destinoTexto.innerText=item;
       }
+
       if(tipo==="parada"){
         parada=item;
         paradaTexto.innerText=item;
@@ -306,6 +334,7 @@ function abrirModal(tipo){
       modal.style.display="none";
       recalcular();
     };
+
     lista.appendChild(div);
   });
 }
