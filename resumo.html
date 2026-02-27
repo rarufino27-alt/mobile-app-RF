@@ -6,6 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root{
+  --rf-yellow:#ffd600;
+  --rf-yellow-strong:#ffb800;
+  --rf-radius:26px;
+}
+
 *{
   margin:0;
   padding:0;
@@ -13,72 +19,65 @@
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
-body{
-  background:#0f0f0f;
+body.dark{
+  background: radial-gradient(circle at top,#1c1c1c 0%,#000 70%);
   color:#fff;
-  min-height:100vh;
 }
 
-/* HEADER */
-.top{
-  background:#ffffff;
-  padding:25px 20px 55px;
-  border-bottom-left-radius:40px;
-  border-bottom-right-radius:40px;
+.header{
+  padding:22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:linear-gradient(180deg,#000,#111);
+  color:#fff;
 }
 
 .logo{
   font-weight:900;
-  font-size:1.4rem;
-  color:#000;
+  font-size:18px;
 }
 
-/* CONTAINER */
-.content{
-  width:90%;
+.container{
+  padding:30px 25px 120px;
   max-width:420px;
-  margin:0 auto 120px;
+  margin:auto;
 }
 
-/* CARD */
 .card{
-  background:#1c1c1c;
-  border-radius:20px;
+  background:#fff;
+  color:#000;
+  border-radius:var(--rf-radius);
   padding:20px;
   margin-bottom:20px;
-  box-shadow:0 12px 30px rgba(0,0,0,.5);
+  box-shadow:0 30px 60px rgba(0,0,0,.6);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
 }
 
 .card h3{
-  font-size:.95rem;
-  margin-bottom:12px;
-  color:#facc15;
+  font-size:16px;
+  font-weight:800;
 }
 
-/* ROTA */
-.rota-item{
-  margin-bottom:6px;
-  font-size:.9rem;
+.route-line{
+  font-size:14px;
 }
 
-.rota-item span{
-  color:#aaa;
+.route-line span{
+  color:#666;
 }
 
-/* OBS */
 textarea{
   width:100%;
+  border-radius:14px;
   padding:12px;
-  border-radius:12px;
-  border:1px solid #333;
-  background:#111;
-  color:#fff;
+  border:1px solid #ddd;
   resize:none;
-  min-height:90px;
-  font-size:.85rem;
+  height:90px;
 }
 
-/* CATEGORIA */
 .categoria{
   display:flex;
   gap:10px;
@@ -88,39 +87,31 @@ textarea{
   flex:1;
   padding:14px;
   border-radius:14px;
-  background:#111;
-  border:2px solid #333;
+  border:2px solid #ddd;
   cursor:pointer;
   text-align:center;
+  font-weight:600;
   transition:.2s;
-  font-size:.85rem;
 }
 
 .cat-btn.active{
-  border-color:#facc15;
-  background:rgba(250,204,21,.15);
+  border-color:var(--rf-yellow-strong);
+  background:rgba(255,214,0,.2);
 }
 
-/* DETALHAMENTO */
 .linha{
   display:flex;
   justify-content:space-between;
-  font-size:.85rem;
-  margin-bottom:6px;
-}
-
-.linha span:first-child{
-  color:#aaa;
+  font-size:14px;
 }
 
 .total{
-  font-size:1.1rem;
-  font-weight:700;
-  color:#facc15;
-  margin-top:10px;
+  font-size:18px;
+  font-weight:900;
+  color:var(--rf-yellow-strong);
+  margin-top:8px;
 }
 
-/* FOOTER */
 .footer{
   position:fixed;
   bottom:0;
@@ -133,7 +124,7 @@ textarea{
 
 .footer-content{
   max-width:420px;
-  margin:0 auto;
+  margin:auto;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -143,55 +134,44 @@ textarea{
   padding:12px 28px;
   border:none;
   border-radius:30px;
-  background:#facc15;
-  color:#000;
+  background:var(--rf-yellow);
   font-weight:700;
   cursor:pointer;
 }
-
 .valor-final{
-  font-size:1.4rem;
-  font-weight:700;
-  color:#facc15;
+  font-size:20px;
+  font-weight:900;
+  color:var(--rf-yellow);
 }
 </style>
 </head>
-<body>
 
-<div class="top">
+<body class="dark">
+
+<header class="header">
   <div class="logo">RESUMO DA VIAGEM</div>
-</div>
+</header>
 
-<div class="content">
+<div class="container">
 
-  <!-- ROTA -->
   <div class="card">
     <h3>Rota</h3>
-    <div id="rotaDetalhes"></div>
+    <div id="rota"></div>
   </div>
 
-  <!-- OBSERVAÇÃO -->
   <div class="card">
     <h3>Observação ao motorista</h3>
-    <textarea id="obsInput" placeholder="Ex: excesso de pessoas, mala grande, referência..."></textarea>
+    <textarea id="observacao" placeholder="Ex: excesso de pessoas, mala grande, referência..."></textarea>
   </div>
 
-  <!-- CATEGORIA -->
   <div class="card">
-    <h3>Categoria do Veículo</h3>
+    <h3>Categoria</h3>
     <div class="categoria">
-      <div class="cat-btn active" id="cat4">
-        Driver 4 Lugares<br>
-        <small>Preço normal</small>
-      </div>
-      <div class="cat-btn" id="cat6">
-        Driver 6 Lugares<br>
-        <small>+50%</small>
-      </div>
+      <div class="cat-btn active" id="cat4">Driver 4 Lugares</div>
+      <div class="cat-btn" id="cat6">Driver 6 Lugares (+50%)</div>
     </div>
   </div>
 
-  <!-- DETALHAMENTO -->
   <div class="card">
     <h3>Detalhamento</h3>
     <div id="detalhamento"></div>
@@ -216,26 +196,49 @@ let { origem, parada, destino, desvioRota, mercado, valor } = corrida;
 let categoriaMultiplicador = 1;
 
 function montarRota(){
-
-  const rotaDiv = document.getElementById("rotaDetalhes");
-  rotaDiv.innerHTML="";
-
-  rotaDiv.innerHTML += `<div class="rota-item"><span>Origem:</span> ${origem}</div>`;
+  let html = `
+    <div class="route-line"><span>Origem:</span> ${origem}</div>
+  `;
 
   if(parada){
-    rotaDiv.innerHTML += `<div class="rota-item"><span>Parada:</span> ${parada}</div>`;
+    html += `<div class="route-line"><span>Parada:</span> ${parada}</div>`;
   }
 
-  rotaDiv.innerHTML += `<div class="rota-item"><span>Destino:</span> ${destino}</div>`;
+  html += `<div class="route-line"><span>Destino:</span> ${destino}</div>`;
+
+  document.getElementById("rota").innerHTML = html;
+}
+
+function calcularAdicionalNoturno(base){
+
+  const agora = new Date();
+  const hora = agora.getHours() + (agora.getMinutes()/60);
+
+  if(hora >= 22.5){
+
+    if(base <= 24.99){
+      return 4.99;
+    }else{
+      return base * 0.35;
+    }
+  }
+
+  return 0;
 }
 
 function calcular(){
 
   let base = parseFloat(valor);
-
   let detalhamento = "";
 
   detalhamento += `<div class="linha"><span>Base</span><span>R$ ${base.toFixed(2)}</span></div>`;
+
+  const adicionalNoturno = calcularAdicionalNoturno(base);
+
+  if(adicionalNoturno > 0){
+    detalhamento += `<div class="linha"><span>Adicional Noturno</span><span>R$ ${adicionalNoturno.toFixed(2)}</span></div>`;
+    base += adicionalNoturno;
+  }
 
   if(desvioRota){
     detalhamento += `<div class="linha"><span>Desvio simples</span><span>R$ 5,00</span></div>`;
@@ -249,7 +252,7 @@ function calcular(){
 
   if(categoriaMultiplicador > 1){
     const acrescimo = base * 0.5;
-    detalhamento += `<div class="linha"><span>Driver 6 lugares</span><span>+50%</span></div>`;
+    detalhamento += `<div class="linha"><span>6 Lugares (+50%)</span><span>R$ ${acrescimo.toFixed(2)}</span></div>`;
     base += acrescimo;
   }
 
@@ -277,16 +280,10 @@ document.getElementById("cat6").onclick=()=>{
 
 function confirmar(){
 
-  const observacao = document.getElementById("obsInput").value;
-
   const dadosFinal = {
-    origem,
-    parada,
-    destino,
-    desvioRota,
-    mercado,
-    categoria: categoriaMultiplicador===1 ? "Driver 4" : "Driver 6",
-    observacao,
+    ...corrida,
+    categoria: categoriaMultiplicador === 1 ? "Driver 4" : "Driver 6",
+    observacao: document.getElementById("observacao").value,
     total: localStorage.getItem("rf_total_final")
   };
 
