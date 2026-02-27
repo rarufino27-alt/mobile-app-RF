@@ -1,126 +1,71 @@
-window.DataManager = {
+const DataManager = {
+  rotas: [],
 
-  /* =========================
-     CONFIGURAÇÃO GLOBAL
-  ========================== */
+  async carregar(){
+    try {
 
-  TAXA_PLATAFORMA: 0.15, // 15%
+      const arquivos = [
+        "condominio-porto-do-cabo.json",
+        "gaibu.json",
+        "enseadas.json",
+        "setor-4.json",
+        "xareu.json",
+        "itapuama.json",
+        "calhetas.json",
+        "lote-garapu2-lote-dona-amara.json",
+        "cohab.json",
+        "centro-do-cabo.json",
+        "shopping-costa-dourada.json",
+        "aguia-american-club-br-101.json",
+        "empresas.json",
+        "engenhos.json",
+        "hospitais-clinicas.json",
+        "interurbanas.json",
+        "interestaduais.json",
+        "lazer-festa.json",
+        "locais.json",
+        "longas-locais.json",
+        "praias.json",
+        "bairro-sao-francisco-baixo.json"
+      ];
 
-  /* =========================
-     CRÉDITOS
-  ========================== */
+      const respostas = await Promise.all(
+        arquivos.map(nome =>
+          fetch("/mobile-app-RF/data/" + nome)
+            .then(r => {
+              if(!r.ok){
+                throw new Error("Erro ao carregar: " + nome);
+              }
+              return r.json();
+            })
+        )
+      );
 
-  getCreditos(){
-    return parseFloat(localStorage.getItem("rf_creditos")) || 0;
-  },
+      this.rotas = respostas.flat();
 
-  setCreditos(valor){
-    const numero = parseFloat(valor) || 0;
-    localStorage.setItem("rf_creditos", numero.toFixed(2));
-  },
+      console.log("ROTAS CARREGADAS:", this.rotas.length);
 
-  adicionarCreditos(valor){
-    const atual = this.getCreditos();
-    this.setCreditos(atual + parseFloat(valor));
-  },
-
-  descontarCreditos(valor){
-    const atual = this.getCreditos();
-    const novo = Math.max(0, atual - parseFloat(valor));
-    this.setCreditos(novo);
-  },
-
-  validarCreditoParaCorrida(valorCorrida){
-    const taxa = valorCorrida * this.TAXA_PLATAFORMA;
-    return this.getCreditos() >= taxa;
-  },
-
-  aplicarTaxaCorrida(valorCorrida){
-    const taxa = valorCorrida * this.TAXA_PLATAFORMA;
-    this.descontarCreditos(taxa);
-    return taxa;
-  },
-
-  /* =========================
-     STATUS ONLINE
-  ========================== */
-
-  setOnline(status){
-    localStorage.setItem("rf_online", status ? "1" : "0");
-  },
-
-  isOnline(){
-    const status = localStorage.getItem("rf_online");
-    return status === "1";
-  },
-
-  /* =========================
-     GANHOS DO DIA
-  ========================== */
-
-  atualizarGanhos(valor){
-
-    const hoje = new Date().toDateString();
-    const dataSalva = localStorage.getItem("rf_data_ganhos");
-
-    if(dataSalva !== hoje){
-      localStorage.setItem("rf_ganhos_dia", "0.00");
-      localStorage.setItem("rf_data_ganhos", hoje);
+    } catch(e){
+      console.error("ERRO NO CARREGAMENTO:", e);
     }
-
-    const atual = parseFloat(localStorage.getItem("rf_ganhos_dia")) || 0;
-    const novo = atual + parseFloat(valor);
-
-    localStorage.setItem("rf_ganhos_dia", novo.toFixed(2));
   },
 
-  getGanhosHoje(){
-    return parseFloat(localStorage.getItem("rf_ganhos_dia")) || 0;
+  listarOrigens(){
+    return [...new Set(this.rotas.map(r => r.origem))].sort();
   },
 
-  /* =========================
-     CORRIDA ATUAL (VERSÃO DEFINITIVA)
-  ========================== */
-
-  setCorridaAtual(dados){
-    localStorage.setItem("rf_corrida_atual", JSON.stringify(dados));
+  listarDestinos(origem){
+    return this.rotas
+      .filter(r => r.origem === origem)
+      .map(r => r.destino);
   },
 
-  getCorridaAtual(){
-    const dados = localStorage.getItem("rf_corrida_atual");
-    return dados ? JSON.parse(dados) : null;
-  },
+  buscarValor(origem, destino){
+    const rota = this.rotas.find(r =>
+      (r.origem === origem && r.destino === destino) ||
+      (r.origem === destino && r.destino === origem)
+    );
 
-  atualizarStatusCorridaAtual(status){
-    const corrida = this.getCorridaAtual();
-    if(!corrida) return;
-
-    corrida.status = status;
-    localStorage.setItem("rf_corrida_atual", JSON.stringify(corrida));
-  },
-
-  limparCorridaAtual(){
-    localStorage.removeItem("rf_corrida_atual");
-  },
-
-  /* =========================
-     CORRIDA SIMULADA (PARA HOME)
-  ========================== */
-
-  criarCorridaSimulada(){
-
-    if(this.getCorridaAtual()) return null;
-
-    const corrida = {
-      id: Date.now(),
-      valor: 20 + Math.floor(Math.random() * 30),
-      origem: "Centro da Cidade",
-      destino: "Shopping Principal",
-      status: "pendente"
-    };
-
-    this.setCorridaAtual(corrida);
-    return corrida;
+    return rota ? Number(rota.valor) : null;
   }
-
 };
