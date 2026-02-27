@@ -10,16 +10,17 @@
 <style>
 :root{
   --rf-yellow:#facc15;
-  --rf-dark:#111111;
-  --rf-card:#ffffff;
-  --rf-text:#000000;
+  --rf-dark:#111;
+  --rf-light:#ffffff;
   --rf-bg:#f5f5f5;
+  --rf-text:#000;
+  --rf-card:#ffffff;
 }
 
 body.dark{
-  --rf-card:#1c1c1c;
-  --rf-text:#ffffff;
   --rf-bg:#0f0f0f;
+  --rf-text:#ffffff;
+  --rf-card:#1c1c1c;
 }
 
 *{
@@ -36,11 +37,11 @@ body{
   transition:.3s ease;
 }
 
-/* MAPA (placeholder) */
+/* MAPA */
 #map{
   position:absolute;
   inset:0;
-  background:linear-gradient(135deg,#eaeaea,#d6d6d6);
+  background:linear-gradient(135deg,#eaeaea,#dcdcdc);
   z-index:1;
 }
 
@@ -59,21 +60,27 @@ body.dark #map{
   justify-content:space-between;
   align-items:center;
   z-index:3;
+  background:#111;
+  color:#fff;
+  transition:.3s ease;
+}
+
+body.dark .top{
+  background:#fff;
+  color:#000;
 }
 
 .logo{
   font-weight:900;
   font-size:1rem;
-  color:var(--rf-text);
 }
 
 .menu{
   font-size:24px;
   cursor:pointer;
-  color:var(--rf-text);
 }
 
-/* CARD INFERIOR */
+/* CARD */
 .card{
   position:absolute;
   bottom:0;
@@ -129,6 +136,27 @@ body.dark .input-box{
   font-weight:500;
 }
 
+/* PREÇO */
+.preco-box{
+  margin-top:15px;
+  padding:15px;
+  border-radius:14px;
+  background:rgba(250,204,21,.15);
+  display:none;
+}
+
+.preco-label{
+  font-size:.9rem;
+  opacity:.7;
+}
+
+.preco-valor{
+  font-size:1.6rem;
+  font-weight:900;
+  color:var(--rf-yellow);
+}
+
+/* BOTÃO */
 button{
   width:100%;
   margin-top:15px;
@@ -214,6 +242,12 @@ button:disabled{
     <div class="texto" id="destinoTexto">Selecionar destino</div>
   </div>
 
+  <!-- PREÇO -->
+  <div class="preco-box" id="precoBox">
+    <div class="preco-label">Valor estimado</div>
+    <div class="preco-valor" id="precoValor">R$ 0,00</div>
+  </div>
+
   <button id="confirmar" disabled>Buscar Motorista</button>
 </div>
 
@@ -229,15 +263,13 @@ let origem=null, destino=null;
 
 const modal=document.getElementById("modal");
 const lista=document.getElementById("lista");
-const busca=document.getElementById("busca");
 const confirmarBtn=document.getElementById("confirmar");
+const precoBox=document.getElementById("precoBox");
+const precoValor=document.getElementById("precoValor");
 
 function aplicarTemaAutomatico(){
   const agora=new Date();
-  const hora=agora.getHours();
-  const minuto=agora.getMinutes();
-  const total=hora*60+minuto;
-
+  const total=agora.getHours()*60+agora.getMinutes();
   const claro=5*60+30;
   const escuro=17*60+30;
 
@@ -255,6 +287,15 @@ async function init(){
   await DataManager.carregar();
 }
 init();
+
+function atualizarPreco(){
+  if(origem && destino){
+    const valor=DataManager.buscarValor(origem,destino)||0;
+    precoValor.innerText="R$ "+valor.toFixed(2);
+    precoBox.style.display="block";
+    confirmarBtn.disabled=false;
+  }
+}
 
 function abrirModal(tipo){
   modal.style.display="flex";
@@ -274,8 +315,8 @@ function abrirModal(tipo){
         destino=item;
         destinoTexto.innerText=item;
       }
-      confirmarBtn.disabled=!(origem && destino);
       modal.style.display="none";
+      atualizarPreco();
     };
     lista.appendChild(div);
   });
