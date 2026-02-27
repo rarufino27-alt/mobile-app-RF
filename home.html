@@ -21,9 +21,14 @@
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
-body{
+body.dark{
   background: radial-gradient(circle at top,#1c1c1c 0%,#000 70%);
   color:#fff;
+}
+
+body.light{
+  background: radial-gradient(circle at top,#ffffff 0%,#ececec 70%);
+  color:#000;
 }
 
 .header{
@@ -31,7 +36,19 @@ body{
   background:linear-gradient(180deg,#000,#111);
 }
 
-.logo{font-weight:900;}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:900;
+  font-size:18px;
+}
+
+.logo-img{
+  width:28px;
+  height:28px;
+  border-radius:8px;
+}
 
 .hero{
   padding:40px 25px 20px;
@@ -167,13 +184,96 @@ button:disabled{opacity:.4;}
 .modal-content div:hover{
   background:rgba(255,255,255,.08);
 }
+
+.sidebar{
+  position:fixed;
+  left:-260px;
+  top:0;
+  width:250px;
+  height:100%;
+  background:#111;
+  color:#fff;
+  transition:.3s;
+  padding:20px;
+  z-index:200;
+}
+
+.sidebar.active{
+  left:0;
+}
+
+.sidebar-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:30px;
+}
+
+.sidebar-header img{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+}
+
+.sidebar-item{
+  padding:14px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.sidebar-item:hover{
+  background:rgba(255,255,255,.08);
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  z-index:150;
+}
+
+.overlay.active{
+  display:block;
+}
 </style>
 </head>
 
 <body>
 
+<div class="sidebar" id="sidebar">
+
+  <div class="sidebar-header">
+    <img src="assets/icons/icon-192.png">
+    <div>
+      <strong>Rafael</strong><br>
+      <small>Passageiro</small>
+    </div>
+  </div>
+
+  <div class="sidebar-item" onclick="alert('Perfil - breve atualizaremos')">
+    👤 Perfil
+  </div>
+
+  <div class="sidebar-item" onclick="alert('Carteira - breve atualizaremos')">
+    💳 Carteira
+  </div>
+
+  <div class="sidebar-item" onclick="alternarTema()">
+    🌙 Alternar Tema
+  </div>
+
+</div>
+
+<div class="overlay" id="overlay"></div>
+
 <header class="header">
-  <div class="logo">PASSAGEIRO RF</div>
+  <div class="logo">
+    <img src="assets/icons/icon-192.png" class="logo-img">
+    <span>PASSAGEIRO RF</span>
+  </div>
+  <div onclick="abrirMenu()" style="cursor:pointer;font-size:22px;">☰</div>
 </header>
 
 <div class="hero">
@@ -387,6 +487,37 @@ modal.onclick=(e)=>{
   }
 };
 
+function abrirMenu(){
+  sidebar.classList.add("active");
+  overlay.classList.add("active");
+}
+
+overlay.onclick=()=>{
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+};
+
+function alternarTema(){
+  const body=document.body;
+  const atual=body.classList.contains("light")?"light":"dark";
+
+  if(atual==="dark"){
+    body.classList.remove("dark");
+    body.classList.add("light");
+    localStorage.setItem("rf_tema","light");
+  }else{
+    body.classList.remove("light");
+    body.classList.add("dark");
+    localStorage.setItem("rf_tema","dark");
+  }
+}
+
+function aplicarTema(){
+  const salvo=localStorage.getItem("rf_tema")||"dark";
+  document.body.classList.add(salvo);
+}
+
+aplicarTema();
 </script>
 
 </body>
