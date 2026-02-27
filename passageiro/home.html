@@ -218,11 +218,92 @@ button:disabled{
 .lista div:hover{
   background:rgba(0,0,0,.05);
 }
+
+/* SLIDER */
+#slider{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  z-index:1;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:40px 20px;
+  opacity:0;
+  transition:opacity .6s ease;
+}
+
+.slide.active{
+  opacity:1;
+}
+
+.slide-content{
+  color:#fff;
+}
+
+.slide-content.dark-text{
+  color:#000;
+}
+
+.emoji{
+  font-size:2.5rem;
+  margin-bottom:15px;
+}
+
+.slide h2{
+  font-size:1.4rem;
+  margin-bottom:10px;
+}
+
+.slide p{
+  font-size:1rem;
+  opacity:.9;
+}
 </style>
 </head>
 <body>
 
-<div id="map"></div>
+<div id="slider">
+
+  <div class="slide active" style="background:#111;">
+    <div class="slide-content">
+      <div class="emoji">🚗</div>
+      <h2>Viaje com rapidez e segurança</h2>
+      <p>Motoristas preparados para atender você.</p>
+    </div>
+  </div>
+
+  <div class="slide" style="background:#facc15;">
+    <div class="slide-content dark-text">
+      <div class="emoji">💛</div>
+      <h2>Apoie quem é da sua cidade</h2>
+      <p>Fortaleça os motoristas locais RF.</p>
+    </div>
+  </div>
+
+  <div class="slide" style="background:#2563eb;">
+    <div class="slide-content">
+      <div class="emoji">💰</div>
+      <h2>Preço justo e transparente</h2>
+      <p>Sem surpresas. Valor definido antes da viagem.</p>
+    </div>
+  </div>
+
+  <div class="slide" style="background:#16a34a;">
+    <div class="slide-content">
+      <div class="emoji">⭐</div>
+      <h2>Experiência diferenciada</h2>
+      <p>Mais organização e mais confiança.</p>
+    </div>
+  </div>
+
+</div>
 
 <div class="top">
   <div class="logo">PASSAGEIRO RF</div>
@@ -295,6 +376,18 @@ function atualizarPreco(){
     confirmarBtn.disabled=false;
   }
 }
+
+/* SLIDER AUTOMÁTICO */
+const slides = document.querySelectorAll(".slide");
+let currentSlide = 0;
+
+function trocarSlide(){
+  slides[currentSlide].classList.remove("active");
+  currentSlide = (currentSlide + 1) % slides.length;
+  slides[currentSlide].classList.add("active");
+}
+
+setInterval(trocarSlide, 4000);
 
 function abrirModal(tipo){
   if(tipo==="destino" && !origem){
