@@ -2,313 +2,172 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>RF – Procurando Motorista</title>
+<title>Procurando motorista</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- CORE CORRIGIDO -->
-<script src="../core/global.js"></script>
-
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+:root{
+  --rf-gold:#D6B85F;
+  --rf-gold-strong:#F0D98A;
+  --rf-bg:#0A0D14;
 }
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
 
 body{
-  background:#0f0f0f;
+  background: radial-gradient(circle at top,#1A2133 0%,#080A12 70%);
   color:#fff;
-  min-height:100vh;
+  overflow:hidden;
+  animation:fadeIn .4s ease;
 }
 
-/* HEADER PADRÃO RF */
-.top{
-  background:#ffffff;
-  padding:25px 20px 55px;
-  border-bottom-left-radius:40px;
-  border-bottom-right-radius:40px;
+@keyframes fadeIn{
+  from{opacity:0;transform:scale(1.02);}
+  to{opacity:1;transform:scale(1);}
 }
 
-.logo{
-  font-weight:900;
-  font-size:1.4rem;
-  color:#000;
-}
-
-.status{
-  margin-top:5px;
-  font-weight:700;
-  color:#facc15;
-}
-
-/* CONTEÚDO */
-.content{
-  width:90%;
-  max-width:420px;
-  margin:-40px auto 120px auto;
-}
-
-.card{
-  background:#1c1c1c;
-  border-radius:20px;
+.header{
   padding:20px;
-  box-shadow:0 12px 30px rgba(0,0,0,.5);
-}
-
-/* SPINNER */
-.spinner{
-  width:40px;
-  height:40px;
-  border:4px solid #333;
-  border-top:4px solid #facc15;
-  border-radius:50%;
-  margin:0 auto 15px;
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg);}
-}
-
-.linha{
-  display:flex;
-  justify-content:space-between;
-  font-size:.85rem;
-  margin-bottom:6px;
-}
-
-.linha span:first-child{
-  color:#aaa;
-}
-
-.total{
-  text-align:center;
-  font-size:1.4rem;
   font-weight:700;
-  color:#facc15;
-  margin-top:12px;
+  font-size:15px;
 }
 
-.timer{
+.resumo{
+  margin:0 20px;
+  padding:18px;
+  border-radius:18px;
+  background:#151B2B;
+  border:1px solid rgba(214,184,95,.2);
+  font-size:14px;
+}
+
+.radar-area{
+  height:300px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.radar{
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  border:2px solid rgba(214,184,95,.6);
+  position:absolute;
+}
+
+.radar::before,
+.radar::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:2px solid rgba(214,184,95,.4);
+  animation:pulse 3s infinite;
+}
+
+.radar::after{animation-delay:1.5s;}
+
+@keyframes pulse{
+  0%{transform:scale(.8);opacity:.8;}
+  100%{transform:scale(1.6);opacity:0;}
+}
+
+.status-text{
+  position:absolute;
+  font-size:16px;
+  color:var(--rf-gold-strong);
   text-align:center;
-  font-size:.75rem;
-  color:#888;
-  margin-top:8px;
 }
 
-.btn-cancel{
-  margin-top:15px;
+.motorista-card{
+  position:fixed;
+  bottom:-300px;
   width:100%;
-  padding:14px;
+  background:#151B2B;
+  border-top-left-radius:30px;
+  border-top-right-radius:30px;
+  padding:25px;
+  transition:.6s ease;
+}
+
+.motorista-card.ativo{
+  bottom:0;
+}
+
+.motorista-info{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.motorista-info img{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+}
+
+button{
+  margin-top:20px;
+  padding:16px;
+  width:100%;
   border:none;
-  border-radius:14px;
-  background:#111;
-  border:1px solid #ef4444;
-  color:#ef4444;
-  font-weight:600;
-  cursor:pointer;
+  border-radius:40px;
+  background:linear-gradient(135deg,var(--rf-gold),var(--rf-gold-strong));
+  font-weight:700;
 }
 </style>
 </head>
+
 <body>
 
-<div class="top">
-  <div class="logo">PASSAGEIRO RF</div>
-  <div class="status" id="statusText">
-    Buscando motoristas próximos...
+<div class="header">Procurando motorista</div>
+
+<div class="resumo" id="resumoCorrida"></div>
+
+<div class="radar-area">
+  <div class="radar"></div>
+  <div class="status-text" id="statusText">
+    Procurando motorista...
   </div>
 </div>
 
-<div class="content">
-  <div class="card">
-
-    <div class="spinner"></div>
-
-    <div id="detalhamento"></div>
-
-    <div class="total" id="totalFinal"></div>
-
-    <div class="timer" id="timer">
-      Tempo de espera: 0s
+<div class="motorista-card" id="motoristaCard">
+  <div class="motorista-info">
+    <img src="https://i.pravatar.cc/100" alt="motorista">
+    <div>
+      <strong>João Silva</strong><br>
+      Corolla Preto • ABC-1234<br>
+      Chega em 4 minutos
     </div>
-
-    <button class="btn-cancel" onclick="cancelar()">
-      Cancelar corrida
-    </button>
-
   </div>
+  <button>Motorista a caminho</button>
 </div>
-
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../core/supabase.js"></script>
 
 <script>
 
-// ============================
-// DADOS DA CORRIDA
-// ============================
+/* ===== RESUMO ===== */
 
-const corrida = JSON.parse(localStorage.getItem("rf_corrida_temp")) || {};
-const totalFinal = Number(localStorage.getItem("rf_total_final")) || 0;
-const categoria = localStorage.getItem("rf_categoria") || "Driver";
+const corrida = JSON.parse(localStorage.getItem("rf_corrida_temp"));
 
-const origem = corrida.origem || "-";
-const parada = corrida.parada || null;
-const destino = corrida.destino || "-";
+if(!corrida){
+  window.location.href="home.html";
+}
 
-// ============================
-// RENDER DETALHAMENTO
-// ============================
-
-let detalhesHTML = `
-  <div class="linha">
-    <span>Origem</span>
-    <span>${origem}</span>
-  </div>
+document.getElementById("resumoCorrida").innerHTML=`
+<strong>Origem:</strong> ${corrida.origem}<br>
+${corrida.parada?`<strong>Parada:</strong> ${corrida.parada}<br>`:""}
+<strong>Destino:</strong> ${corrida.destino}<br>
+<strong>Total:</strong> R$ ${corrida.total.toFixed(2)}
 `;
 
-if(parada){
-  detalhesHTML += `
-    <div class="linha">
-      <span>Parada</span>
-      <span>${parada}</span>
-    </div>
-  `;
-}
+/* ===== SIMULAÇÃO ===== */
 
-detalhesHTML += `
-  <div class="linha">
-    <span>Destino</span>
-    <span>${destino}</span>
-  </div>
-
-  <div class="linha">
-    <span>Categoria</span>
-    <span>${categoria}</span>
-  </div>
-`;
-
-document.getElementById("detalhamento").innerHTML = detalhesHTML;
-document.getElementById("totalFinal").innerText =
-  "Total: R$ " + totalFinal.toFixed(2);
-
-// ============================
-// TIMER
-// ============================
-
-let segundos = 0;
-
-setInterval(()=>{
-  segundos++;
-
-  document.getElementById("timer").innerText =
-    "Tempo de espera: " + segundos + "s";
-
-  if(segundos === 5){
-    document.getElementById("statusText").innerText =
-      "Motoristas visualizando sua corrida...";
-  }
-
-  if(segundos === 10){
-    document.getElementById("statusText").innerText =
-      "Conectando com o melhor motorista...";
-  }
-
-},1000);
-
-// ============================
-// CANCELAR
-// ============================
-
-function cancelar(){
-
-  if(confirm("Deseja cancelar a corrida?")){
-
-    localStorage.removeItem("rf_corrida_temp");
-    localStorage.removeItem("rf_total_final");
-    localStorage.removeItem("rf_categoria");
-
-    window.location.href = ("index.html");
-  }
-}
-
-// ============================
-// CRIAR CORRIDA
-// ============================
-
-async function criarCorrida(){
-
-  if(typeof supabaseClient === "undefined"){
-    console.error("❌ Supabase não carregado.");
-    return;
-  }
-
-  console.log("🚀 Criando corrida...");
-
-  const { data, error } = await supabaseClient
-    .from("rides")
-    .insert([{
-      origem: origem,
-      parada: parada,
-      destino: destino,
-      categoria: categoria,
-      valor_total: totalFinal, // ← CORRIGIDO AQUI
-      status: "procurando"
-    }])
-    .select()
-    .single();
-
-  if(error){
-    console.error("❌ ERRO SUPABASE COMPLETO:", error);
-    alert(error.message);
-    return;
-  }
-
-  console.log("✅ Corrida criada:", data);
-
-  App.set("ride_id", data.id);
-
-  escutarAceite(data.id);
-}
-// ============================
-// ESCUTAR ACEITE
-// ============================
-
-function escutarAceite(rideId){
-
-  supabaseClient
-    .channel("ride-"+rideId)
-    .on("postgres_changes",
-      {
-        event: "UPDATE",
-        schema: "public",
-        table: "rides",
-        filter: "id=eq."+rideId
-      },
-      (payload)=>{
-
-        console.log("📡 Atualização recebida:", payload);
-
-        if(payload.new.status === "aceita"){
-
-          document.getElementById("statusText").innerText =
-            "Motorista encontrado! 🚗";
-
-          setTimeout(()=>{
-            window.location.href = "motorista-caminho.html";
-          },1200);
-        }
-
-      }
-    )
-    .subscribe((status)=>{
-      console.log("Realtime status:", status);
-    });
-}
-
-criarCorrida();
+setTimeout(()=>{
+  document.getElementById("statusText").innerText="Motorista encontrado!";
+  document.getElementById("motoristaCard").classList.add("ativo");
+},6000);
 
 </script>
 
