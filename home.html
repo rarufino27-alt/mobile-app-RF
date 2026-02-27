@@ -21,29 +21,20 @@
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
-body.dark{
+body{
   background: radial-gradient(circle at top,#1c1c1c 0%,#000 70%);
   color:#fff;
 }
 
-body.light{
-  background: radial-gradient(circle at top,#ffffff 0%,#ececec 70%);
-  color:#000;
-}
-
 .header{
   padding:22px;
-  display:flex;
-  justify-content:space-between;
   background:linear-gradient(180deg,#000,#111);
-  color:#fff;
 }
 
 .logo{font-weight:900;}
-.menu{cursor:pointer;}
 
 .hero{
-  padding:40px 25px 20px 25px;
+  padding:40px 25px 20px;
   text-align:center;
 }
 
@@ -51,7 +42,6 @@ body.light{
   margin:0 25px 25px;
   padding:18px;
   border-radius:var(--rf-radius);
-  backdrop-filter:blur(20px);
   background:rgba(255,255,255,.06);
 }
 
@@ -66,16 +56,6 @@ body.light{
   flex-direction:column;
   gap:18px;
   position:relative;
-}
-
-.help-btn{
-  position:absolute;
-  top:15px;
-  right:15px;
-  font-size:14px;
-  font-weight:800;
-  cursor:pointer;
-  opacity:.6;
 }
 
 .input-box{
@@ -95,16 +75,29 @@ body.light{
 }
 
 .origem{background:#22c55e;}
-.destino{background:#ef4444;}
 .parada{background:#3b82f6;}
+.destino{background:#ef4444;}
 
-.options{
+.plus-btn{
+  align-self:center;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:var(--rf-yellow);
   display:flex;
-  gap:10px;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  cursor:pointer;
+  font-size:20px;
 }
 
-.option-btn{
-  flex:1;
+.plus-btn.active{
+  background:#ef4444;
+  color:#fff;
+}
+
+.option-desvio{
   padding:12px;
   border-radius:12px;
   border:2px solid #ddd;
@@ -113,7 +106,7 @@ body.light{
   font-weight:600;
 }
 
-.option-btn.active{
+.option-desvio.active{
   border-color:var(--rf-yellow-strong);
   background:rgba(255,214,0,.2);
 }
@@ -143,7 +136,6 @@ button:disabled{opacity:.4;}
   display:none;
   align-items:center;
   justify-content:center;
-  z-index:60;
 }
 
 .modal-content{
@@ -155,10 +147,18 @@ button:disabled{opacity:.4;}
   max-height:80vh;
   overflow:auto;
 }
+
+.modal-content div{
+  padding:10px;
+  cursor:pointer;
+}
+.modal-content div:hover{
+  background:#f2f2f2;
+}
 </style>
 </head>
 
-<body class="dark">
+<body>
 
 <header class="header">
   <div class="logo">PASSAGEIRO RF</div>
@@ -175,8 +175,6 @@ button:disabled{opacity:.4;}
 
 <div class="card">
 
-  <div class="help-btn" id="helpBtn">?</div>
-
   <h2>Para onde vamos?</h2>
 
   <div class="input-box" id="origemBtn">
@@ -184,23 +182,20 @@ button:disabled{opacity:.4;}
     <div id="origemTexto">Selecionar origem</div>
   </div>
 
+  <div class="plus-btn" id="plusBtn">+</div>
+
+  <div class="input-box" id="paradaBtn" style="display:none;">
+    <div class="dot parada"></div>
+    <div id="paradaTexto">Selecionar parada</div>
+  </div>
+
   <div class="input-box" id="destinoBtn">
     <div class="dot destino"></div>
     <div id="destinoTexto">Selecionar destino</div>
   </div>
 
-  <div class="options">
-    <div class="option-btn" id="desvioRotaBtn">
-      Desvio de rota (+R$5)
-    </div>
-    <div class="option-btn" id="desvioBairroBtn">
-      Desvio de bairro
-    </div>
-  </div>
-
-  <div class="input-box" id="paradaBtn" style="display:none;">
-    <div class="dot parada"></div>
-    <div id="paradaTexto">Selecionar parada</div>
+  <div class="option-desvio" id="desvioRotaBtn">
+    Desvio simples (+R$5)
   </div>
 
   <div class="preco" id="precoBox">
@@ -212,84 +207,102 @@ button:disabled{opacity:.4;}
 
 </div>
 
-<!-- MODAL LISTA -->
 <div class="modal" id="modal">
-  <div class="modal-content">
-    <div id="lista"></div>
-  </div>
-</div>
-
-<!-- MODAL AJUDA -->
-<div class="modal" id="helpModal">
-  <div class="modal-content">
-    <h3>Como funciona</h3><br>
-    <p><b>Origem:</b> Onde você está.</p><br>
-    <p><b>Destino:</b> Para onde deseja ir.</p><br>
-    <p><b>Desvio de rota:</b> Pequeno ajuste no caminho. Acréscimo fixo de R$5.</p><br>
-    <p><b>Desvio de bairro:</b> Parada intermediária. O valor é calculado:</p>
-    <p>Origem → Parada + Parada → Destino</p>
-  </div>
+  <div class="modal-content" id="lista"></div>
 </div>
 
 <script>
 
-let origem=null,destino=null,parada=null;
-let desvioRota=false,desvioBairro=false;
+let origem=null;
+let destino=null;
+let parada=null;
+
+let usarParada=false;
+let desvioRota=false;
+
+const origemTexto=document.getElementById("origemTexto");
+const destinoTexto=document.getElementById("destinoTexto");
+const paradaTexto=document.getElementById("paradaTexto");
+
+const plusBtn=document.getElementById("plusBtn");
+const paradaBtn=document.getElementById("paradaBtn");
+const desvioRotaBtn=document.getElementById("desvioRotaBtn");
+
+const precoBox=document.getElementById("precoBox");
+const precoValor=document.getElementById("precoValor");
+const confirmarBtn=document.getElementById("confirmar");
 
 const modal=document.getElementById("modal");
 const lista=document.getElementById("lista");
-const confirmarBtn=document.getElementById("confirmar");
-const precoBox=document.getElementById("precoBox");
-const precoValor=document.getElementById("precoValor");
 
-(async()=>{ await DataManager.carregar(); })();
+async function iniciar(){
+  await DataManager.carregar();
+}
+iniciar();
 
 function recalcular(){
-  if(origem && destino){
 
-    let valor=0;
-
-    if(desvioBairro && parada){
-      const v1=DataManager.buscarValor(origem,parada)||0;
-      const v2=DataManager.buscarValor(parada,destino)||0;
-      valor=v1+v2;
-    }else{
-      valor=DataManager.buscarValor(origem,destino)||0;
-    }
-
-    if(desvioRota){
-      valor+=5;
-    }
-
-    precoValor.innerText="R$ "+valor.toFixed(2);
-    precoBox.style.display="block";
-    confirmarBtn.disabled=false;
-
-  }else{
+  if(!origem || !destino){
     precoBox.style.display="none";
     confirmarBtn.disabled=true;
+    return;
   }
+
+  let total=0;
+
+  if(usarParada && parada){
+    const v1=DataManager.buscarValor(origem,parada) || 0;
+    const v2=DataManager.buscarValor(parada,destino) || 0;
+    total = v1 + v2;
+  }else{
+    total = DataManager.buscarValor(origem,destino) || 0;
+  }
+
+  if(desvioRota){
+    total += 5;
+  }
+
+  precoValor.innerText="R$ "+total.toFixed(2);
+  precoBox.style.display="block";
+  confirmarBtn.disabled=false;
 }
 
 function abrirModal(tipo){
-  modal.style.display="flex";
-  let dados=[];
 
+  if((tipo==="destino" || tipo==="parada") && !origem){
+    alert("Selecione a origem primeiro.");
+    return;
+  }
+
+  modal.style.display="flex";
+  lista.innerHTML="";
+
+  let dados=[];
   if(tipo==="origem") dados=DataManager.listarOrigens();
   if(tipo==="destino") dados=DataManager.listarDestinos(origem);
   if(tipo==="parada") dados=DataManager.listarDestinos(origem);
 
-  lista.innerHTML="";
-
   dados.forEach(item=>{
     const div=document.createElement("div");
     div.innerText=item;
-    div.style.padding="10px";
-    div.style.cursor="pointer";
     div.onclick=()=>{
-      if(tipo==="origem"){ origem=item; origemTexto.innerText=item; }
-      if(tipo==="destino"){ destino=item; destinoTexto.innerText=item; }
-      if(tipo==="parada"){ parada=item; paradaTexto.innerText=item; }
+      if(tipo==="origem"){
+        origem=item;
+        origemTexto.innerText=item;
+        destino=null;
+        parada=null;
+        destinoTexto.innerText="Selecionar destino";
+        paradaTexto.innerText="Selecionar parada";
+      }
+      if(tipo==="destino"){
+        destino=item;
+        destinoTexto.innerText=item;
+      }
+      if(tipo==="parada"){
+        parada=item;
+        paradaTexto.innerText=item;
+      }
+
       modal.style.display="none";
       recalcular();
     };
@@ -301,28 +314,49 @@ origemBtn.onclick=()=>abrirModal("origem");
 destinoBtn.onclick=()=>abrirModal("destino");
 paradaBtn.onclick=()=>abrirModal("parada");
 
-desvioRotaBtn.onclick=()=>{
-  desvioRota=!desvioRota;
-  desvioBairro=false;
-  parada=null;
-  paradaBtn.style.display="none";
-  desvioRotaBtn.classList.toggle("active");
-  desvioBairroBtn.classList.remove("active");
-  recalcular();
-};
-
-desvioBairroBtn.onclick=()=>{
-  desvioBairro=!desvioBairro;
+plusBtn.onclick=()=>{
+  usarParada=!usarParada;
   desvioRota=false;
   desvioRotaBtn.classList.remove("active");
-  desvioBairroBtn.classList.toggle("active");
-  paradaBtn.style.display=desvioBairro?"flex":"none";
+
+  parada=null;
+  paradaTexto.innerText="Selecionar parada";
+  paradaBtn.style.display=usarParada?"flex":"none";
+  plusBtn.classList.toggle("active");
+
   recalcular();
 };
 
-helpBtn.onclick=()=>helpModal.style.display="flex";
-helpModal.onclick=()=>helpModal.style.display="none";
-modal.onclick=(e)=>{ if(e.target===modal) modal.style.display="none"; };
+desvioRotaBtn.onclick=()=>{
+  desvioRota=!desvioRota;
+  usarParada=false;
+  plusBtn.classList.remove("active");
+  paradaBtn.style.display="none";
+  parada=null;
+  paradaTexto.innerText="Selecionar parada";
+
+  desvioRotaBtn.classList.toggle("active");
+  recalcular();
+};
+
+confirmarBtn.onclick=()=>{
+  localStorage.setItem("rf_corrida_temp",
+    JSON.stringify({
+      origem,
+      destino,
+      parada: usarParada ? parada : null,
+      desvioRota,
+      valor: precoValor.innerText.replace("R$ ","")
+    })
+  );
+  window.location.href="selecionar.html";
+};
+
+modal.onclick=(e)=>{
+  if(e.target===modal){
+    modal.style.display="none";
+  }
+};
 
 </script>
 
