@@ -1,41 +1,53 @@
 const DataManager = {
   rotas: [],
 
-  basePath: "/mobile-app-RF/data/",
-
-  arquivos: [
-    "condominio-porto-do-cabo.json",
-    "gaibu.json",
-    "enseadas.json",
-    "setor-4.json",
-    "xareu.json",
-    "itapuama.json",
-    "calhetas.json",
-    "lote-garapu2-lote-dona-amara.json",
-    "cohab.json",
-    "centro-do-cabo.json",
-    "shopping-costa-dourada.json",
-    "aguia-american-club-br-101.json",
-    "empresas.json",
-    "engenhos.json",
-    "hospitais-clinicas.json",
-    "interurbanas.json",
-    "interestaduais.json",
-    "lazer-festa.json",
-    "locais.json",
-    "longas-locais.json",
-    "praias.json",
-    "bairro-sao-francisco-baixo.json"
-  ],
-
   async carregar(){
-    const respostas = await Promise.all(
-      this.arquivos.map(nome =>
-        fetch(this.basePath + nome).then(r => r.json())
-      )
-    );
+    try {
 
-    this.rotas = respostas.flat();
+      const arquivos = [
+        "condominio-porto-do-cabo.json",
+        "gaibu.json",
+        "enseadas.json",
+        "setor-4.json",
+        "xareu.json",
+        "itapuama.json",
+        "calhetas.json",
+        "lote-garapu2-lote-dona-amara.json",
+        "cohab.json",
+        "centro-do-cabo.json",
+        "shopping-costa-dourada.json",
+        "aguia-american-club-br-101.json",
+        "empresas.json",
+        "engenhos.json",
+        "hospitais-clinicas.json",
+        "interurbanas.json",
+        "interestaduais.json",
+        "lazer-festa.json",
+        "locais.json",
+        "longas-locais.json",
+        "praias.json",
+        "bairro-sao-francisco-baixo.json"
+      ];
+
+      const respostas = await Promise.all(
+        arquivos.map(nome =>
+          fetch("/mobile-app-RF/data/" + nome)
+            .then(r => {
+              if(!r.ok){
+                throw new Error("Erro ao carregar: " + nome);
+              }
+              return r.json();
+            })
+        )
+      );
+
+      this.rotas = respostas.flat();
+
+      console.log("ROTAS CARREGADAS:", this.rotas.length);
+
+    } catch(e){
+      console.error("ERRO NO CARREGAMENTO:", e);
+    }
   },
 
   listarOrigens(){
