@@ -5,23 +5,21 @@
 <title>RF Passageiro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- DATAMANAGER DO PASSAGEIRO -->
 <script src="/mobile-app-RF/passageiro/core/datamanager.js"></script>
 
 <style>
 :root{
-  --rf-yellow:#facc15;
-  --rf-bg:#f5f5f5;
-  --rf-text:#000;
-  --rf-card:#ffffff;
+  --rf-yellow:#ffd600;
+  --rf-yellow-dark:#ffb800;
+  --rf-light-bg:#f4f4f4;
+  --rf-dark-bg:#0b0b0b;
+  --rf-light-card:#ffffff;
+  --rf-dark-card:#1c1c1c;
+  --rf-light-text:#000;
+  --rf-dark-text:#fff;
 }
 
-body.dark{
-  --rf-bg:#0f0f0f;
-  --rf-text:#ffffff;
-  --rf-card:#1c1c1c;
-}
-
+/* RESET */
 *{
   margin:0;
   padding:0;
@@ -29,22 +27,19 @@ body.dark{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
+/* BODY */
 body{
-  background: radial-gradient(circle at 50% 0%, #2a2a2a 0%, #111 50%, #0a0a0a 100%);
   height:100vh;
   overflow:hidden;
+  background: radial-gradient(circle at 50% 0%, #2a2a2a 0%, #111 50%, #0a0a0a 100%);
+  color:var(--rf-dark-text);
+  transition:.4s ease;
 }
 
-/* MAPA */
-#map{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,#eaeaea,#dcdcdc);
-  z-index:1;
-}
-
-body.dark #map{
-  background:linear-gradient(135deg,#1a1a1a,#111);
+/* TEMA CLARO */
+body.light{
+  background: radial-gradient(circle at 50% 0%, #ffffff 0%, #eaeaea 60%, #dcdcdc 100%);
+  color:var(--rf-light-text);
 }
 
 /* HEADER */
@@ -57,13 +52,13 @@ body.dark #map{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  z-index:3;
-  background:#111;
+  z-index:10;
+  background:#000;
   color:#fff;
-  transition:.3s ease;
+  transition:.4s ease;
 }
 
-body.dark .top{
+body.light .top{
   background:#fff;
   color:#000;
 }
@@ -79,163 +74,25 @@ body.dark .top{
   cursor:pointer;
 }
 
-/* CARD */
-.card{
-  background: rgba(255,255,255,.95);
-  backdrop-filter: blur(20px);
-  border-top-left-radius:28px;
-  border-top-right-radius:28px;
-  padding:25px 20px 35px 20px;
-  box-shadow: 0 -20px 60px rgba(0,0,0,.25);
-}
-
-@keyframes slideUp{
-  from{ transform:translateY(100%); }
-  to{ transform:translateY(0); }
-}
-
-.titulo{
-  font-weight:700;
-  font-size:1.2rem;
-  margin-bottom:20px;
-  color:var(--rf-text);
-}
-
-.input-box{
-  background:#f0f0f0;
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  cursor:pointer;
-}
-
-body.dark .input-box{
-  background:#2a2a2a;
-}
-
-.dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-}
-
-.origem{ background:#22c55e; }
-.destino{ background:#ef4444; }
-
-.texto{
-  color:var(--rf-text);
-  font-weight:500;
-}
-
-/* PREÇO */
-.preco-box{
-  margin-top:15px;
-  padding:15px;
-  border-radius:14px;
-  background:rgba(250,204,21,.15);
-  display:none;
-}
-
-.preco-label{
-  font-size:.9rem;
-  opacity:.7;
-}
-
-.preco-valor{
-  font-size:1.6rem;
-  font-weight:900;
-  color:var(--rf-yellow);
-}
-
-/* BOTÃO */
-button{
-  background: linear-gradient(135deg,#ffd600,#ffb800);
-  box-shadow: 0 10px 25px rgba(255,190,0,.5);
-  color:#000;
-  font-weight:800;
-  transition:.2s ease;
-}
-
-button:active{
-  transform:scale(.96);
-  box-shadow: 0 6px 15px rgba(255,190,0,.4);
-}
-
-/* MODAL */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:5;
-}
-
-.modal-content{
-  background:var(--rf-card);
-  width:100%;
-  max-width:420px;
-  border-radius:20px;
-  padding:20px;
-  max-height:80vh;
-  display:flex;
-  flex-direction:column;
-}
-
-.modal-content input{
-  padding:12px;
-  border-radius:10px;
-  border:2px solid var(--rf-yellow);
-  margin-bottom:10px;
-  outline:none;
-}
-
-.lista{
-  overflow:auto;
-  flex:1;
-}
-
-.lista div{
-  padding:10px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.lista div:hover{
-  background:rgba(0,0,0,.05);
-}
-
-/* WRAPPER */
+/* SLIDER */
 #slider-wrapper{
   position:absolute;
   top:90px;
   left:20px;
   right:20px;
   height:170px;
-  z-index:1;
+  z-index:2;
 }
 
-/* SLIDER */
 #slider{
   position:relative;
   width:100%;
   height:100%;
-  border-radius:20px;
+  border-radius:22px;
   overflow:hidden;
-  box-shadow:0 10px 25px rgba(0,0,0,.2);
+  box-shadow:0 15px 45px rgba(0,0,0,.35);
 }
 
-#slider{
-  backdrop-filter:blur(10px);
-  background:rgba(255,255,255,.05);
-}
-
-/* SLIDES */
 .slide{
   position:absolute;
   inset:0;
@@ -245,11 +102,12 @@ button:active{
   text-align:center;
   padding:20px;
   opacity:0;
-  transition:opacity .5s ease;
+  transition:all .6s ease;
 }
 
 .slide.active{
   opacity:1;
+  transform:translateX(0);
 }
 
 .slide-content{
@@ -268,25 +126,114 @@ button:active{
 .slide h2{
   font-size:1.25rem;
   font-weight:800;
-  letter-spacing:.3px;
+}
+
+/* CARD */
+.card{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:25px 20px 35px;
+  border-top-left-radius:28px;
+  border-top-right-radius:28px;
+  backdrop-filter:blur(25px);
+  background:rgba(255,255,255,.95);
+  box-shadow:0 -20px 60px rgba(0,0,0,.25);
+  z-index:5;
+  animation:slideUp .5s ease;
+}
+
+body.light .card{
+  background:rgba(255,255,255,.95);
+}
+
+body:not(.light) .card{
+  background:rgba(25,25,25,.95);
+  color:#fff;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(100%);}
+  to{transform:translateY(0);}
+}
+
+.titulo{
+  font-size:1.2rem;
+  font-weight:700;
+  margin-bottom:20px;
 }
 
 .input-box{
+  background:#f0f0f0;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
   transition:.2s ease;
+}
+
+body:not(.light) .input-box{
+  background:#2a2a2a;
 }
 
 .input-box:active{
   transform:scale(.97);
 }
 
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+}
+
+.origem{background:#22c55e;}
+.destino{background:#ef4444;}
+
+.texto{
+  font-weight:500;
+}
+
+/* PREÇO */
+.preco-box{
+  margin-top:15px;
+  padding:15px;
+  border-radius:14px;
+  background:rgba(255,214,0,.15);
+  display:none;
+}
+
+.preco-valor{
+  font-size:1.6rem;
+  font-weight:900;
+  color:var(--rf-yellow);
+}
+
+/* BOTÃO */
 button{
-  position:relative;
-  overflow:hidden;
+  width:100%;
+  margin-top:15px;
+  padding:16px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,var(--rf-yellow),var(--rf-yellow-dark));
+  box-shadow:0 12px 30px rgba(255,190,0,.4);
+  font-weight:800;
+  font-size:1rem;
+  cursor:pointer;
   transition:.2s ease;
 }
 
+button:disabled{
+  opacity:.5;
+  box-shadow:none;
+}
+
 button:active{
-  transform:scale(.97);
+  transform:scale(.96);
 }
 
 @keyframes spin{
@@ -299,66 +246,78 @@ button:active{
   animation:spin 1s linear infinite;
 }
 
-.premium-yellow{
-  background: linear-gradient(135deg,#ffd600,#ffb800);
-  box-shadow: 0 15px 40px rgba(255,190,0,.4);
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
 }
 
-.premium-dark{
-  background: linear-gradient(135deg,#1e1e1e,#000);
-  box-shadow: 0 15px 40px rgba(0,0,0,.6);
+.modal-content{
+  background:#fff;
+  width:90%;
+  max-width:400px;
+  padding:20px;
+  border-radius:20px;
+  max-height:80vh;
+  overflow:auto;
 }
 
-.premium-blue{
-  background: linear-gradient(135deg,#2563eb,#1e40af);
-  box-shadow: 0 15px 40px rgba(37,99,235,.5);
+.modal-content input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:2px solid var(--rf-yellow);
+  margin-bottom:10px;
 }
 
-.premium-green{
-  background: linear-gradient(135deg,#22c55e,#15803d);
-  box-shadow: 0 15px 40px rgba(34,197,94,.5);
+.lista div{
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.lista div:hover{
+  background:#f0f0f0;
 }
 </style>
 </head>
 <body>
 
+<div class="top">
+  <div class="logo">PASSAGEIRO RF</div>
+  <div class="menu">☰</div>
+</div>
+
 <div id="slider-wrapper">
   <div id="slider">
 
-    <div class="slide active" style="background:#111;">
+    <div class="slide active premium-dark">
       <div class="slide-content">
         <div class="emoji">🚗</div>
         <h2>Viaje com rapidez e segurança</h2>
       </div>
     </div>
 
-    <div class="slide" style="background:#facc15;">
+    <div class="slide premium-yellow">
       <div class="slide-content dark-text">
         <div class="emoji">💛</div>
         <h2>Apoie motoristas locais</h2>
       </div>
     </div>
 
-    <div class="slide" style="background:#2563eb;">
+    <div class="slide premium-blue">
       <div class="slide-content">
         <div class="emoji">💰</div>
         <h2>Preço justo e transparente</h2>
       </div>
     </div>
 
-    <div class="slide" style="background:#16a34a;">
-      <div class="slide-content">
-        <div class="emoji">⭐</div>
-        <h2>Experiência diferenciada</h2>
-      </div>
-    </div>
-
   </div>
-</div>
-
-<div class="top">
-  <div class="logo">PASSAGEIRO RF</div>
-  <div class="menu">☰</div>
 </div>
 
 <div class="card">
@@ -375,14 +334,15 @@ button:active{
   </div>
 
   <div class="preco-box" id="precoBox">
-    <div class="preco-label">Valor estimado</div>
+    <div>Valor estimado</div>
     <div class="preco-valor" id="precoValor">R$ 0,00</div>
   </div>
 
   <button id="confirmar" disabled>
-  <span id="btnText">Buscar Motorista</span>
-  <span id="btnLoader" style="display:none;">⏳</span>
-</button>
+    <span id="btnText">Buscar Motorista</span>
+    <span id="btnLoader" style="display:none;">⏳</span>
+  </button>
+</div>
 
 <div class="modal" id="modal">
   <div class="modal-content">
@@ -392,7 +352,7 @@ button:active{
 </div>
 
 <script>
-let origem=null, destino=null;
+let origem=null,destino=null;
 
 const modal=document.getElementById("modal");
 const lista=document.getElementById("lista");
@@ -400,26 +360,26 @@ const confirmarBtn=document.getElementById("confirmar");
 const precoBox=document.getElementById("precoBox");
 const precoValor=document.getElementById("precoValor");
 
-function aplicarTemaAutomatico(){
+/* TEMA AUTOMÁTICO */
+function aplicarTema(){
   const agora=new Date();
-  const total=agora.getHours()*60+agora.getMinutes();
+  const minutos=agora.getHours()*60+agora.getMinutes();
   const claro=5*60+30;
   const escuro=17*60+30;
 
-  if(total>=claro && total<escuro){
-    document.body.classList.remove("dark");
+  if(minutos>=claro && minutos<escuro){
+    document.body.classList.add("light");
   }else{
-    document.body.classList.add("dark");
+    document.body.classList.remove("light");
   }
 }
+aplicarTema();
+setInterval(aplicarTema,60000);
 
-aplicarTemaAutomatico();
-setInterval(aplicarTemaAutomatico,60000);
-
-async function init(){
+/* CARREGAR DADOS */
+(async()=>{
   await DataManager.carregar();
-}
-init();
+})();
 
 function atualizarPreco(){
   if(origem && destino){
@@ -430,40 +390,25 @@ function atualizarPreco(){
   }
 }
 
-/* SLIDER AUTOMÁTICO */
-const slides = document.querySelectorAll(".slide");
-let currentSlide = 0;
+/* SLIDER */
+const slides=document.querySelectorAll(".slide");
+let index=0;
+setInterval(()=>{
+  slides[index].classList.remove("active");
+  index=(index+1)%slides.length;
+  slides[index].classList.add("active");
+},4000);
 
-function trocarSlide(){
-  slides[currentSlide].style.transform="translateX(-100%)";
-  slides[currentSlide].style.opacity="0";
-
-  currentSlide = (currentSlide + 1) % slides.length;
-
-  slides[currentSlide].style.transform="translateX(0)";
-  slides[currentSlide].style.opacity="1";
-}
-
-slides.forEach(s=>{
-  s.style.transition="all .6s ease";
-  s.style.transform="translateX(100%)";
-});
-
-slides[0].style.transform="translateX(0)";
-slides[0].style.opacity="1";
-
-setInterval(trocarSlide,4000);
-
+/* MODAL */
 function abrirModal(tipo){
   if(tipo==="destino" && !origem){
     alert("Selecione a origem primeiro.");
     return;
   }
-
   modal.style.display="flex";
-  const dados = tipo==="origem"
-    ? DataManager.listarOrigens()
-    : DataManager.listarDestinos(origem);
+  const dados=tipo==="origem"
+    ?DataManager.listarOrigens()
+    :DataManager.listarDestinos(origem);
 
   lista.innerHTML="";
   dados.forEach(item=>{
@@ -494,7 +439,6 @@ destinoBtn.onclick=()=>abrirModal("destino");
 confirmarBtn.onclick=()=>{
   document.getElementById("btnText").style.display="none";
   document.getElementById("btnLoader").style.display="inline-block";
-
   confirmarBtn.disabled=true;
 
   setTimeout(()=>{
