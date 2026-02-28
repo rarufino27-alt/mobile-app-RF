@@ -42,7 +42,7 @@ body{
 }
 
 .radar-area{
-  height:300px;
+  height:260px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -81,9 +81,37 @@ body{
   text-align:center;
 }
 
+.oferta-box{
+  position:absolute;
+  bottom:20px;
+  width:100%;
+  text-align:center;
+}
+
+.oferta-box span{
+  font-size:14px;
+  opacity:.8;
+}
+
+.oferta-valor{
+  font-size:20px;
+  color:var(--rf-gold-strong);
+  margin:6px 0;
+}
+
+.oferta-box button{
+  padding:6px 12px;
+  margin:0 5px;
+  border:none;
+  border-radius:10px;
+  background:#1E2638;
+  color:#fff;
+  font-size:12px;
+}
+
 .motorista-card{
   position:fixed;
-  bottom:-300px;
+  bottom:-350px;
   width:100%;
   background:#151B2B;
   border-top-left-radius:30px;
@@ -108,14 +136,37 @@ body{
   border-radius:50%;
 }
 
-button{
-  margin-top:20px;
-  padding:16px;
-  width:100%;
+.motorista-actions{
+  margin-top:15px;
+  display:flex;
+  gap:10px;
+}
+
+.motorista-actions button{
+  flex:1;
+  padding:12px;
   border:none;
-  border-radius:40px;
+  border-radius:20px;
+  font-weight:600;
+}
+
+.aceitar{
   background:linear-gradient(135deg,var(--rf-gold),var(--rf-gold-strong));
-  font-weight:700;
+}
+
+.recusar{
+  background:#1E2638;
+  color:#fff;
+}
+
+.cancelar{
+  margin:20px;
+  padding:14px;
+  width:calc(100% - 40px);
+  border:none;
+  border-radius:30px;
+  background:#1E2638;
+  color:#fff;
 }
 </style>
 </head>
@@ -129,45 +180,105 @@ button{
 <div class="radar-area">
   <div class="radar"></div>
   <div class="status-text" id="statusText">
-    Procurando motorista...
+    Aguardando propostas...
+  </div>
+
+  <div class="oferta-box">
+    <span>Sua oferta atual</span>
+    <div class="oferta-valor" id="ofertaValor">R$ 0,00</div>
+    <button onclick="aumentar(2)">+2</button>
+    <button onclick="aumentar(5)">+5</button>
+    <button onclick="aumentar(10)">+10</button>
   </div>
 </div>
 
 <div class="motorista-card" id="motoristaCard">
   <div class="motorista-info">
-    <img src="https://i.pravatar.cc/100" alt="motorista">
-    <div>
-      <strong>João Silva</strong><br>
-      Corolla Preto • ABC-1234<br>
-      Chega em 4 minutos
-    </div>
+    <img id="fotoMotorista" src="">
+    <div id="infoMotorista"></div>
   </div>
-  <button>Motorista a caminho</button>
+  <div class="motorista-actions">
+    <button class="aceitar" onclick="aceitar()">Aceitar</button>
+    <button class="recusar" onclick="recusar()">Recusar</button>
+  </div>
 </div>
+
+<button class="cancelar" onclick="cancelarCorrida()">Cancelar solicitação</button>
 
 <script>
 
-/* ===== RESUMO ===== */
-
 const corrida = JSON.parse(localStorage.getItem("rf_corrida_temp"));
+if(!corrida) window.location.href="home.html";
 
-if(!corrida){
-  window.location.href="home.html";
-}
+let ofertaAtual = Number(corrida.total);
+let motoristaAtual = null;
 
 document.getElementById("resumoCorrida").innerHTML=`
 <strong>Origem:</strong> ${corrida.origem}<br>
 ${corrida.parada?`<strong>Parada:</strong> ${corrida.parada}<br>`:""}
 <strong>Destino:</strong> ${corrida.destino}<br>
-<strong>Total:</strong> R$ ${corrida.total.toFixed(2)}
+<strong>Total base:</strong> R$ ${corrida.total.toFixed(2)}
 `;
 
-/* ===== SIMULAÇÃO ===== */
+function atualizarOferta(){
+  document.getElementById("ofertaValor").innerText =
+    "R$ " + ofertaAtual.toFixed(2);
+}
+atualizarOferta();
 
-setTimeout(()=>{
-  document.getElementById("statusText").innerText="Motorista encontrado!";
+function aumentar(v){
+  ofertaAtual += v;
+  atualizarOferta();
+  gerarMotorista();
+}
+
+function gerarMotorista(){
+
+  const nomes=["João Silva","Carlos Lima","Marcos Souza","Pedro Henrique"];
+  const carros=["Corolla Preto","Onix Branco","HB20 Prata","Virtus Cinza"];
+
+  const nome = nomes[Math.floor(Math.random()*nomes.length)];
+  const carro = carros[Math.floor(Math.random()*carros.length)];
+  const tempo = Math.floor(Math.random()*6)+2;
+  const valorAceito = ofertaAtual + (Math.random()*6).toFixed(2);
+
+  motoristaAtual = {
+    nome,
+    carro,
+    tempo,
+    valor: Number(valorAceito)
+  };
+
+  document.getElementById("statusText").innerText="Nova proposta recebida!";
+  document.getElementById("fotoMotorista").src="https://i.pravatar.cc/100?u="+nome;
+  document.getElementById("infoMotorista").innerHTML=`
+    <strong>${nome}</strong><br>
+    ${carro}<br>
+    Chega em ${tempo} min<br>
+    Aceita por R$ ${motoristaAtual.valor.toFixed(2)}
+  `;
+
   document.getElementById("motoristaCard").classList.add("ativo");
-},6000);
+}
+
+function aceitar(){
+  if(!motoristaAtual) return;
+  corrida.valorFinal = motoristaAtual.valor;
+  localStorage.setItem("rf_corrida_temp", JSON.stringify(corrida));
+  window.location.href="corrida.html";
+}
+
+function recusar(){
+  document.getElementById("motoristaCard").classList.remove("ativo");
+  document.getElementById("statusText").innerText="Aguardando novas propostas...";
+}
+
+function cancelarCorrida(){
+  localStorage.removeItem("rf_corrida_temp");
+  window.location.href="home.html";
+}
+
+setTimeout(gerarMotorista,4000);
 
 </script>
 
