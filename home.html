@@ -129,12 +129,6 @@ color:var(--rf-gold-strong);
 <input id="origemInput" placeholder="Detectando sua localização..." readonly>
 </div>
 
-<div class="row">
-<div class="dot red"></div>
-<input id="destinoInput" placeholder="Para onde vamos?">
-<div class="add-stop" onclick="addParada()">+</div>
-</div>
-
 <div class="row" id="stop1Row" style="display:none">
 <div class="dot blue"></div>
 <input id="stop1" placeholder="Adicionar parada">
@@ -143,6 +137,12 @@ color:var(--rf-gold-strong);
 <div class="row" id="stop2Row" style="display:none">
 <div class="dot blue"></div>
 <input id="stop2" placeholder="Adicionar parada">
+</div>
+
+<div class="row">
+<div class="dot red"></div>
+<input id="destinoInput" placeholder="Para onde vamos?">
+<div class="add-stop" onclick="addParada()">+</div>
 </div>
 
 </div>
@@ -170,40 +170,12 @@ let marcadorUsuario
 let userLocation
 let stopCount=0
 
-/* SOLICITA PERMISSÕES */
-
-async function solicitarPermissoes(){
-
-try{
-
-await navigator.mediaDevices.getUserMedia({audio:true})
-}catch(e){}
-
-try{
-
-await navigator.mediaDevices.getUserMedia({video:true})
-}catch(e){}
-
-if(navigator.geolocation){
-
-navigator.geolocation.getCurrentPosition(()=>{},()=>{})
-
-}
-
-}
-
-window.onload=solicitarPermissoes
-
-/* MAPA */
-
 function initMap(){
 
 map=new google.maps.Map(document.getElementById("map"),{
-
-zoom:15,
+zoom:17,
 center:{lat:-8.283,lng:-35.032},
 disableDefaultUI:true
-
 })
 
 directionsService=new google.maps.DirectionsService()
@@ -214,15 +186,11 @@ initAutocomplete()
 
 }
 
-/* LOCALIZAÇÃO EM TEMPO REAL */
-
 function iniciarLocalizacao(){
 
 if(!navigator.geolocation){
-
 alert("GPS não suportado")
 return
-
 }
 
 navigator.geolocation.watchPosition(
@@ -239,11 +207,9 @@ userLocation=posicao
 if(!marcadorUsuario){
 
 marcadorUsuario=new google.maps.Marker({
-
 position:posicao,
 map:map,
 icon:"https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-
 })
 
 map.setCenter(posicao)
@@ -251,6 +217,7 @@ map.setCenter(posicao)
 }else{
 
 marcadorUsuario.setPosition(posicao)
+map.setCenter(posicao)
 
 }
 
@@ -259,22 +226,18 @@ document.getElementById("origemInput").value="Sua localização"
 },
 
 (err)=>{
-
 console.log("Erro GPS",err)
-
 },
 
 {
 enableHighAccuracy:true,
 maximumAge:0,
-timeout:5000
+timeout:10000
 }
 
 )
 
 }
-
-/* AUTOCOMPLETE DESTINO */
 
 function initAutocomplete(){
 
@@ -285,15 +248,18 @@ componentRestrictions:{country:"br"},
 fields:["geometry","name"]
 })
 
+autoDestino.setBounds(
+new google.maps.LatLngBounds(
+{lat:-8.35,lng:-35.10},
+{lat:-8.20,lng:-34.95}
+)
+)
+
 autoDestino.addListener("place_changed",()=>{
-
 calcularRota()
-
 })
 
 }
-
-/* ADICIONAR PARADA */
 
 function addParada(){
 
@@ -323,14 +289,10 @@ fields:["geometry"]
 })
 
 auto.addListener("place_changed",()=>{
-
 calcularRota()
-
 })
 
 }
-
-/* CALCULAR ROTA */
 
 function calcularRota(){
 
@@ -341,15 +303,11 @@ if(!destino || !userLocation) return
 let waypoints=[]
 
 if(document.getElementById("stop1").value){
-
 waypoints.push({location:document.getElementById("stop1").value})
-
 }
 
 if(document.getElementById("stop2").value){
-
 waypoints.push({location:document.getElementById("stop2").value})
-
 }
 
 directionsService.route({
@@ -371,10 +329,8 @@ let distancia=0
 let tempo=0
 
 route.forEach(l=>{
-
 distancia+=l.distance.value
 tempo+=l.duration.value
-
 })
 
 distancia=distancia/1000
