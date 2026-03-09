@@ -182,18 +182,28 @@ background:#111522;
 width:90%;
 max-width:400px;
 border-radius:20px;
-padding:20px;
+padding:15px;
 max-height:80vh;
 overflow:auto;
 }
 
-.modal-content div{
+.modal-search{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border-radius:12px;
+border:none;
+background:#1C2333;
+color:#fff;
+}
+
+.modal-item{
 padding:12px;
 border-radius:12px;
 cursor:pointer;
 }
 
-.modal-content div:hover{
+.modal-item:hover{
 background:rgba(255,255,255,.08);
 }
 
@@ -231,18 +241,6 @@ background:rgba(255,255,255,.08);
 <div id="destinoTexto">Selecionar destino</div>
 </div>
 
-<div id="taxasBox" style="display:none;flex-direction:column;gap:10px;">
-
-<div class="option-btn" id="desvioRotaBtn">Desvio simples (+R$5)</div>
-<div class="option-btn" id="mercadoBtn">🛒 Saída Mercado (+R$3,89)</div>
-
-<div class="radio-group">
-<div class="radio-option" id="carro6Btn">🚐 6 Lugares (+50%)</div>
-<div class="radio-option" id="excessoBtn">👥 Excesso (+50%)</div>
-</div>
-
-</div>
-
 <div class="preco" id="precoBox">
 Total estimado<br>
 <strong id="precoValor">R$ 0,00</strong>
@@ -254,125 +252,174 @@ Total estimado<br>
 </div>
 
 <div class="modal" id="modal">
-<div class="modal-content" id="lista"></div>
+
+<div class="modal-content">
+
+<input type="text" id="busca" class="modal-search" placeholder="Buscar local...">
+
+<div id="lista"></div>
+
+</div>
+
 </div>
 
 <script>
 
-/* BOTÃO VOLTAR */
+/* CARREGAR ROTAS */
 
-history.pushState(null,null,location.href);
-
-window.addEventListener("popstate",function(){
-
-if(modal.style.display==="flex"){
-modal.style.display="none";
-history.pushState(null,null,location.href);
-return;
-}
-
-window.location.href="index.html";
-
-});
-
-/* SLIDES */
-
-const slides=[
-"img/slide1.jpg",
-"img/slide2.jpg",
-"img/slide3.jpg"
-];
-
-let slideIndex=0;
-const slideImg=document.getElementById("slideImg");
-
-setInterval(()=>{
-
-slideIndex++;
-
-if(slideIndex>=slides.length){
-slideIndex=0;
-}
-
-slideImg.style.opacity=0;
-
-setTimeout(()=>{
-
-slideImg.src=slides[slideIndex];
-slideImg.style.opacity=1;
-
-},250);
-
-},4000);
-
-/* SISTEMA */
-
-const origemBtn=document.getElementById("origemBtn");
-const destinoBtn=document.getElementById("destinoBtn");
-const paradaBtn=document.getElementById("paradaBtn");
-const plusBtn=document.getElementById("plusBtn");
-
-const desvioRotaBtn=document.getElementById("desvioRotaBtn");
-const mercadoBtn=document.getElementById("mercadoBtn");
-const carro6Btn=document.getElementById("carro6Btn");
-const excessoBtn=document.getElementById("excessoBtn");
-
-const taxasBox=document.getElementById("taxasBox");
-
-const precoBox=document.getElementById("precoBox");
-const precoValor=document.getElementById("precoValor");
-
-const confirmar=document.getElementById("confirmar");
-
-const modal=document.getElementById("modal");
-const lista=document.getElementById("lista");
-
-const origemTexto=document.getElementById("origemTexto");
-const destinoTexto=document.getElementById("destinoTexto");
-const paradaTexto=document.getElementById("paradaTexto");
-
-let origem=null;
-let destino=null;
-let parada=null;
-
-let usarParada=false;
-let desvioRota=false;
-let usarMercado=false;
-
-let carro6=false;
-let excesso=false;
+let carregado=false;
 
 async function iniciar(){
-if(window.DataManager){
 await DataManager.carregarOrigens();
-}
+carregado=true;
 }
 
 iniciar();
 
-/* RESTANTE DO CÓDIGO PERMANECE IGUAL */
+/* SLIDES */
 
-confirmar.onclick=()=>{
+const slides=["img/slide1.jpg","img/slide2.jpg","img/slide3.jpg"];
+let slideIndex=0;
+const slideImg=document.getElementById("slideImg");
 
-localStorage.setItem("rf_corrida_temp",JSON.stringify({
-origem,
-destino,
-parada:usarParada?parada:null,
-desvioRota,
-mercado:usarMercado,
-carro6,
-excesso,
-total:window.valorFinal
-}));
-
-document.body.style.transition="opacity .25s ease, transform .25s ease";
-document.body.style.opacity="0";
-document.body.style.transform="scale(.98)";
-
+setInterval(()=>{
+slideIndex=(slideIndex+1)%slides.length;
+slideImg.style.opacity=0;
 setTimeout(()=>{
-window.location.href="procurando.html";
+slideImg.src=slides[slideIndex];
+slideImg.style.opacity=1;
 },250);
+},4000);
 
+/* ELEMENTOS */
+
+const modal=document.getElementById("modal");
+const lista=document.getElementById("lista");
+const busca=document.getElementById("busca");
+
+const origemBtn=document.getElementById("origemBtn");
+const destinoBtn=document.getElementById("destinoBtn");
+
+const origemTexto=document.getElementById("origemTexto");
+const destinoTexto=document.getElementById("destinoTexto");
+
+let origem=null;
+let destino=null;
+let dadosAtuais=[];
+
+/* ABRIR MODAL */
+
+async function abrir(tipo){
+
+if(!carregado){
+alert("Carregando rotas...");
+return;
+}
+
+modal.style.display="flex";
+busca.value="";
+
+if(tipo==="origem"){
+dadosAtuais=await DataManager.carregarOrigens();
+}
+
+if(tipo==="destino"){
+
+if(!origem){
+alert("Selecione origem primeiro");
+return;
+}
+
+dadosAtuais=DataManager.listarDestinos(origem);
+
+}
+
+renderLista(tipo);
+
+}
+
+/* RENDER LISTA */
+
+function renderLista(tipo){
+
+lista.innerHTML="";
+
+dadosAtuais.forEach(item=>{
+
+const d=document.createElement("div");
+d.className="modal-item";
+d.innerText=item;
+
+d.onclick=()=>{
+
+if(tipo==="origem"){
+origem=item;
+origemTexto.innerText=item;
+modal.style.display="none";
+setTimeout(()=>abrir("destino"),200);
+return;
+}
+
+if(tipo==="destino"){
+destino=item;
+destinoTexto.innerText=item;
+modal.style.display="none";
+}
+
+};
+
+lista.appendChild(d);
+
+});
+
+}
+
+/* BUSCA */
+
+busca.addEventListener("input",()=>{
+
+const termo=busca.value.toLowerCase();
+
+const filtrado=dadosAtuais.filter(l=>
+l.toLowerCase().includes(termo)
+);
+
+lista.innerHTML="";
+
+filtrado.forEach(item=>{
+
+const d=document.createElement("div");
+d.className="modal-item";
+d.innerText=item;
+
+d.onclick=()=>{
+if(!origem){
+origem=item;
+origemTexto.innerText=item;
+modal.style.display="none";
+setTimeout(()=>abrir("destino"),200);
+}else{
+destino=item;
+destinoTexto.innerText=item;
+modal.style.display="none";
+}
+};
+
+lista.appendChild(d);
+
+});
+
+});
+
+/* EVENTOS */
+
+origemBtn.onclick=()=>abrir("origem");
+destinoBtn.onclick=()=>abrir("destino");
+
+modal.onclick=(e)=>{
+if(e.target===modal){
+modal.style.display="none";
+}
 };
 
 </script>
