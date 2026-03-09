@@ -9,8 +9,8 @@
 <style>
 
 :root{
-  --rf-gold:#D6B85F;
-  --rf-gold-strong:#F4D97A;
+--rf-gold:#D6B85F;
+--rf-gold-strong:#F4D97A;
 }
 
 *{
@@ -115,7 +115,7 @@ opacity:.85;
 margin-top:6px;
 }
 
-/* CARD INFERIOR */
+/* CARD */
 
 .card{
 position:fixed;
@@ -155,17 +155,9 @@ height:10px;
 border-radius:50%;
 }
 
-.origem{
-background:#22c55e;
-}
-
-.parada{
-background:#3b82f6;
-}
-
-.destino{
-background:#ef4444;
-}
+.origem{background:#22c55e;}
+.parada{background:#3b82f6;}
+.destino{background:#ef4444;}
 
 /* PLUS */
 
@@ -379,6 +371,22 @@ const origemTexto = document.getElementById("origemTexto");
 const destinoTexto = document.getElementById("destinoTexto");
 const paradaTexto = document.getElementById("paradaTexto");
 
+/* CONTROLE BOTÃO VOLTAR */
+
+history.pushState(null,null,location.href);
+
+window.addEventListener("popstate",function(){
+
+if(modal.style.display==="flex"){
+modal.style.display="none";
+history.pushState(null,null,location.href);
+return;
+}
+
+window.location.href="index.html";
+
+});
+
 /* SLIDES */
 
 const slides=[
@@ -540,9 +548,7 @@ paradaTexto.innerText="Selecionar parada";
 modal.style.display="none";
 
 setTimeout(()=>{
-
 abrir("destino");
-
 },200);
 
 return;
@@ -580,9 +586,7 @@ lista.appendChild(d);
 /* EVENTOS */
 
 origemBtn.onclick=()=>abrir("origem");
-
 destinoBtn.onclick=()=>abrir("destino");
-
 paradaBtn.onclick=()=>abrir("parada");
 
 plusBtn.onclick=()=>{
@@ -596,55 +600,36 @@ recalcular();
 };
 
 desvioRotaBtn.onclick=()=>{
-
 desvioRota=!desvioRota;
-
 desvioRotaBtn.classList.toggle("active");
-
 recalcular();
-
 };
 
 mercadoBtn.onclick=()=>{
-
 usarMercado=!usarMercado;
-
 mercadoBtn.classList.toggle("active");
-
 recalcular();
-
 };
 
 carro6Btn.onclick=()=>{
-
 carro6=true;
 excesso=false;
-
 carro6Btn.classList.add("active");
 excessoBtn.classList.remove("active");
-
 recalcular();
-
 };
 
 excessoBtn.onclick=()=>{
-
 excesso=true;
 carro6=false;
-
 excessoBtn.classList.add("active");
 carro6Btn.classList.remove("active");
-
 recalcular();
-
 };
-
-/* CONFIRMAR */
 
 confirmar.onclick=()=>{
 
 localStorage.setItem("rf_corrida_temp",JSON.stringify({
-
 origem,
 destino,
 parada:usarParada?parada:null,
@@ -653,30 +638,20 @@ mercado:usarMercado,
 carro6,
 excesso,
 total:window.valorFinal
-
 }));
 
 document.body.style.transition="opacity .25s ease, transform .25s ease";
-
 document.body.style.opacity="0";
 document.body.style.transform="scale(.98)";
 
 setTimeout(()=>{
-
 window.location.href="procurando.html";
-
 },250);
 
 };
 
-/* FECHAR MODAL */
-
 modal.onclick=(e)=>{
-
-if(e.target===modal){
-modal.style.display="none";
-}
-
+if(e.target===modal) modal.style.display="none";
 };
 
 </script>
